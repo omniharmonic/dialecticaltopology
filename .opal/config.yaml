@@ -1,0 +1,46 @@
+# OPAL Configuration for Dialectical Topology
+# A philosophical debate analysis knowledge base
+
+name: dialectical-topology
+description: >
+  Knowledge base for analyzing the Marcus–Demartini debate on evil,
+  nonduality, and moral knowledge. Serves as the wiki layer for the
+  Dialectical Topology interactive web application.
+
+# Integration mode with main pipeline
+mode: enrichment
+pipeline_integration:
+  input_source: claims.json  # Work from pipeline's extracted claims
+  output_targets:
+    - wiki/          # Wiki entries for frontend
+    - data/bundle/   # JSON bundles for React app
+
+# Schema file location
+schema: schema.yaml
+
+# Content sources
+sources: sources.yaml
+
+# LLM settings (uses project's Anthropic key)
+llm:
+  extraction_model: claude-sonnet-4-20250514
+  synthesis_model: claude-sonnet-4-20250514
+
+# Embedding settings
+embeddings:
+  provider: openai
+  model: text-embedding-3-small
+  dimensions: 1536
+
+# Processing settings
+processing:
+  auto_link: true
+  confidence_threshold: 0.7
+  dedup_strategy: semantic
+
+# Directory mappings
+directories:
+  inbox: _inbox
+  staging: _staging
+  index: _index
+  wiki: wiki

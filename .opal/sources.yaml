@@ -1,0 +1,84 @@
+# Content sources for Dialectical Topology
+
+sources:
+  # Primary transcript source (already merged)
+  transcript:
+    type: file
+    path: .claude/merged-transcript.txt
+    format: otter_ai
+    speakers:
+      - id: marcus
+        name: Aubrey Marcus
+        role: host
+      - id: demartini
+        name: Dr. John Demartini
+        role: guest
+
+  # Pipeline outputs (post-processing enrichment)
+  claims_json:
+    type: file
+    path: data/processed/claims.json
+    format: json
+    entity_type: claim
+
+  ontology_json:
+    type: file
+    path: data/processed/ontology.json
+    format: json
+    use_for: dimension_validation
+
+  # SRT files for timestamp reference
+  srt_main:
+    type: file
+    path: .claude/No Such Thing As Evil Debate.srt
+    format: srt
+
+  srt_continuation:
+    type: file
+    path: .claude/Final 15 Aubrey.srt
+    format: srt
+
+# Extraction hints for this domain
+extraction_hints:
+  concepts:
+    - nonduality
+    - moral relativism
+    - somatic epistemology
+    - somatic knowledge
+    - dharma
+    - karma
+    - the unity of opposites
+    - amygdala reactivity
+    - sacred obligation
+    - therapeutic dissolution
+    - cosmic balance
+    - moral intuition
+
+  thinkers:
+    - Krishna
+    - Arjuna
+    - Christ
+    - Jesus
+    - Yeshua
+    - Rumi
+    - the Stoics
+    - Victor Frankl
+    - Dalai Lama
+    - Ralph Waldo Emerson
+
+  frameworks:
+    - Demartini Method
+    - Ho'oponopono
+    - Bhagavad Gita teachings
+    - Christian ethics
+    - Nondual philosophy
+    - Stoic philosophy
+    - Logotherapy
+
+  traditions:
+    - Hinduism
+    - Christianity
+    - Buddhism
+    - Stoicism
+    - Nondual philosophy
+    - Hawaiian Kahuna tradition

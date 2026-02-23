@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "project": "dialectical-topology",
+  "last_updated": "2026-02-23",
+  "pipeline_status": {
+    "transcript_parsed": true,
+    "chunks_generated": true,
+    "embeddings_computed": true,
+    "umap_projected": true,
+    "claims_extracted": true,
+    "ontology_analyzed": true,
+    "flow_analyzed": true,
+    "wiki_generated": true,
+    "generative_dialogue_created": true,
+    "bundles_packaged": true
+  },
+  "opal_enrichment": {
+    "entities_extracted": true,
+    "relationships_mapped": true,
+    "wiki_enhanced": true,
+    "search_indexed": false
+  },
+  "files": {
+    "transcript_source": ".claude/merged-transcript.txt",
+    "chunks": "data/processed/chunks.json",
+    "embeddings": "data/processed/embeddings.npy",
+    "claims": "data/processed/claims.json",
+    "ontology": "data/processed/ontology.json",
+    "flow": "data/processed/flow.json",
+    "dialogue": "data/processed/dialogue.json",
+    "landscape": "data/processed/landscape.json",
+    "wiki": "wiki/",
+    "bundle": "data/bundle/"
+  },
+  "statistics": {
+    "total_segments": 270,
+    "total_chunks": 270,
+    "total_claims": 42,
+    "embedding_dimensions": 768,
+    "wiki_entities": 84,
+    "dialogue_rounds": 5,
+    "ontology_dimensions": 8,
+    "inflection_points": 8
+  }
+}

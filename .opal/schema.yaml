@@ -1,0 +1,206 @@
+# Schema for Dialectical Topology Wiki Layer
+# Defines entity types, fields, and relationships
+
+resource_types:
+  concept:
+    description: Philosophical ideas and concepts referenced in the debate
+    directory: wiki/concepts
+    fields:
+      title:
+        type: string
+        required: true
+      definition:
+        type: text
+        description: Clear definition of the concept
+      debate_context:
+        type: text
+        description: How this concept appears specifically in this debate
+      tradition:
+        type: reference
+        target: tradition
+        description: Philosophical tradition this belongs to
+      speaker_usage:
+        type: object
+        description: Which speaker invokes this and how
+        properties:
+          marcus: text
+          demartini: text
+      aliases:
+        type: list
+        description: Alternative names for this concept
+      related_claims:
+        type: references
+        target: claim
+        description: Claims that invoke this concept
+
+  thinker:
+    description: Historical or contemporary figures referenced in debate
+    directory: wiki/thinkers
+    fields:
+      name:
+        type: string
+        required: true
+      tradition:
+        type: reference
+        target: tradition
+      era:
+        type: string
+        description: Time period (e.g., "Ancient", "Modern", "Contemporary")
+      key_works:
+        type: list
+        description: Notable writings or teachings
+      key_ideas:
+        type: list
+        description: Core concepts associated with this thinker
+      relevance_to_debate:
+        type: text
+        description: Why they're cited in this specific debate
+      invoked_by:
+        type: enum
+        values: [marcus, demartini, both]
+        description: Which speaker references this thinker
+
+  framework:
+    description: Systems of thought, methods, or practices
+    directory: wiki/frameworks
+    fields:
+      title:
+        type: string
+        required: true
+      description:
+        type: text
+      domain:
+        type: enum
+        values: [therapeutic, ethical, metaphysical, epistemological, methodological]
+        description: Primary domain this framework operates in
+      principles:
+        type: list
+        description: Core principles of the framework
+      applications:
+        type: text
+        description: How this framework is applied in practice
+      critiques:
+        type: text
+        description: Potential weaknesses or objections
+      proponent:
+        type: reference
+        target: thinker
+        description: Primary figure associated with this framework
+      debate_role:
+        type: text
+        description: How this framework functions in the debate
+
+  tradition:
+    description: Philosophical lineages and schools of thought
+    directory: wiki/traditions
+    fields:
+      name:
+        type: string
+        required: true
+      description:
+        type: text
+      key_figures:
+        type: references
+        target: thinker
+      core_tenets:
+        type: list
+        description: Fundamental beliefs of this tradition
+      relevant_concepts:
+        type: references
+        target: concept
+      both_speakers_draw_from:
+        type: boolean
+        description: Whether both Marcus and Demartini invoke this tradition
+
+  claim:
+    description: Philosophical claims extracted from debate (imported from pipeline)
+    directory: wiki/claims
+    import_from: data/processed/claims.json
+    fields:
+      text:
+        type: text
+        required: true
+      speaker:
+        type: enum
+        values: [marcus, demartini]
+      type:
+        type: enum
+        values: [ontological, epistemological, ethical, methodological]
+      warrants:
+        type: list
+      evidence:
+        type: list
+      engagement_level:
+        type: enum
+        values: [direct_counter, partial, deflection, ignored]
+      invokes_concepts:
+        type: references
+        target: concept
+      applies_frameworks:
+        type: references
+        target: framework
+      cites_thinkers:
+        type: references
+        target: thinker
+      timestamp:
+        type: number
+        description: Time in podcast (seconds)
+
+# Relationships between entity types
+relationships:
+  invokes:
+    from: claim
+    to: concept
+    description: Claim references or invokes this concept
+
+  applies:
+    from: claim
+    to: framework
+    description: Claim applies or refers to this framework
+
+  cites:
+    from: claim
+    to: thinker
+    description: Claim cites or references this thinker
+
+  belongs_to:
+    from: [concept, thinker, framework]
+    to: tradition
+    description: Entity is associated with this philosophical tradition
+
+  supports:
+    from: concept
+    to: concept
+    description: One concept supports or reinforces another
+
+  contradicts:
+    from: concept
+    to: concept
+    description: One concept is in tension with another
+
+  associated_with:
+    from: thinker
+    to: tradition
+    description: Thinker belongs to or influenced this tradition
+
+  derived_from:
+    from: framework
+    to: tradition
+    description: Framework draws from this tradition
+
+# Cross-cutting dimensions
+dimensions:
+  speaker:
+    description: Which speaker is associated with this entity
+    values: [marcus, demartini, both, neither]
+    applies_to: [concept, thinker, framework]
+
+  domain:
+    description: Primary philosophical domain
+    values: [therapeutic, ethical, metaphysical, epistemological]
+    applies_to: [concept, framework, claim]
+
+  controversy_level:
+    description: How contested is this within the debate
+    values: [shared_ground, mild_tension, strong_disagreement, central_conflict]
+    applies_to: [concept, claim]

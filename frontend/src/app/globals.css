@@ -1,0 +1,125 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* Core colors */
+  --void: #0a0a0f;
+  --void-50: #12121a;
+  --void-100: #1a1a25;
+  --void-200: #252530;
+
+  /* Speaker colors */
+  --marcus: #d4af37;
+  --marcus-light: #f4d77a;
+  --marcus-glow: rgba(212, 175, 55, 0.4);
+
+  --demartini: #2dd4bf;
+  --demartini-light: #5eead4;
+  --demartini-glow: rgba(45, 212, 191, 0.4);
+
+  /* Glow system */
+  --glow-spread: 20px;
+  --glow-intensity: 0.3;
+}
+
+/* Base styles */
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--void);
+  color: #e5e5e5;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Selection */
+::selection {
+  background: rgba(168, 85, 247, 0.3);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--void-50);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--void-200);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #353540;
+}
+
+/* Glow effects */
+.glow-marcus {
+  box-shadow: 0 0 var(--glow-spread) var(--marcus-glow);
+}
+
+.glow-demartini {
+  box-shadow: 0 0 var(--glow-spread) var(--demartini-glow);
+}
+
+.text-glow-marcus {
+  text-shadow: 0 0 10px var(--marcus-glow);
+}
+
+.text-glow-demartini {
+  text-shadow: 0 0 10px var(--demartini-glow);
+}
+
+/* Canvas container for Three.js */
+.canvas-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Typography utilities */
+.font-display {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--marcus) 0%, var(--demartini) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass panel effect */
+.glass-panel {
+  background: rgba(10, 10, 15, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Lens navigation pill */
+.lens-pill {
+  @apply px-4 py-2 rounded-full text-sm font-medium transition-all duration-200;
+  background: var(--void-100);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lens-pill:hover {
+  background: var(--void-200);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.lens-pill.active {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(45, 212, 191, 0.2) 100%);
+  border-color: rgba(212, 175, 55, 0.4);
+}

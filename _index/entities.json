@@ -1,0 +1,28 @@
+{
+  "version": "1.0",
+  "project": "dialectical-topology",
+  "created": "2026-02-23",
+  "entities": {
+    "concepts": [],
+    "thinkers": [],
+    "frameworks": [],
+    "traditions": [],
+    "claims": []
+  },
+  "relationships": [],
+  "statistics": {
+    "total_entities": 0,
+    "by_type": {
+      "concept": 0,
+      "thinker": 0,
+      "framework": 0,
+      "tradition": 0,
+      "claim": 0
+    },
+    "by_speaker": {
+      "marcus": 0,
+      "demartini": 0,
+      "both": 0
+    }
+  }
+}
