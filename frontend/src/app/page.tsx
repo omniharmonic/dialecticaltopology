@@ -51,8 +51,8 @@ const STATS = [
   { value: '1', label: 'new synthesis generated' },
 ]
 
-// Lens previews data
-const LENS_PREVIEWS = [
+// Lens previews data - explicitly typed for type safety
+const LENS_PREVIEWS: { id: Lens; title: string; description: string }[] = [
   {
     id: 'landscape',
     title: 'Semantic Landscape',
@@ -101,7 +101,7 @@ function LensPreviewCard({
   index,
   onSelect,
 }: {
-  id: string
+  id: Lens
   title: string
   description: string
   index: number
@@ -114,7 +114,7 @@ function LensPreviewCard({
       transition={{ delay: 0.6 + index * 0.1, duration: 0.5 }}
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.99 }}
-      onClick={() => onSelect(id as Lens)}
+      onClick={() => onSelect(id)}
       className="card text-left w-full"
     >
       <h3 className="font-display text-lg text-ink mb-space-2">{title}</h3>
