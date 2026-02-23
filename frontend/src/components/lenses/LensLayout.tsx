@@ -22,10 +22,10 @@ export function LensLayout({
 }: LensLayoutProps) {
   if (loading) {
     return (
-      <div className="min-h-screen pt-20 flex items-center justify-center">
+      <div className="min-h-screen pt-20 flex items-center justify-center bg-field">
         <div className="text-center">
-          <div className="w-12 h-12 border-2 border-marcus/30 border-t-marcus rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-400">Loading {title}...</p>
+          <div className="w-12 h-12 border-2 border-ink-ghost border-t-ink rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-ink-secondary">Loading {title}...</p>
         </div>
       </div>
     )
@@ -33,32 +33,32 @@ export function LensLayout({
 
   if (error) {
     return (
-      <div className="min-h-screen pt-20 flex items-center justify-center">
-        <div className="text-center text-red-400">
+      <div className="min-h-screen pt-20 flex items-center justify-center bg-field">
+        <div className="text-center text-marcus">
           <p className="text-xl mb-2">Failed to load data</p>
-          <p className="text-sm opacity-70">{error.message}</p>
+          <p className="text-sm text-ink-secondary">{error.message}</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-20 bg-field">
       {/* Header */}
       <motion.header
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         className="px-4 pb-4"
       >
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-display font-bold gradient-text">{title}</h1>
-          {subtitle && <p className="text-gray-400 mt-1">{subtitle}</p>}
+        <div className="max-w-content mx-auto">
+          <h1 className="text-2xl font-display font-bold text-ink">{title}</h1>
+          {subtitle && <p className="text-ink-secondary mt-1">{subtitle}</p>}
         </div>
       </motion.header>
 
       {/* Main content */}
       <div className="px-4 pb-8">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-content mx-auto">
           {sidebar ? (
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
               <motion.div
@@ -104,13 +104,13 @@ export function DetailPanel({
   onClose?: () => void
 }) {
   return (
-    <div className="glass-panel rounded-xl p-4 sticky top-24">
+    <div className="card sticky top-24">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-display font-semibold">{title}</h3>
+        <h3 className="font-display font-semibold text-ink">{title}</h3>
         {onClose && (
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="btn-ghost text-ink-tertiary hover:text-ink"
           >
             ✕
           </button>
@@ -124,10 +124,10 @@ export function DetailPanel({
 // Speaker badge component
 export function SpeakerBadge({ speaker }: { speaker: string }) {
   const colors: Record<string, string> = {
-    marcus: 'bg-marcus/20 text-marcus border-marcus/30',
-    demartini: 'bg-demartini/20 text-demartini border-demartini/30',
-    synthesis: 'bg-violet-500/20 text-violet-400 border-violet-500/30',
-    mixed: 'bg-gray-500/20 text-gray-400 border-gray-500/30',
+    marcus: 'bg-marcus-faint text-marcus border-marcus/30',
+    demartini: 'bg-demartini-faint text-demartini border-demartini/30',
+    synthesis: 'bg-convergence-soft text-convergence border-convergence/30',
+    mixed: 'bg-field-subtle text-ink-tertiary border-border',
   }
 
   const names: Record<string, string> = {
@@ -151,16 +151,16 @@ export function SpeakerBadge({ speaker }: { speaker: string }) {
 // Claim type badge
 export function ClaimTypeBadge({ type }: { type: string }) {
   const colors: Record<string, string> = {
-    ontological: 'bg-purple-500/20 text-purple-400',
-    epistemological: 'bg-blue-500/20 text-blue-400',
-    ethical: 'bg-green-500/20 text-green-400',
-    methodological: 'bg-orange-500/20 text-orange-400',
+    ontological: 'bg-convergence-soft/50 text-convergence',
+    epistemological: 'bg-demartini-faint text-demartini',
+    ethical: 'bg-marcus-faint text-marcus',
+    methodological: 'bg-insight/20 text-insight',
   }
 
   return (
     <span
       className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-        colors[type] || 'bg-gray-500/20 text-gray-400'
+        colors[type] || 'bg-field-subtle text-ink-tertiary'
       }`}
     >
       {type}
