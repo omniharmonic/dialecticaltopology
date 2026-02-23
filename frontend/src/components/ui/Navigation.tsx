@@ -1,48 +1,79 @@
 'use client'
 
-import { useAppStore, Lens } from '@/store/appStore'
 import { motion } from 'framer-motion'
 
-const lenses: { id: Lens; label: string; icon: string }[] = [
-  { id: 'landscape', label: 'Semantic Landscape', icon: '◈' },
-  { id: 'claims', label: 'Claim Atlas', icon: '◉' },
-  { id: 'flow', label: 'Dialectical Flow', icon: '⟳' },
-  { id: 'worldviews', label: 'Worldview Map', icon: '⬡' },
-  { id: 'arena', label: 'Steel Man Arena', icon: '⚔' },
+type Lens = 'landscape' | 'claims' | 'flow' | 'worldviews' | 'arena'
+
+const lenses: { id: Lens; label: string }[] = [
+  { id: 'landscape', label: 'Landscape' },
+  { id: 'claims', label: 'Claims' },
+  { id: 'flow', label: 'Flow' },
+  { id: 'worldviews', label: 'Worldviews' },
+  { id: 'arena', label: 'Arena' },
 ]
 
-export function Navigation() {
-  const { currentLens, setLens } = useAppStore()
+interface NavigationProps {
+  currentLens: Lens | null
+  onSelectLens: (lens: Lens) => void
+  onGoHome: () => void
+  showHome?: boolean
+}
 
+export function Navigation({
+  currentLens,
+  onSelectLens,
+  onGoHome,
+  showHome = true
+}: NavigationProps) {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 p-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="glass-panel rounded-full p-1.5 flex items-center justify-center gap-1">
-          {lenses.map((lens) => (
-            <button
-              key={lens.id}
-              onClick={() => setLens(lens.id)}
-              className={`
-                relative px-4 py-2 rounded-full text-sm font-medium
-                transition-all duration-200 flex items-center gap-2
-                ${currentLens === lens.id
-                  ? 'text-white'
-                  : 'text-gray-400 hover:text-gray-200'
-                }
-              `}
-            >
-              {currentLens === lens.id && (
-                <motion.div
-                  layoutId="activeLens"
-                  className="absolute inset-0 rounded-full bg-gradient-to-r from-marcus/20 to-demartini/20 border border-marcus/40"
-                  transition={{ type: 'spring', duration: 0.5 }}
-                />
-              )}
-              <span className="relative z-10">{lens.icon}</span>
-              <span className="relative z-10 hidden sm:inline">{lens.label}</span>
-            </button>
-          ))}
-        </div>
+    <nav
+      className="fixed top-0 left-0 right-0 z-50 h-[56px] bg-field/80 backdrop-blur-[12px]"
+      style={{ height: 'var(--nav-height)' }}
+    >
+      <div className="max-w-content mx-auto h-full px-space-6 flex items-center justify-between">
+        {/* Logo/Title */}
+        <button
+          onClick={onGoHome}
+          className="font-display text-lg text-ink hover:text-ink-secondary transition-colors duration-instant"
+        >
+          Dialectical Topology
+        </button>
+
+        {/* Lens Tabs */}
+        {currentLens && (
+          <div className="flex items-center gap-space-1">
+            {lenses.map((lens) => (
+              <button
+                key={lens.id}
+                onClick={() => onSelectLens(lens.id)}
+                className={`
+                  relative px-space-4 py-space-2 text-sm font-medium
+                  transition-colors duration-quick
+                  ${currentLens === lens.id
+                    ? 'text-ink'
+                    : 'text-ink-secondary hover:text-ink'
+                  }
+                `}
+              >
+                {lens.label}
+                {currentLens === lens.id && (
+                  <motion.div
+                    layoutId="nav-indicator"
+                    className="absolute bottom-0 left-space-4 right-space-4 h-[2px] bg-ink"
+                    transition={{
+                      type: 'spring',
+                      stiffness: 500,
+                      damping: 30
+                    }}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Spacer for alignment when no tabs */}
+        {!currentLens && <div />}
       </div>
     </nav>
   )
