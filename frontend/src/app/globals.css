@@ -1,125 +1,252 @@
+/* Design System Imports */
+@import '../styles/fonts.css';
+@import '../styles/design-tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Import fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+/* ========================================
+   BASE STYLES
+   ======================================== */
 
-:root {
-  /* Core colors */
-  --void: #0a0a0f;
-  --void-50: #12121a;
-  --void-100: #1a1a25;
-  --void-200: #252530;
-
-  /* Speaker colors */
-  --marcus: #d4af37;
-  --marcus-light: #f4d77a;
-  --marcus-glow: rgba(212, 175, 55, 0.4);
-
-  --demartini: #2dd4bf;
-  --demartini-light: #5eead4;
-  --demartini-glow: rgba(45, 212, 191, 0.4);
-
-  /* Glow system */
-  --glow-spread: 20px;
-  --glow-intensity: 0.3;
-}
-
-/* Base styles */
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  background: var(--void);
-  color: #e5e5e5;
+  background: var(--field);
+  color: var(--ink);
   font-family: 'Inter', system-ui, sans-serif;
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 /* Selection */
 ::selection {
-  background: rgba(168, 85, 247, 0.3);
+  background: var(--demartini-faint);
+  color: var(--ink);
 }
 
-/* Scrollbar */
+/* Focus ring for accessibility */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   SCROLLBAR (subtle)
+   ======================================== */
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--void-50);
+  background: var(--field-subtle);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--void-200);
+  background: var(--border);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #353540;
+  background: var(--border-active);
 }
 
-/* Glow effects */
-.glow-marcus {
-  box-shadow: 0 0 var(--glow-spread) var(--marcus-glow);
+/* ========================================
+   GRADIENT FIELDS (Turrell-inspired)
+   ======================================== */
+
+.gradient-field-neutral {
+  background: linear-gradient(
+    180deg,
+    var(--field) 0%,
+    var(--field-subtle) 40%,
+    var(--field-deep) 100%
+  );
 }
 
-.glow-demartini {
-  box-shadow: 0 0 var(--glow-spread) var(--demartini-glow);
+.gradient-field-marcus {
+  background: linear-gradient(
+    135deg,
+    var(--field) 0%,
+    #FBF5F2 50%,
+    var(--marcus-faint) 100%
+  );
 }
 
-.text-glow-marcus {
-  text-shadow: 0 0 10px var(--marcus-glow);
+.gradient-field-demartini {
+  background: linear-gradient(
+    135deg,
+    var(--field) 0%,
+    #F2F7FA 50%,
+    var(--demartini-faint) 100%
+  );
 }
 
-.text-glow-demartini {
-  text-shadow: 0 0 10px var(--demartini-glow);
+.gradient-field-convergence {
+  background: linear-gradient(
+    180deg,
+    var(--field) 0%,
+    #F0EDF5 50%,
+    #E4DDEF 100%
+  );
 }
 
-/* Canvas container for Three.js */
+.gradient-field-deep {
+  background: linear-gradient(
+    180deg,
+    var(--deep-start) 0%,
+    var(--deep-mid) 50%,
+    var(--deep-end) 100%
+  );
+}
+
+/* ========================================
+   TYPOGRAPHY UTILITIES
+   ======================================== */
+
+.font-display {
+  font-family: 'Instrument Serif', Georgia, serif;
+}
+
+.font-display-italic {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Max line length for readability */
+.prose-width {
+  max-width: var(--max-prose);
+}
+
+/* ========================================
+   COMPONENT UTILITIES
+   ======================================== */
+
+/* Card base */
+.card {
+  background: var(--field-subtle);
+  border-radius: 12px;
+  padding: var(--space-6);
+  transition: background var(--duration-instant) var(--ease-resolve);
+}
+
+.card:hover {
+  background: var(--field-deep);
+}
+
+/* Speaker accent bar */
+.accent-marcus {
+  border-left: 3px solid var(--marcus);
+}
+
+.accent-demartini {
+  border-left: 3px solid var(--demartini);
+}
+
+/* Filter pill */
+.pill {
+  background: var(--field-deep);
+  color: var(--ink-secondary);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: var(--space-2) var(--space-4);
+  border-radius: 100px;
+  transition: all var(--duration-instant) var(--ease-resolve);
+}
+
+.pill:hover {
+  background: var(--border-active);
+}
+
+.pill-active {
+  background: var(--ink);
+  color: var(--field);
+}
+
+/* Ghost button */
+.btn-ghost {
+  background: transparent;
+  color: var(--ink-tertiary);
+  padding: var(--space-2) var(--space-4);
+  border-radius: 8px;
+  transition: all var(--duration-instant) var(--ease-resolve);
+}
+
+.btn-ghost:hover {
+  color: var(--ink-secondary);
+  background: var(--field-subtle);
+}
+
+/* Primary button */
+.btn-primary {
+  background: var(--ink);
+  color: var(--field);
+  padding: var(--space-2) var(--space-4);
+  border-radius: 8px;
+  font-weight: 500;
+  transition: opacity var(--duration-instant) var(--ease-resolve);
+}
+
+.btn-primary:hover {
+  opacity: 0.85;
+}
+
+/* Secondary button */
+.btn-secondary {
+  background: transparent;
+  color: var(--ink-secondary);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: all var(--duration-instant) var(--ease-resolve);
+}
+
+.btn-secondary:hover {
+  background: var(--field-deep);
+}
+
+/* ========================================
+   ANIMATION UTILITIES
+   ======================================== */
+
+.animate-reveal {
+  animation: slide-up var(--duration-settle) var(--ease-resolve);
+}
+
+.animate-fade {
+  animation: fade-in var(--duration-settle) var(--ease-fade);
+}
+
+/* ========================================
+   CANVAS CONTAINER
+   ======================================== */
+
 .canvas-container {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  width: 100%;
+  min-height: 70vh;
+  border-radius: 16px;
   overflow: hidden;
 }
 
-/* Typography utilities */
-.font-display {
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-}
-
-/* Gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, var(--marcus) 0%, var(--demartini) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Glass panel effect */
-.glass-panel {
-  background: rgba(10, 10, 15, 0.8);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Lens navigation pill */
-.lens-pill {
-  @apply px-4 py-2 rounded-full text-sm font-medium transition-all duration-200;
-  background: var(--void-100);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.lens-pill:hover {
-  background: var(--void-200);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.lens-pill.active {
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(45, 212, 191, 0.2) 100%);
-  border-color: rgba(212, 175, 55, 0.4);
+.canvas-deep {
+  background: linear-gradient(
+    180deg,
+    var(--deep-start) 0%,
+    var(--deep-mid) 50%,
+    var(--deep-end) 100%
+  );
+  box-shadow: inset 0 2px 20px rgba(0, 0, 0, 0.1);
 }
