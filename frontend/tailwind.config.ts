@@ -9,58 +9,99 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Lucid Consciousness palette
-        void: {
-          DEFAULT: '#0a0a0f',
-          50: '#12121a',
-          100: '#1a1a25',
-          200: '#252530',
+        // Field (backgrounds)
+        field: {
+          DEFAULT: 'var(--field)',
+          subtle: 'var(--field-subtle)',
+          deep: 'var(--field-deep)',
         },
+        // Ink (text)
+        ink: {
+          DEFAULT: 'var(--ink)',
+          secondary: 'var(--ink-secondary)',
+          tertiary: 'var(--ink-tertiary)',
+          ghost: 'var(--ink-ghost)',
+        },
+        // Speakers
         marcus: {
-          DEFAULT: '#d4af37', // Gold
-          light: '#f4d77a',
-          dark: '#a68929',
-          glow: 'rgba(212, 175, 55, 0.4)',
+          DEFAULT: 'var(--marcus)',
+          soft: 'var(--marcus-soft)',
+          faint: 'var(--marcus-faint)',
         },
         demartini: {
-          DEFAULT: '#2dd4bf', // Teal
-          light: '#5eead4',
-          dark: '#14b8a6',
-          glow: 'rgba(45, 212, 191, 0.4)',
+          DEFAULT: 'var(--demartini)',
+          soft: 'var(--demartini-soft)',
+          faint: 'var(--demartini-faint)',
         },
-        accent: {
-          purple: '#a855f7',
-          blue: '#3b82f6',
-          rose: '#f43f5e',
+        // Semantic
+        convergence: {
+          DEFAULT: 'var(--convergence)',
+          soft: 'var(--convergence-soft)',
+        },
+        insight: 'var(--insight)',
+        // System
+        border: {
+          DEFAULT: 'var(--border)',
+          active: 'var(--border-active)',
         },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Space Grotesk', 'system-ui', 'sans-serif'],
+        display: ['Instrument Serif', 'Georgia', 'serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
+      fontSize: {
+        xs: ['var(--text-xs)', { lineHeight: 'var(--leading-mono)' }],
+        sm: ['var(--text-sm)', { lineHeight: 'var(--leading-body)' }],
+        base: ['var(--text-base)', { lineHeight: 'var(--leading-body)' }],
+        lg: ['var(--text-lg)', { lineHeight: 'var(--leading-body)' }],
+        xl: ['var(--text-xl)', { lineHeight: 'var(--leading-heading)' }],
+        '2xl': ['var(--text-2xl)', { lineHeight: 'var(--leading-heading)' }],
+        '3xl': ['var(--text-3xl)', { lineHeight: 'var(--leading-heading)' }],
+        '4xl': ['var(--text-4xl)', { lineHeight: 'var(--leading-heading)' }],
+      },
+      spacing: {
+        'space-1': 'var(--space-1)',
+        'space-2': 'var(--space-2)',
+        'space-3': 'var(--space-3)',
+        'space-4': 'var(--space-4)',
+        'space-6': 'var(--space-6)',
+        'space-8': 'var(--space-8)',
+        'space-12': 'var(--space-12)',
+        'space-16': 'var(--space-16)',
+        'space-24': 'var(--space-24)',
+        'space-32': 'var(--space-32)',
+      },
+      maxWidth: {
+        content: 'var(--max-content)',
+        prose: 'var(--max-prose)',
+      },
+      transitionTimingFunction: {
+        resolve: 'var(--ease-resolve)',
+        fade: 'var(--ease-fade)',
+      },
+      transitionDuration: {
+        instant: 'var(--duration-instant)',
+        quick: 'var(--duration-quick)',
+        settle: 'var(--duration-settle)',
+        breathe: 'var(--duration-breathe)',
+      },
+      borderRadius: {
+        card: '12px',
+      },
       animation: {
-        'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
-        'fade-in': 'fade-in 0.5s ease-out',
-        'slide-up': 'slide-up 0.5s ease-out',
+        'fade-in': 'fade-in var(--duration-settle) var(--ease-fade)',
+        'slide-up': 'slide-up var(--duration-settle) var(--ease-resolve)',
       },
       keyframes: {
-        'glow-pulse': {
-          '0%, 100%': { opacity: '0.6' },
-          '50%': { opacity: '1' },
-        },
         'fade-in': {
           '0%': { opacity: '0' },
           '100%': { opacity: '1' },
         },
         'slide-up': {
-          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '0%': { opacity: '0', transform: 'translateY(8px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
-      },
-      boxShadow: {
-        'glow-marcus': '0 0 20px rgba(212, 175, 55, 0.3)',
-        'glow-demartini': '0 0 20px rgba(45, 212, 191, 0.3)',
       },
     },
   },
