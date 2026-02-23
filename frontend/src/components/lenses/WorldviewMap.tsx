@@ -6,6 +6,13 @@ import { useOntology } from '@/lib/useData'
 import { LensLayout, DetailPanel, SpeakerBadge } from './LensLayout'
 import type { OntologyDimension } from '@/lib/types'
 
+// Design token colors for SVG elements (mirrors CSS custom properties)
+const MARCUS_COLOR = '#C45A3C'      // --marcus
+const DEMARTINI_COLOR = '#2E6B8A'   // --demartini
+const BORDER_COLOR = '#E8E8E6'      // --border
+const BORDER_ACTIVE = '#D0D0CC'     // --border-active
+const INK_TERTIARY = '#A0A0A0'      // --ink-tertiary
+
 // Dimension visualization - horizontal spectrum
 function DimensionSpectrum({
   dimension,
@@ -20,29 +27,30 @@ function DimensionSpectrum({
   const marcusPos = dimension.positions.marcus.position * 100
   const gap = dimension.gap_analysis.gap_size * 100
 
+  // Semantic gap colors: high = warning (marcus), medium = caution (insight), low = good (convergence)
   const gapColor =
-    gap > 50 ? 'text-red-400' : gap > 30 ? 'text-yellow-400' : 'text-green-400'
+    gap > 50 ? 'text-marcus' : gap > 30 ? 'text-insight' : 'text-convergence'
 
   return (
     <motion.button
       onClick={onClick}
       className={`
         w-full text-left p-4 rounded-xl transition-all
-        ${isSelected ? 'bg-white/10 ring-1 ring-marcus/50' : 'bg-void-200 hover:bg-void-100'}
+        ${isSelected ? 'bg-field-deep ring-1 ring-marcus/50' : 'bg-field-subtle hover:bg-field-deep'}
       `}
       whileHover={{ scale: 1.01 }}
     >
       <div className="flex items-center justify-between mb-2">
-        <h3 className="font-display font-medium">{dimension.label}</h3>
+        <h3 className="font-display font-medium text-ink">{dimension.label}</h3>
         <span className={`text-xs ${gapColor}`}>Gap: {Math.round(gap)}%</span>
       </div>
 
-      <p className="text-xs text-gray-500 mb-3 italic">{dimension.question}</p>
+      <p className="text-xs text-ink-tertiary mb-3 italic">{dimension.question}</p>
 
       {/* Spectrum visualization */}
       <div className="relative">
         {/* Labels */}
-        <div className="flex justify-between text-xs text-gray-500 mb-1">
+        <div className="flex justify-between text-xs text-ink-tertiary mb-1">
           <span className="max-w-[40%] truncate">{dimension.spectrum.left.label}</span>
           <span className="max-w-[40%] truncate text-right">
             {dimension.spectrum.right.label}
@@ -50,10 +58,10 @@ function DimensionSpectrum({
         </div>
 
         {/* Track */}
-        <div className="relative h-6 bg-void-100 rounded-full overflow-hidden">
+        <div className="relative h-6 bg-field-deep rounded-full overflow-hidden">
           {/* Gap indicator */}
           <div
-            className="absolute top-0 h-full bg-white/5"
+            className="absolute top-0 h-full bg-ink/5"
             style={{
               left: `${Math.min(demartiniPos, marcusPos)}%`,
               width: `${Math.abs(marcusPos - demartiniPos)}%`,
@@ -62,21 +70,21 @@ function DimensionSpectrum({
 
           {/* Demartini marker */}
           <motion.div
-            className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-demartini border-2 border-white/50 z-10"
+            className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-demartini border-2 border-field z-10"
             style={{ left: `${demartiniPos}%` }}
             animate={{ x: '-50%' }}
           />
 
           {/* Marcus marker */}
           <motion.div
-            className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-marcus border-2 border-white/50 z-10"
+            className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-marcus border-2 border-field z-10"
             style={{ left: `${marcusPos}%` }}
             animate={{ x: '-50%' }}
           />
         </div>
 
         {/* Legend */}
-        <div className="flex justify-center gap-4 mt-2 text-xs">
+        <div className="flex justify-center gap-4 mt-2 text-xs text-ink-secondary">
           <span className="flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-demartini" /> Demartini
           </span>
@@ -125,7 +133,7 @@ function RadarChart({ dimensions }: { dimensions: OntologyDimension[] }) {
           cy={center}
           r={radius * r}
           fill="none"
-          stroke="#374151"
+          stroke={BORDER_COLOR}
           strokeWidth="0.5"
           strokeDasharray="2,2"
         />
@@ -146,7 +154,7 @@ function RadarChart({ dimensions }: { dimensions: OntologyDimension[] }) {
               y1={center}
               x2={x2}
               y2={y2}
-              stroke="#4b5563"
+              stroke={BORDER_ACTIVE}
               strokeWidth="0.5"
             />
             <text
@@ -154,7 +162,8 @@ function RadarChart({ dimensions }: { dimensions: OntologyDimension[] }) {
               y={labelY}
               textAnchor="middle"
               dominantBaseline="middle"
-              className="fill-gray-500 text-[8px]"
+              fill={INK_TERTIARY}
+              className="text-[8px]"
             >
               {d.label.split(' ').slice(0, 2).join(' ')}
             </text>
@@ -165,27 +174,27 @@ function RadarChart({ dimensions }: { dimensions: OntologyDimension[] }) {
       {/* Demartini area */}
       <path
         d={pointsToPath(demartiniPoints)}
-        fill="#14b8a6"
+        fill={DEMARTINI_COLOR}
         fillOpacity="0.2"
-        stroke="#14b8a6"
+        stroke={DEMARTINI_COLOR}
         strokeWidth="2"
       />
 
       {/* Marcus area */}
       <path
         d={pointsToPath(marcusPoints)}
-        fill="#f59e0b"
+        fill={MARCUS_COLOR}
         fillOpacity="0.2"
-        stroke="#f59e0b"
+        stroke={MARCUS_COLOR}
         strokeWidth="2"
       />
 
       {/* Points */}
       {demartiniPoints.map((p, i) => (
-        <circle key={`d-${i}`} cx={p.x} cy={p.y} r="4" fill="#14b8a6" />
+        <circle key={`d-${i}`} cx={p.x} cy={p.y} r="4" fill={DEMARTINI_COLOR} />
       ))}
       {marcusPoints.map((p, i) => (
-        <circle key={`m-${i}`} cx={p.x} cy={p.y} r="4" fill="#f59e0b" />
+        <circle key={`m-${i}`} cx={p.x} cy={p.y} r="4" fill={MARCUS_COLOR} />
       ))}
     </svg>
   )
@@ -199,28 +208,29 @@ function DimensionDetail({
   dimension: OntologyDimension
   onClose: () => void
 }) {
+  // Semantic bridging colors
   const bridgingColors: Record<string, string> = {
-    high: 'text-green-400',
-    medium: 'text-yellow-400',
-    low: 'text-red-400',
+    high: 'text-convergence',
+    medium: 'text-insight',
+    low: 'text-marcus',
   }
 
   return (
     <DetailPanel title={dimension.label} onClose={onClose}>
       <div className="space-y-4">
-        <p className="text-sm italic text-gray-400">{dimension.question}</p>
+        <p className="text-sm italic text-ink-secondary">{dimension.question}</p>
 
         {/* Spectrum ends */}
         <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="p-2 bg-void-200 rounded">
+          <div className="p-2 bg-field-subtle rounded">
             <p className="font-medium text-demartini">
               {dimension.spectrum.left.label}
             </p>
-            <p className="text-gray-500 mt-1">{dimension.spectrum.left.description}</p>
+            <p className="text-ink-tertiary mt-1">{dimension.spectrum.left.description}</p>
           </div>
-          <div className="p-2 bg-void-200 rounded">
+          <div className="p-2 bg-field-subtle rounded">
             <p className="font-medium text-marcus">{dimension.spectrum.right.label}</p>
-            <p className="text-gray-500 mt-1">
+            <p className="text-ink-tertiary mt-1">
               {dimension.spectrum.right.description}
             </p>
           </div>
@@ -231,12 +241,12 @@ function DimensionDetail({
           <h4 className="text-xs uppercase tracking-wider text-demartini mb-2">
             Demartini's Position ({Math.round(dimension.positions.demartini.position * 100)}%)
           </h4>
-          <p className="text-sm text-gray-300">
+          <p className="text-sm text-ink">
             {dimension.positions.demartini.summary}
           </p>
           <div className="flex flex-wrap gap-1 mt-2">
             {dimension.positions.demartini.key_claims.map((c) => (
-              <span key={c} className="text-xs bg-demartini/20 text-demartini px-2 py-0.5 rounded">
+              <span key={c} className="text-xs bg-demartini-faint text-demartini px-2 py-0.5 rounded">
                 {c}
               </span>
             ))}
@@ -248,10 +258,10 @@ function DimensionDetail({
           <h4 className="text-xs uppercase tracking-wider text-marcus mb-2">
             Marcus's Position ({Math.round(dimension.positions.marcus.position * 100)}%)
           </h4>
-          <p className="text-sm text-gray-300">{dimension.positions.marcus.summary}</p>
+          <p className="text-sm text-ink">{dimension.positions.marcus.summary}</p>
           <div className="flex flex-wrap gap-1 mt-2">
             {dimension.positions.marcus.key_claims.map((c) => (
-              <span key={c} className="text-xs bg-marcus/20 text-marcus px-2 py-0.5 rounded">
+              <span key={c} className="text-xs bg-marcus-faint text-marcus px-2 py-0.5 rounded">
                 {c}
               </span>
             ))}
@@ -259,27 +269,27 @@ function DimensionDetail({
         </div>
 
         {/* Gap analysis */}
-        <div className="p-3 bg-void-100 rounded-lg">
-          <h4 className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+        <div className="p-3 bg-field-subtle rounded-lg">
+          <h4 className="text-xs uppercase tracking-wider text-ink-tertiary mb-2">
             Gap Analysis
           </h4>
           <div className="space-y-1 text-sm">
             <p>
-              <span className="text-gray-500">Type:</span>{' '}
-              {dimension.gap_analysis.gap_type.replace(/_/g, ' ')}
+              <span className="text-ink-tertiary">Type:</span>{' '}
+              <span className="text-ink">{dimension.gap_analysis.gap_type.replace(/_/g, ' ')}</span>
             </p>
             <p>
-              <span className="text-gray-500">Gap Size:</span>{' '}
-              {Math.round(dimension.gap_analysis.gap_size * 100)}%
+              <span className="text-ink-tertiary">Gap Size:</span>{' '}
+              <span className="text-ink">{Math.round(dimension.gap_analysis.gap_size * 100)}%</span>
             </p>
             <p>
-              <span className="text-gray-500">Bridging Potential:</span>{' '}
-              <span className={bridgingColors[dimension.gap_analysis.bridging_potential] || ''}>
+              <span className="text-ink-tertiary">Bridging Potential:</span>{' '}
+              <span className={bridgingColors[dimension.gap_analysis.bridging_potential] || 'text-ink'}>
                 {dimension.gap_analysis.bridging_potential}
               </span>
             </p>
           </div>
-          <p className="text-xs text-gray-400 mt-2 italic">
+          <p className="text-xs text-ink-secondary mt-2 italic">
             {dimension.gap_analysis.notes}
           </p>
         </div>
@@ -304,9 +314,9 @@ export function WorldviewMap() {
     }
 
     return (
-      <div className="glass-panel rounded-xl p-4 sticky top-24">
-        <h3 className="font-display font-semibold mb-4">About This View</h3>
-        <p className="text-sm text-gray-400 mb-4">
+      <div className="card sticky top-24">
+        <h3 className="font-display font-semibold text-ink mb-4">About This View</h3>
+        <p className="text-sm text-ink-secondary mb-4">
           The Worldview Map shows how each speaker positions themselves on 8
           fundamental philosophical dimensions. Click any dimension to explore the
           details of their disagreement.
@@ -314,23 +324,23 @@ export function WorldviewMap() {
 
         {data && (
           <div className="space-y-3">
-            <h4 className="text-xs uppercase tracking-wider text-gray-500">Key Insights</h4>
-            <ul className="text-sm text-gray-400 space-y-2">
+            <h4 className="text-xs uppercase tracking-wider text-ink-tertiary">Key Insights</h4>
+            <ul className="text-sm text-ink-secondary space-y-2">
               {data.synthesis.bridging_insights.slice(0, 3).map((insight, i) => (
                 <li key={i} className="flex items-start gap-2">
-                  <span className="text-green-500">✓</span>
+                  <span className="text-convergence">✓</span>
                   <span>{insight}</span>
                 </li>
               ))}
             </ul>
 
-            <h4 className="text-xs uppercase tracking-wider text-gray-500 mt-4">
+            <h4 className="text-xs uppercase tracking-wider text-ink-tertiary mt-4">
               Irreconcilable
             </h4>
-            <ul className="text-sm text-gray-400 space-y-2">
+            <ul className="text-sm text-ink-secondary space-y-2">
               {data.synthesis.irreconcilable_differences.slice(0, 2).map((diff, i) => (
                 <li key={i} className="flex items-start gap-2">
-                  <span className="text-red-500">✗</span>
+                  <span className="text-marcus">✗</span>
                   <span>{diff}</span>
                 </li>
               ))}
@@ -355,21 +365,13 @@ export function WorldviewMap() {
           <div className="flex gap-2">
             <button
               onClick={() => setViewMode('spectrum')}
-              className={`px-4 py-2 rounded-lg text-sm transition-all ${
-                viewMode === 'spectrum'
-                  ? 'bg-marcus/20 text-marcus'
-                  : 'bg-void-200 text-gray-400 hover:text-white'
-              }`}
+              className={viewMode === 'spectrum' ? 'pill pill-active' : 'pill'}
             >
               Spectrum View
             </button>
             <button
               onClick={() => setViewMode('radar')}
-              className={`px-4 py-2 rounded-lg text-sm transition-all ${
-                viewMode === 'radar'
-                  ? 'bg-marcus/20 text-marcus'
-                  : 'bg-void-200 text-gray-400 hover:text-white'
-              }`}
+              className={viewMode === 'radar' ? 'pill pill-active' : 'pill'}
             >
               Radar View
             </button>
@@ -379,10 +381,10 @@ export function WorldviewMap() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="glass-panel rounded-xl p-6"
+              className="card"
             >
               <RadarChart dimensions={data.dimensions} />
-              <div className="flex justify-center gap-6 mt-4 text-sm">
+              <div className="flex justify-center gap-6 mt-4 text-sm text-ink-secondary">
                 <span className="flex items-center gap-2">
                   <span className="w-3 h-3 rounded-full bg-demartini" />
                   Demartini
@@ -412,10 +414,10 @@ export function WorldviewMap() {
           </div>
 
           {/* Core tension */}
-          <div className="glass-panel rounded-xl p-4">
-            <h3 className="font-display font-semibold mb-2">Core Tension</h3>
-            <p className="text-sm text-gray-300">{data.synthesis.core_tension}</p>
-            <p className="text-sm text-gray-400 mt-2">{data.synthesis.domain_confusion}</p>
+          <div className="card">
+            <h3 className="font-display font-semibold text-ink mb-2">Core Tension</h3>
+            <p className="text-sm text-ink">{data.synthesis.core_tension}</p>
+            <p className="text-sm text-ink-secondary mt-2">{data.synthesis.domain_confusion}</p>
           </div>
         </div>
       )}
