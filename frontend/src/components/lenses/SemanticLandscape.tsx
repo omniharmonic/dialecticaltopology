@@ -12,9 +12,14 @@ import type { LandscapePoint, LandscapeCluster } from '@/lib/types'
 // Temporal visibility states
 type TemporalState = 'future' | 'current' | 'past' | 'all'
 
-// Design token colors for 3D (soft variants at 80% opacity)
-const MARCUS_SOFT = '#E8A892'
-const DEMARTINI_SOFT = '#8BBDD4'
+// Design token colors for 3D materials (mirrors CSS custom properties)
+// These must be JS values since Three.js materials don't support CSS variables
+const MARCUS_SOFT = '#E8A892'      // --marcus-soft
+const DEMARTINI_SOFT = '#8BBDD4'   // --demartini-soft
+const CURRENT_HIGHLIGHT = '#FAFAFA' // --field (white-ish for current point)
+const GRID_PRIMARY = '#0F3460'     // --deep-end
+const GRID_SECONDARY = '#16213E'   // --deep-mid
+const TRAJECTORY_COLOR = '#A0A0A0' // --ink-tertiary
 
 // Point in 3D space with temporal support
 function DataPoint({
@@ -87,8 +92,8 @@ function DataPoint({
     >
       <sphereGeometry args={[size, 16, 16]} />
       <meshStandardMaterial
-        color={isCurrent ? '#ffffff' : color}
-        emissive={isCurrent ? '#ffffff' : color}
+        color={isCurrent ? CURRENT_HIGHLIGHT : color}
+        emissive={isCurrent ? CURRENT_HIGHLIGHT : color}
         emissiveIntensity={isCurrent ? 0.6 : isSelected ? 0.4 : isHovered ? 0.25 : 0.1}
         transparent
         opacity={getOpacity()}
@@ -149,7 +154,7 @@ function Trajectory({
       new THREE.Float32BufferAttribute(positions, 3)
     )
     const material = new THREE.LineBasicMaterial({
-      color: '#4b5563',
+      color: TRAJECTORY_COLOR,
       opacity: 0.3,
       transparent: true,
     })
@@ -290,7 +295,7 @@ function Scene({
       <pointLight position={[-10, -10, -10]} intensity={0.3} />
 
       {/* Grid helper */}
-      <gridHelper args={[2, 20, '#374151', '#1f2937']} position={[0, -0.5, 0]} />
+      <gridHelper args={[2, 20, GRID_PRIMARY, GRID_SECONDARY]} position={[0, -0.5, 0]} />
 
       {/* Trajectory line - only show for visible points */}
       {showTrajectory && <Trajectory points={visiblePoints} scale={scale} />}
