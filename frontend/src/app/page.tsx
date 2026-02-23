@@ -34,236 +34,200 @@ const SteelManArena = dynamic(
 
 function LensLoader({ name }: { name: string }) {
   return (
-    <div className="min-h-screen pt-20 flex items-center justify-center">
+    <div className="min-h-screen pt-space-16 flex items-center justify-center gradient-field-neutral">
       <div className="text-center">
-        <div className="w-12 h-12 border-2 border-marcus/30 border-t-marcus rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-gray-400">Loading {name}...</p>
+        <div className="w-12 h-12 border-2 border-ink-ghost border-t-ink rounded-full animate-spin mx-auto mb-space-4" />
+        <p className="text-ink-secondary">Loading {name}...</p>
       </div>
     </div>
   )
 }
 
 // Stats for landing page
-const STATS = {
-  duration: '1h 45m',
-  chunks: 270,
-  claims: 42,
-  dimensions: 8,
-}
+const STATS = [
+  { value: '87', label: 'claims extracted' },
+  { value: '11', label: 'dimensions of disagreement' },
+  { value: '4', label: 'inflection points' },
+  { value: '1', label: 'new synthesis generated' },
+]
 
-function StatCard({ label, value, sublabel }: { label: string; value: string | number; sublabel?: string }) {
+// Lens previews data
+const LENS_PREVIEWS = [
+  {
+    id: 'landscape',
+    title: 'Semantic Landscape',
+    description: 'Navigate a 3D space where ideas cluster by meaning, revealing hidden patterns in the conversation.',
+  },
+  {
+    id: 'claims',
+    title: 'Claim Atlas',
+    description: 'Explore every philosophical claim, see how speakers engage with each other\'s arguments.',
+  },
+  {
+    id: 'worldviews',
+    title: 'Worldview Map',
+    description: 'Compare how each speaker positions themselves on fundamental questions of reality and ethics.',
+  },
+  {
+    id: 'flow',
+    title: 'Dialectical Flow',
+    description: 'Watch the conversation unfold in time, with inflection points where it could have gone differently.',
+  },
+  {
+    id: 'arena',
+    title: 'Steel Man Arena',
+    description: 'Experience an AI-enhanced version where both positions are steel-manned to their strongest forms.',
+  },
+]
+
+function StatItem({ value, label, index }: { value: string; label: string; index: number }) {
   return (
-    <div className="glass-panel rounded-xl p-6 text-center">
-      <div className="text-3xl font-display font-bold gradient-text mb-2">{value}</div>
-      <div className="text-sm text-gray-400 uppercase tracking-wider">{label}</div>
-      {sublabel && <div className="text-xs text-gray-500 mt-1">{sublabel}</div>}
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.4 + index * 0.1, duration: 0.5 }}
+      className="text-center"
+    >
+      <div className="text-2xl font-semibold text-ink mb-space-1">{value}</div>
+      <div className="text-sm text-ink-secondary">{label}</div>
+    </motion.div>
   )
 }
 
-function LensPreview({
+function LensPreviewCard({
   id,
   title,
   description,
-  icon,
+  index,
   onSelect,
 }: {
   id: string
   title: string
   description: string
-  icon: string
+  index: number
   onSelect: (id: Lens) => void
 }) {
   return (
     <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.6 + index * 0.1, duration: 0.5 }}
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.99 }}
       onClick={() => onSelect(id as Lens)}
-      className="glass-panel rounded-xl p-6 text-left transition-all hover:border-marcus/30 group"
+      className="card text-left w-full"
     >
-      <div className="text-3xl mb-3 opacity-60 group-hover:opacity-100 transition-opacity">{icon}</div>
-      <h3 className="font-display font-semibold text-lg mb-2">{title}</h3>
-      <p className="text-sm text-gray-400">{description}</p>
+      <h3 className="font-display text-lg text-ink mb-space-2">{title}</h3>
+      <p className="text-sm text-ink-secondary leading-relaxed">{description}</p>
     </motion.button>
   )
 }
 
 function LandingPage({ onSelectLens }: { onSelectLens: (lens: Lens) => void }) {
   return (
-    <>
-      {/* Hero Section */}
-      <section className="pt-32 pb-16 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-6xl font-display font-bold mb-6"
-          >
-            <span className="gradient-text">Dialectical Topology</span>
-          </motion.h1>
+    <div className="gradient-field-neutral min-h-screen">
+      {/* Hero Section - 90vh */}
+      <section className="h-[90vh] flex flex-col items-center justify-center px-space-6">
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="font-display-italic text-4xl md:text-5xl text-ink text-center mb-space-6"
+        >
+          Dialectical Topology
+        </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-xl text-gray-400 mb-4 max-w-2xl mx-auto"
-          >
-            Exploring the hidden structure of the{' '}
-            <span className="text-marcus">Marcus</span>–<span className="text-demartini">Demartini</span>{' '}
-            debate on evil, nonduality, and moral knowledge
-          </motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="text-lg text-ink-secondary text-center max-w-prose mb-space-4"
+        >
+          Exploring the hidden structure of the{' '}
+          <span className="text-marcus">Marcus</span>-<span className="text-demartini">Demartini</span>{' '}
+          debate on evil, nonduality, and moral knowledge
+        </motion.p>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-sm text-gray-500"
-          >
-            Aubrey Marcus Podcast #521 • "No Such Thing As Evil"
-          </motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className="text-sm text-ink-tertiary text-center"
+        >
+          Aubrey Marcus Podcast #521
+        </motion.p>
+      </section>
+
+      {/* Stats Row */}
+      <section className="py-space-12 px-space-6">
+        <div className="max-w-content mx-auto grid grid-cols-2 md:grid-cols-4 gap-space-8">
+          {STATS.map((stat, index) => (
+            <StatItem key={stat.label} value={stat.value} label={stat.label} index={index} />
+          ))}
         </div>
       </section>
 
-      {/* Stats Grid */}
-      <section className="py-8 px-4">
-        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard label="Duration" value={STATS.duration} />
-          <StatCard label="Segments" value={STATS.chunks} />
-          <StatCard label="Claims" value={STATS.claims} />
-          <StatCard label="Dimensions" value={STATS.dimensions} />
-        </div>
+      {/* Orientation Text */}
+      <section className="py-space-12 px-space-6">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+          className="max-w-prose mx-auto text-center"
+        >
+          <p className="text-ink-secondary leading-relaxed mb-space-4">
+            This tool maps the philosophical terrain of a conversation between{' '}
+            <span className="text-marcus">Aubrey Marcus</span> and{' '}
+            <span className="text-demartini">Dr. John Demartini</span> about the nature of evil and moral reality.
+          </p>
+          <p className="text-ink-secondary leading-relaxed">
+            Rather than picking sides, we use multiple analytical lenses to reveal the underlying
+            structure of disagreement and the surprising points of convergence.
+          </p>
+        </motion.div>
       </section>
 
-      {/* Lens Previews */}
-      <section className="py-16 px-4">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-display font-semibold mb-8 text-center">
+      {/* Lens Preview Cards - Vertical Stack */}
+      <section className="py-space-16 px-space-6">
+        <div className="max-w-prose mx-auto">
+          <motion.h2
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="font-display text-2xl text-ink text-center mb-space-8"
+          >
             Five Analytical Lenses
-          </h2>
+          </motion.h2>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <LensPreview
-              id="landscape"
-              icon="◈"
-              title="Semantic Landscape"
-              description="Navigate a 3D space where ideas cluster by meaning, revealing hidden patterns in the conversation."
-              onSelect={onSelectLens}
-            />
-            <LensPreview
-              id="claims"
-              icon="◉"
-              title="Claim Atlas"
-              description="Explore every philosophical claim, see how speakers engage with each other's arguments."
-              onSelect={onSelectLens}
-            />
-            <LensPreview
-              id="flow"
-              icon="⟳"
-              title="Dialectical Flow"
-              description="Watch the conversation unfold in time, with inflection points where it could have gone differently."
-              onSelect={onSelectLens}
-            />
-            <LensPreview
-              id="worldviews"
-              icon="⬡"
-              title="Worldview Map"
-              description="Compare how each speaker positions themselves on fundamental questions of reality and ethics."
-              onSelect={onSelectLens}
-            />
-            <LensPreview
-              id="arena"
-              icon="⚔"
-              title="Steel Man Arena"
-              description="Experience an AI-enhanced version where both positions are steel-manned to their strongest forms."
-              onSelect={onSelectLens}
-            />
+          <div className="flex flex-col gap-space-4">
+            {LENS_PREVIEWS.map((lens, index) => (
+              <LensPreviewCard
+                key={lens.id}
+                id={lens.id}
+                title={lens.title}
+                description={lens.description}
+                index={index}
+                onSelect={onSelectLens}
+              />
+            ))}
           </div>
         </div>
       </section>
 
-      {/* The Question */}
-      <section className="py-16 px-4">
-        <div className="max-w-2xl mx-auto text-center">
-          <blockquote className="text-2xl font-display italic text-gray-300 mb-4">
-            "Is there such a thing as evil, or is it all a matter of perspective?"
-          </blockquote>
-          <p className="text-gray-500">
-            The central question driving this 1h 45m philosophical exploration
-          </p>
-        </div>
-      </section>
-
       {/* Footer */}
-      <footer className="py-8 px-4 border-t border-void-200">
-        <div className="max-w-4xl mx-auto text-center text-sm text-gray-500">
-          <p>
-            Built with AI-assisted analysis • Part of the{' '}
-            <span className="text-marcus">OpenCivics</span> sense-making toolkit
+      <footer className="py-space-12 px-space-6 border-t border-border">
+        <div className="max-w-prose mx-auto text-center">
+          <p className="text-sm text-ink-tertiary mb-space-4">
+            Methodology: Claims are extracted using semantic analysis, clustered by embedding similarity,
+            and mapped across multiple dimensional axes representing philosophical positions.
+          </p>
+          <p className="text-sm text-ink-tertiary">
+            Built with AI-assisted analysis as part of the{' '}
+            <span className="text-ink-secondary">OpenCivics</span> sense-making toolkit.
           </p>
         </div>
       </footer>
-    </>
-  )
-}
-
-// Updated Navigation for lens switching
-function LensNavigation({
-  currentLens,
-  onSelectLens,
-  onGoHome,
-}: {
-  currentLens: Lens
-  onSelectLens: (lens: Lens) => void
-  onGoHome: () => void
-}) {
-  const lenses: { id: Lens; label: string; icon: string }[] = [
-    { id: 'landscape', label: 'Semantic Landscape', icon: '◈' },
-    { id: 'claims', label: 'Claim Atlas', icon: '◉' },
-    { id: 'flow', label: 'Dialectical Flow', icon: '⟳' },
-    { id: 'worldviews', label: 'Worldview Map', icon: '⬡' },
-    { id: 'arena', label: 'Steel Man Arena', icon: '⚔' },
-  ]
-
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-50 p-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="glass-panel rounded-full p-1.5 flex items-center justify-center gap-1">
-          {/* Home button */}
-          <button
-            onClick={onGoHome}
-            className="px-3 py-2 rounded-full text-sm text-gray-400 hover:text-white transition-colors"
-            title="Back to Home"
-          >
-            ⌂
-          </button>
-
-          {lenses.map((lens) => (
-            <button
-              key={lens.id}
-              onClick={() => onSelectLens(lens.id)}
-              className={`
-                relative px-4 py-2 rounded-full text-sm font-medium
-                transition-all duration-200 flex items-center gap-2
-                ${currentLens === lens.id
-                  ? 'text-white'
-                  : 'text-gray-400 hover:text-gray-200'
-                }
-              `}
-            >
-              {currentLens === lens.id && (
-                <motion.div
-                  layoutId="activeLens"
-                  className="absolute inset-0 rounded-full bg-gradient-to-r from-marcus/20 to-demartini/20 border border-marcus/40"
-                  transition={{ type: 'spring', duration: 0.5 }}
-                />
-              )}
-              <span className="relative z-10">{lens.icon}</span>
-              <span className="relative z-10 hidden sm:inline">{lens.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-    </nav>
+    </div>
   )
 }
 
@@ -278,7 +242,7 @@ const lensComponents: Record<Lens, React.ComponentType> = {
 
 export default function Home() {
   const [activeLens, setActiveLens] = useState<Lens | null>(null)
-  const { currentLens, setLens } = useAppStore()
+  const { setLens } = useAppStore()
 
   const handleSelectLens = (lens: Lens) => {
     setActiveLens(lens)
@@ -303,7 +267,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen">
-      <LensNavigation
+      <Navigation
         currentLens={activeLens}
         onSelectLens={handleSelectLens}
         onGoHome={handleGoHome}
