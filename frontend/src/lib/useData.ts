@@ -10,7 +10,13 @@ import type {
   DialogueData,
 } from './types'
 
-const BASE_PATH = '/data'
+// Detect basePath for GitHub Pages deployment
+function getDataPath(filename: string): string {
+  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/dialecticaltopology')) {
+    return `/dialecticaltopology/data/${filename}`
+  }
+  return `/data/${filename}`
+}
 
 // Cache for loaded data
 const cache: Record<string, unknown> = {}
@@ -20,7 +26,7 @@ async function loadJSON<T>(filename: string): Promise<T> {
     return cache[filename] as T
   }
 
-  const response = await fetch(`${BASE_PATH}/${filename}`)
+  const response = await fetch(getDataPath(filename))
   if (!response.ok) {
     throw new Error(`Failed to load ${filename}: ${response.statusText}`)
   }
