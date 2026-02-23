@@ -24,7 +24,7 @@ function ClaimCard({
   onClick: () => void
   responses: string[]
 }) {
-  const speakerColor = claim.speaker === 'marcus' ? 'border-marcus' : 'border-demartini'
+  const speakerColor = claim.speaker === 'marcus' ? 'border-accent-marcus' : 'border-accent-demartini'
 
   return (
     <motion.button
@@ -33,7 +33,7 @@ function ClaimCard({
       className={`
         w-full text-left p-4 rounded-xl border-l-4 transition-all
         ${speakerColor}
-        ${isSelected ? 'bg-white/10 ring-1 ring-white/20' : 'bg-void-200 hover:bg-void-100'}
+        ${isSelected ? 'bg-field-deep ring-1 ring-border-active' : 'bg-field-subtle hover:bg-field-deep'}
       `}
       whileHover={{ scale: 1.01 }}
     >
@@ -43,13 +43,13 @@ function ClaimCard({
           <SpeakerBadge speaker={claim.speaker} />
           <ClaimTypeBadge type={claim.type} />
         </div>
-        <span className="text-xs text-gray-500">{formatTime(claim.timestamp)}</span>
+        <span className="text-xs text-ink-tertiary">{formatTime(claim.timestamp)}</span>
       </div>
 
       <p className="text-sm line-clamp-3">{claim.text}</p>
 
       {responses.length > 0 && (
-        <div className="mt-2 flex items-center gap-1 text-xs text-gray-500">
+        <div className="mt-2 flex items-center gap-1 text-xs text-ink-tertiary">
           <span>⟳</span>
           <span>{responses.length} response(s): {responses.join(', ')}</span>
         </div>
@@ -75,21 +75,21 @@ function ClusterView({
   const clusterClaims = claims.filter((c) => cluster.claims.includes(c.id))
 
   const tensionColors: Record<string, string> = {
-    fundamental_disagreement: 'border-red-500/50',
-    spectrum_positions: 'border-yellow-500/50',
-    domain_confusion: 'border-orange-500/50',
-    different_foundations: 'border-blue-500/50',
+    fundamental_disagreement: 'border-ink-tertiary',
+    spectrum_positions: 'border-ink-secondary',
+    domain_confusion: 'border-ink-tertiary',
+    different_foundations: 'border-ink-secondary',
   }
 
   return (
     <div
-      className={`glass-panel rounded-xl p-4 border-t-2 ${
-        tensionColors[cluster.tension_type] || 'border-gray-500/50'
+      className={`card rounded-xl p-4 border-t-2 ${
+        tensionColors[cluster.tension_type] || 'border-border'
       }`}
     >
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-display font-semibold">{cluster.label}</h3>
-        <span className="text-xs text-gray-500 capitalize">
+        <span className="text-xs text-ink-tertiary capitalize">
           {cluster.tension_type.replace(/_/g, ' ')}
         </span>
       </div>
@@ -129,22 +129,22 @@ function ClaimDetail({
         <div className="flex flex-wrap gap-2">
           <SpeakerBadge speaker={claim.speaker} />
           <ClaimTypeBadge type={claim.type} />
-          <span className="text-xs text-gray-500">{formatTime(claim.timestamp)}</span>
+          <span className="text-xs text-ink-tertiary">{formatTime(claim.timestamp)}</span>
         </div>
 
-        <blockquote className="text-sm italic border-l-2 border-gray-600 pl-3">
+        <blockquote className="text-sm italic border-l-2 border-border pl-3">
           "{claim.text}"
         </blockquote>
 
         {claim.warrants.length > 0 && (
           <div>
-            <h4 className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+            <h4 className="text-xs uppercase tracking-wider text-ink-tertiary mb-2">
               Supporting Warrants
             </h4>
             <ul className="text-sm space-y-1">
               {claim.warrants.map((w, i) => (
-                <li key={i} className="text-gray-300 flex items-start gap-2">
-                  <span className="text-gray-500">•</span>
+                <li key={i} className="text-ink flex items-start gap-2">
+                  <span className="text-ink-tertiary">•</span>
                   {w}
                 </li>
               ))}
@@ -154,13 +154,13 @@ function ClaimDetail({
 
         {claim.evidence.length > 0 && (
           <div>
-            <h4 className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+            <h4 className="text-xs uppercase tracking-wider text-ink-tertiary mb-2">
               Evidence Cited
             </h4>
             <ul className="text-sm space-y-1">
               {claim.evidence.map((e, i) => (
-                <li key={i} className="text-gray-300 flex items-start gap-2">
-                  <span className="text-green-500">✓</span>
+                <li key={i} className="text-ink flex items-start gap-2">
+                  <span className="text-convergence">✓</span>
                   {e}
                 </li>
               ))}
@@ -170,14 +170,14 @@ function ClaimDetail({
 
         {claim.related_concepts.length > 0 && (
           <div>
-            <h4 className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+            <h4 className="text-xs uppercase tracking-wider text-ink-tertiary mb-2">
               Related Concepts
             </h4>
             <div className="flex flex-wrap gap-1">
               {claim.related_concepts.map((c) => (
                 <span
                   key={c}
-                  className="text-xs bg-void-100 px-2 py-0.5 rounded capitalize"
+                  className="text-xs bg-field-subtle px-2 py-0.5 rounded capitalize"
                 >
                   {c.replace(/_/g, ' ')}
                 </span>
@@ -188,7 +188,7 @@ function ClaimDetail({
 
         {responses.length > 0 && (
           <div>
-            <h4 className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+            <h4 className="text-xs uppercase tracking-wider text-ink-tertiary mb-2">
               Responses to This Claim
             </h4>
             <div className="space-y-2">
@@ -199,13 +199,13 @@ function ClaimDetail({
                   <button
                     key={rid}
                     onClick={() => onSelectClaim(responseClaim)}
-                    className="w-full text-left p-2 bg-void-100 rounded-lg hover:bg-void-50 transition-colors"
+                    className="w-full text-left p-2 bg-field-subtle rounded-lg hover:bg-field-deep transition-colors"
                   >
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-mono text-xs font-bold">{rid}</span>
                       <SpeakerBadge speaker={responseClaim.speaker} />
                     </div>
-                    <p className="text-xs text-gray-400 line-clamp-2">
+                    <p className="text-xs text-ink-secondary line-clamp-2">
                       {responseClaim.text}
                     </p>
                   </button>
@@ -216,7 +216,7 @@ function ClaimDetail({
         )}
 
         <div>
-          <h4 className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+          <h4 className="text-xs uppercase tracking-wider text-ink-tertiary mb-2">
             Engagement Level
           </h4>
           <span className="text-sm capitalize">
@@ -274,9 +274,9 @@ export function ClaimAtlas() {
     }
 
     return (
-      <div className="glass-panel rounded-xl p-4 sticky top-24">
+      <div className="card rounded-xl p-4 sticky top-24">
         <h3 className="font-display font-semibold mb-4">About This View</h3>
-        <p className="text-sm text-gray-400 mb-4">
+        <p className="text-sm text-ink-secondary mb-4">
           The Claim Atlas maps every philosophical claim made in the debate. Claims
           are organized by thematic clusters and show how speakers engage with each
           other's arguments.
@@ -285,33 +285,33 @@ export function ClaimAtlas() {
         {data && (
           <div className="space-y-3">
             <div>
-              <h4 className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+              <h4 className="text-xs uppercase tracking-wider text-ink-tertiary mb-2">
                 Statistics
               </h4>
               <div className="grid grid-cols-2 gap-2 text-sm">
-                <div className="bg-void-200 p-2 rounded">
+                <div className="bg-field-subtle p-2 rounded">
                   <div className="text-lg font-bold text-marcus">
                     {data.claims.filter((c) => c.speaker === 'marcus').length}
                   </div>
-                  <div className="text-xs text-gray-500">Marcus Claims</div>
+                  <div className="text-xs text-ink-tertiary">Marcus Claims</div>
                 </div>
-                <div className="bg-void-200 p-2 rounded">
+                <div className="bg-field-subtle p-2 rounded">
                   <div className="text-lg font-bold text-demartini">
                     {data.claims.filter((c) => c.speaker === 'demartini').length}
                   </div>
-                  <div className="text-xs text-gray-500">Demartini Claims</div>
+                  <div className="text-xs text-ink-tertiary">Demartini Claims</div>
                 </div>
               </div>
             </div>
 
             <div>
-              <h4 className="text-xs uppercase tracking-wider text-gray-500 mb-2">
+              <h4 className="text-xs uppercase tracking-wider text-ink-tertiary mb-2">
                 By Type
               </h4>
               <div className="space-y-1 text-sm">
                 {['ontological', 'epistemological', 'ethical', 'methodological'].map((type) => (
                   <div key={type} className="flex justify-between">
-                    <span className="capitalize text-gray-400">{type}</span>
+                    <span className="capitalize text-ink-secondary">{type}</span>
                     <span>{data.claims.filter((c) => c.type === type).length}</span>
                   </div>
                 ))}
@@ -334,25 +334,17 @@ export function ClaimAtlas() {
       {data && (
         <div className="space-y-6">
           {/* Filters */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 sticky top-16 z-10 py-2 bg-field">
             <div className="flex gap-1">
               <button
                 onClick={() => setViewMode('clusters')}
-                className={`px-3 py-1.5 rounded-lg text-sm ${
-                  viewMode === 'clusters'
-                    ? 'bg-marcus/20 text-marcus'
-                    : 'bg-void-200 text-gray-400'
-                }`}
+                className={`pill ${viewMode === 'clusters' ? 'pill-active' : ''}`}
               >
                 By Theme
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`px-3 py-1.5 rounded-lg text-sm ${
-                  viewMode === 'list'
-                    ? 'bg-marcus/20 text-marcus'
-                    : 'bg-void-200 text-gray-400'
-                }`}
+                className={`pill ${viewMode === 'list' ? 'pill-active' : ''}`}
               >
                 All Claims
               </button>
@@ -364,7 +356,7 @@ export function ClaimAtlas() {
                 onChange={(e) =>
                   setFilter({ ...filter, speaker: e.target.value || null })
                 }
-                className="bg-void-200 text-sm rounded-lg px-3 py-1.5 border-0"
+                className="bg-field-subtle text-sm rounded-lg px-3 py-1.5 border-0"
               >
                 <option value="">All Speakers</option>
                 <option value="marcus">Marcus</option>
@@ -376,7 +368,7 @@ export function ClaimAtlas() {
                 onChange={(e) =>
                   setFilter({ ...filter, type: e.target.value || null })
                 }
-                className="bg-void-200 text-sm rounded-lg px-3 py-1.5 border-0"
+                className="bg-field-subtle text-sm rounded-lg px-3 py-1.5 border-0"
               >
                 <option value="">All Types</option>
                 <option value="ontological">Ontological</option>
