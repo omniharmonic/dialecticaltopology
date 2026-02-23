@@ -20,20 +20,20 @@ function SpeakerAvatar({ speaker }: { speaker: string }) {
       icon: '◉',
     },
     synthesis: {
-      color: 'bg-violet-500',
+      color: 'bg-convergence',
       label: 'Synthesis',
       icon: '⬡',
     },
   }
 
-  const c = config[speaker] || { color: 'bg-gray-500', label: speaker, icon: '?' }
+  const c = config[speaker] || { color: 'bg-ink-tertiary', label: speaker, icon: '?' }
 
   return (
     <div className="flex items-center gap-2">
-      <div className={`w-8 h-8 rounded-full ${c.color} flex items-center justify-center text-white font-bold`}>
+      <div className={`w-8 h-8 rounded-full ${c.color} flex items-center justify-center text-field font-bold`}>
         {c.icon}
       </div>
-      <span className="text-sm font-medium">{c.label}</span>
+      <span className="text-sm font-medium text-ink">{c.label}</span>
     </div>
   )
 }
@@ -42,10 +42,10 @@ function SpeakerAvatar({ speaker }: { speaker: string }) {
 function ExchangeBubble({ exchange }: { exchange: DialogueExchange }) {
   const bgColor =
     exchange.speaker === 'demartini_steelmanned'
-      ? 'bg-demartini/10 border-demartini/30'
+      ? 'bg-demartini-faint border-demartini/30'
       : exchange.speaker === 'marcus_steelmanned'
-      ? 'bg-marcus/10 border-marcus/30'
-      : 'bg-violet-500/10 border-violet-500/30'
+      ? 'bg-marcus-faint border-marcus/30'
+      : 'bg-convergence-soft border-convergence/30'
 
   return (
     <motion.div
@@ -56,17 +56,17 @@ function ExchangeBubble({ exchange }: { exchange: DialogueExchange }) {
       <SpeakerAvatar speaker={exchange.speaker} />
 
       <div className="mt-3">
-        <p className="text-sm leading-relaxed">{exchange.content}</p>
+        <p className="text-sm text-ink leading-relaxed">{exchange.content}</p>
       </div>
 
       {exchange.warrants && exchange.warrants.length > 0 && (
-        <div className="mt-3 pt-3 border-t border-white/10">
-          <h5 className="text-xs uppercase tracking-wider text-gray-500 mb-1">
+        <div className="mt-3 pt-3 border-t border-border">
+          <h5 className="text-xs uppercase tracking-wider text-ink-tertiary mb-1">
             Warrants
           </h5>
           <div className="flex flex-wrap gap-1">
             {exchange.warrants.map((w, i) => (
-              <span key={i} className="text-xs bg-white/10 px-2 py-0.5 rounded">
+              <span key={i} className="text-xs bg-field-subtle px-2 py-0.5 rounded text-ink-secondary">
                 {w}
               </span>
             ))}
@@ -76,15 +76,15 @@ function ExchangeBubble({ exchange }: { exchange: DialogueExchange }) {
 
       {exchange.strength && (
         <div className="mt-2">
-          <p className="text-xs text-gray-500 italic">
+          <p className="text-xs text-ink-tertiary italic">
             <span className="font-medium">Strength:</span> {exchange.strength}
           </p>
         </div>
       )}
 
       {exchange.insight && (
-        <div className="mt-3 p-2 bg-violet-500/20 rounded-lg">
-          <p className="text-xs text-violet-300">
+        <div className="mt-3 p-2 bg-insight/20 rounded-lg">
+          <p className="text-xs text-insight">
             <span className="font-medium">💡 Insight:</span> {exchange.insight}
           </p>
         </div>
@@ -104,20 +104,20 @@ function RoundSection({
   onToggle: () => void
 }) {
   return (
-    <div className="glass-panel rounded-xl overflow-hidden">
+    <div className="card overflow-hidden">
       <button
         onClick={onToggle}
-        className="w-full p-4 text-left flex items-center justify-between hover:bg-white/5 transition-colors"
+        className="w-full p-4 text-left flex items-center justify-between hover:bg-field-deep transition-colors"
       >
         <div>
-          <span className="text-xs text-gray-500 uppercase tracking-wider">
+          <span className="text-xs text-ink-tertiary uppercase tracking-wider">
             Round {round.id}
           </span>
-          <h3 className="font-display font-semibold text-lg">{round.topic}</h3>
+          <h3 className="font-display font-semibold text-lg text-ink">{round.topic}</h3>
         </div>
         <motion.span
           animate={{ rotate: isExpanded ? 180 : 0 }}
-          className="text-gray-400"
+          className="text-ink-tertiary"
         >
           ▼
         </motion.span>
@@ -164,12 +164,12 @@ function GenerateDialog({ topics }: { topics: string[] }) {
   }
 
   return (
-    <div className="glass-panel rounded-xl p-4">
-      <h3 className="font-display font-semibold mb-4">Generate Custom Round</h3>
+    <div className="card">
+      <h3 className="font-display font-semibold text-ink mb-4">Generate Custom Round</h3>
 
       <div className="space-y-4">
         <div>
-          <label className="text-xs uppercase tracking-wider text-gray-500 block mb-2">
+          <label className="text-xs uppercase tracking-wider text-ink-tertiary block mb-2">
             Your Topic
           </label>
           <input
@@ -177,12 +177,12 @@ function GenerateDialog({ topics }: { topics: string[] }) {
             value={customTopic}
             onChange={(e) => setCustomTopic(e.target.value)}
             placeholder="e.g., Is forgiveness always possible?"
-            className="w-full bg-void-200 rounded-lg px-4 py-2 text-sm border-0 focus:ring-1 focus:ring-marcus"
+            className="w-full bg-field-subtle rounded-lg px-4 py-2 text-sm text-ink border border-border focus:border-marcus focus:ring-1 focus:ring-marcus/30 focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="text-xs uppercase tracking-wider text-gray-500 block mb-2">
+          <label className="text-xs uppercase tracking-wider text-ink-tertiary block mb-2">
             Or Choose a Suggested Topic
           </label>
           <div className="flex flex-wrap gap-2">
@@ -190,7 +190,7 @@ function GenerateDialog({ topics }: { topics: string[] }) {
               <button
                 key={topic}
                 onClick={() => setCustomTopic(topic)}
-                className="text-xs bg-void-200 hover:bg-void-100 px-3 py-1.5 rounded-lg transition-colors"
+                className="text-xs bg-field-subtle hover:bg-field-deep px-3 py-1.5 rounded-lg transition-colors text-ink-secondary"
               >
                 {topic}
               </button>
@@ -199,7 +199,7 @@ function GenerateDialog({ topics }: { topics: string[] }) {
         </div>
 
         <div>
-          <label className="text-xs uppercase tracking-wider text-gray-500 block mb-2">
+          <label className="text-xs uppercase tracking-wider text-ink-tertiary block mb-2">
             Gemini API Key
           </label>
           <input
@@ -207,9 +207,9 @@ function GenerateDialog({ topics }: { topics: string[] }) {
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
             placeholder="Your API key (not stored)"
-            className="w-full bg-void-200 rounded-lg px-4 py-2 text-sm border-0 focus:ring-1 focus:ring-marcus"
+            className="w-full bg-field-subtle rounded-lg px-4 py-2 text-sm text-ink border border-border focus:border-marcus focus:ring-1 focus:ring-marcus/30 focus:outline-none"
           />
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-ink-tertiary mt-1">
             Get a key at{' '}
             <a
               href="https://makersuite.google.com/app/apikey"
@@ -229,14 +229,14 @@ function GenerateDialog({ topics }: { topics: string[] }) {
             w-full py-2 rounded-lg font-medium transition-all
             ${
               customTopic.trim() && apiKey.trim() && !isGenerating
-                ? 'bg-gradient-to-r from-marcus to-demartini text-white hover:opacity-90'
-                : 'bg-void-200 text-gray-500 cursor-not-allowed'
+                ? 'bg-gradient-to-r from-marcus to-demartini text-field hover:opacity-90'
+                : 'bg-field-subtle text-ink-tertiary cursor-not-allowed'
             }
           `}
         >
           {isGenerating ? (
             <span className="flex items-center justify-center gap-2">
-              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <span className="w-4 h-4 border-2 border-field/30 border-t-field rounded-full animate-spin" />
               Generating...
             </span>
           ) : (
@@ -260,24 +260,24 @@ function FinalSynthesis({
   }
 }) {
   return (
-    <div className="glass-panel rounded-xl p-6">
-      <h3 className="font-display font-semibold text-xl mb-4">{synthesis.title}</h3>
+    <div className="card">
+      <h3 className="font-display font-semibold text-xl text-ink mb-4">{synthesis.title}</h3>
 
-      <div className="prose prose-invert prose-sm max-w-none">
-        <div className="whitespace-pre-line text-gray-300 text-sm">
+      <div className="prose prose-sm max-w-none">
+        <div className="whitespace-pre-line text-ink-secondary text-sm">
           {synthesis.content}
         </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-4 mt-6">
         <div>
-          <h4 className="text-sm font-semibold text-green-400 mb-2">
+          <h4 className="text-sm font-semibold text-convergence mb-2">
             ✓ Points of Convergence
           </h4>
           <ul className="space-y-2">
             {synthesis.convergence_points.map((point, i) => (
-              <li key={i} className="text-sm text-gray-400 flex items-start gap-2">
-                <span className="text-green-500 mt-0.5">•</span>
+              <li key={i} className="text-sm text-ink-secondary flex items-start gap-2">
+                <span className="text-convergence mt-0.5">•</span>
                 {point}
               </li>
             ))}
@@ -285,13 +285,13 @@ function FinalSynthesis({
         </div>
 
         <div>
-          <h4 className="text-sm font-semibold text-red-400 mb-2">
+          <h4 className="text-sm font-semibold text-marcus mb-2">
             ✗ Irreducible Tensions
           </h4>
           <ul className="space-y-2">
             {synthesis.irreducible_tensions.map((tension, i) => (
-              <li key={i} className="text-sm text-gray-400 flex items-start gap-2">
-                <span className="text-red-500 mt-0.5">•</span>
+              <li key={i} className="text-sm text-ink-secondary flex items-start gap-2">
+                <span className="text-marcus mt-0.5">•</span>
                 {tension}
               </li>
             ))}
@@ -309,21 +309,21 @@ export function SteelManArena() {
 
   const sidebar = (
     <div className="space-y-4 sticky top-24">
-      <div className="glass-panel rounded-xl p-4">
-        <h3 className="font-display font-semibold mb-4">About Steel Man Arena</h3>
-        <p className="text-sm text-gray-400 mb-4">
+      <div className="card">
+        <h3 className="font-display font-semibold text-ink mb-4">About Steel Man Arena</h3>
+        <p className="text-sm text-ink-secondary mb-4">
           In this arena, both positions are presented in their{' '}
-          <span className="text-white">strongest possible form</span>—a technique
+          <span className="text-ink font-medium">strongest possible form</span>—a technique
           called "steel-manning" (the opposite of straw-manning).
         </p>
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-ink-secondary">
           Each round explores a key dimension of disagreement, with a synthesis
           that identifies genuine common ground and irreducible differences.
         </p>
       </div>
 
-      <div className="glass-panel rounded-xl p-4">
-        <h4 className="text-sm font-semibold mb-3">Speakers</h4>
+      <div className="card">
+        <h4 className="text-sm font-semibold text-ink mb-3">Speakers</h4>
         <div className="space-y-3">
           {data?.speakers &&
             Object.entries(data.speakers).map(([key, speaker]) => (
@@ -336,13 +336,13 @@ export function SteelManArena() {
 
       <button
         onClick={() => setShowGenerator(!showGenerator)}
-        className="w-full glass-panel rounded-xl p-4 text-left hover:bg-white/5 transition-colors"
+        className="w-full card text-left hover:bg-field-deep transition-colors"
       >
         <div className="flex items-center justify-between">
-          <span className="font-semibold">Generate Custom Round</span>
+          <span className="font-semibold text-ink">Generate Custom Round</span>
           <span className="text-marcus">✦</span>
         </div>
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-ink-tertiary mt-1">
           Use Gemini AI to explore your own topics
         </p>
       </button>
@@ -375,13 +375,13 @@ export function SteelManArena() {
           </AnimatePresence>
 
           {/* Introduction */}
-          <div className="glass-panel rounded-xl p-4">
-            <p className="text-sm text-gray-300">{data.metadata.description}</p>
+          <div className="card">
+            <p className="text-sm text-ink-secondary">{data.metadata.description}</p>
           </div>
 
           {/* Rounds */}
           <div className="space-y-4">
-            <h2 className="font-display font-semibold text-lg">
+            <h2 className="font-display font-semibold text-lg text-ink">
               Pre-Populated Rounds ({data.rounds.length})
             </h2>
             {data.rounds.map((round) => (
