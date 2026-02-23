@@ -3,12 +3,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Dialectical Topology',
-  description: 'Interactive exploration of the Marcus-Demartini debate on evil, nonduality, and moral knowledge',
-  openGraph: {
-    title: 'Dialectical Topology',
-    description: 'Explore the hidden structure of philosophical debate',
-    type: 'website',
-  },
+  description: 'Exploring the hidden structure of philosophical debate',
 }
 
 export default function RootLayout({
@@ -17,8 +12,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className="min-h-screen bg-void antialiased">
+    <html lang="en">
+      <body className="min-h-screen bg-field text-ink">
         {children}
       </body>
     </html>
