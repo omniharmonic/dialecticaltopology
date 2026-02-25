@@ -58,8 +58,8 @@ function DimensionSpectrum({
           </span>
         </div>
 
-        {/* Track */}
-        <div className="relative h-6 bg-field-deep rounded-full">
+        {/* Track - use darker background when selected for contrast */}
+        <div className={`relative h-6 rounded-full ${isSelected ? 'bg-border-active' : 'bg-field-deep'}`}>
           {/* Gap indicator */}
           <div
             className="absolute top-0 h-full bg-ink/5"
