@@ -9,6 +9,7 @@ import type {
   OntologyData,
   DialogueData,
   TreeData,
+  WikiIndex,
 } from './types'
 
 // Detect basePath for GitHub Pages deployment
@@ -157,6 +158,44 @@ export function useTree() {
   useEffect(() => {
     loadJSON<TreeData>('tree.json')
       .then(setData)
+      .catch(setError)
+      .finally(() => setLoading(false))
+  }, [])
+
+  return { data, loading, error }
+}
+
+// Raw wiki index structure from JSON file
+interface RawWikiIndex {
+  entities: {
+    concepts: { id: string; label: string; description: string }[]
+    thinkers: { id: string; label: string; description: string }[]
+    frameworks: { id: string; label: string; description: string }[]
+    traditions: { id: string; label: string; description: string }[]
+  }
+  warrants: WikiIndex['warrants']
+  evidence: WikiIndex['evidence']
+}
+
+export function useWikiIndex() {
+  const [data, setData] = useState<WikiIndex | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+
+  useEffect(() => {
+    loadJSON<RawWikiIndex>('wiki_index.json')
+      .then((rawData) => {
+        // Transform the raw data to match WikiIndex type
+        const transformed: WikiIndex = {
+          concepts: rawData.entities.concepts,
+          thinkers: rawData.entities.thinkers,
+          frameworks: rawData.entities.frameworks,
+          traditions: rawData.entities.traditions,
+          warrants: rawData.warrants,
+          evidence: rawData.evidence,
+        }
+        setData(transformed)
+      })
       .catch(setError)
       .finally(() => setLoading(false))
   }, [])

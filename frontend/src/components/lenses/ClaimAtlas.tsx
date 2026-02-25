@@ -2,11 +2,12 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useClaims } from '@/lib/useData'
+import { useClaims, useWikiIndex } from '@/lib/useData'
 import { useAppStore } from '@/store/appStore'
 import { LensLayout, DetailPanel, SpeakerBadge, ClaimTypeBadge } from './LensLayout'
 import { TimecodeLink } from '@/components/ui/TimecodeLink'
-import type { Claim, ThematicCluster } from '@/lib/types'
+import type { Claim, ThematicCluster, WarrantEntry, EvidenceEntry } from '@/lib/types'
+import { WikiCard } from '@/components/ui/WikiCard'
 
 // Claim card component
 function ClaimCard({
@@ -105,6 +106,12 @@ function ClusterView({
   )
 }
 
+// Wiki entry state type
+type WikiEntryState = {
+  type: 'warrant' | 'evidence' | 'concept'
+  entry: WarrantEntry | EvidenceEntry | { id: string; label: string; description: string }
+} | null
+
 // Claim detail panel
 function ClaimDetail({
   claim,
@@ -119,6 +126,33 @@ function ClaimDetail({
   onSelectClaim: (claim: Claim) => void
   allClaims: Claim[]
 }) {
+  const { data: wikiIndex } = useWikiIndex()
+  const [selectedWikiEntry, setSelectedWikiEntry] = useState<WikiEntryState>(null)
+
+  // Find warrant in wiki index by matching text (partial match)
+  const findWarrant = (warrantText: string): WarrantEntry | null => {
+    if (!wikiIndex) return null
+    return wikiIndex.warrants.find(w =>
+      warrantText.toLowerCase().includes(w.text.toLowerCase()) ||
+      w.text.toLowerCase().includes(warrantText.toLowerCase())
+    ) || null
+  }
+
+  // Find evidence in wiki index by matching text (partial match)
+  const findEvidence = (evidenceText: string): EvidenceEntry | null => {
+    if (!wikiIndex) return null
+    return wikiIndex.evidence.find(e =>
+      evidenceText.toLowerCase().includes(e.text.toLowerCase()) ||
+      e.text.toLowerCase().includes(evidenceText.toLowerCase())
+    ) || null
+  }
+
+  // Find concept in wiki index by id
+  const findConcept = (conceptId: string): { id: string; label: string; description: string } | null => {
+    if (!wikiIndex) return null
+    return wikiIndex.concepts.find(c => c.id === conceptId) || null
+  }
+
   return (
     <DetailPanel title={`${claim.id}: ${claim.speaker === 'marcus' ? 'Marcus' : 'Demartini'}`} onClose={onClose}>
       <div className="space-y-4">
@@ -138,12 +172,24 @@ function ClaimDetail({
               Supporting Warrants
             </h4>
             <ul className="text-sm space-y-1">
-              {claim.warrants.map((w, i) => (
-                <li key={i} className="text-ink flex items-start gap-2">
-                  <span className="text-ink-tertiary">•</span>
-                  {w}
-                </li>
-              ))}
+              {claim.warrants.map((w, i) => {
+                const warrant = findWarrant(w)
+                return (
+                  <li key={i} className="text-ink flex items-start gap-2">
+                    <span className="text-ink-tertiary">•</span>
+                    {warrant ? (
+                      <button
+                        onClick={() => setSelectedWikiEntry({ type: 'warrant', entry: warrant })}
+                        className="text-left hover:bg-field-deep rounded px-1 -mx-1 transition-colors cursor-pointer"
+                      >
+                        {w}
+                      </button>
+                    ) : (
+                      <span>{w}</span>
+                    )}
+                  </li>
+                )
+              })}
             </ul>
           </div>
         )}
@@ -154,12 +200,24 @@ function ClaimDetail({
               Evidence Cited
             </h4>
             <ul className="text-sm space-y-1">
-              {claim.evidence.map((e, i) => (
-                <li key={i} className="text-ink flex items-start gap-2">
-                  <span className="text-convergence">✓</span>
-                  {e}
-                </li>
-              ))}
+              {claim.evidence.map((e, i) => {
+                const evidence = findEvidence(e)
+                return (
+                  <li key={i} className="text-ink flex items-start gap-2">
+                    <span className="text-convergence">✓</span>
+                    {evidence ? (
+                      <button
+                        onClick={() => setSelectedWikiEntry({ type: 'evidence', entry: evidence })}
+                        className="text-left hover:bg-field-deep rounded px-1 -mx-1 transition-colors cursor-pointer"
+                      >
+                        {e}
+                      </button>
+                    ) : (
+                      <span>{e}</span>
+                    )}
+                  </li>
+                )
+              })}
             </ul>
           </div>
         )}
@@ -170,16 +228,43 @@ function ClaimDetail({
               Related Concepts
             </h4>
             <div className="flex flex-wrap gap-1">
-              {claim.related_concepts.map((c) => (
-                <span
-                  key={c}
-                  className="text-xs bg-field-subtle px-2 py-0.5 rounded capitalize"
-                >
-                  {c.replace(/_/g, ' ')}
-                </span>
-              ))}
+              {claim.related_concepts.map((c) => {
+                const concept = findConcept(c)
+                return concept ? (
+                  <button
+                    key={c}
+                    onClick={() => setSelectedWikiEntry({ type: 'concept', entry: concept })}
+                    className="text-xs bg-field-subtle px-2 py-0.5 rounded capitalize hover:bg-field-deep transition-colors cursor-pointer"
+                  >
+                    {c.replace(/_/g, ' ')}
+                  </button>
+                ) : (
+                  <span
+                    key={c}
+                    className="text-xs bg-field-subtle px-2 py-0.5 rounded capitalize"
+                  >
+                    {c.replace(/_/g, ' ')}
+                  </span>
+                )
+              })}
             </div>
           </div>
+        )}
+
+        {/* WikiCard for selected entry */}
+        {selectedWikiEntry && (
+          <WikiCard
+            type={selectedWikiEntry.type}
+            entry={selectedWikiEntry.entry}
+            onClose={() => setSelectedWikiEntry(null)}
+            onClaimClick={(claimId) => {
+              const targetClaim = allClaims.find(c => c.id === claimId)
+              if (targetClaim) {
+                setSelectedWikiEntry(null)
+                onSelectClaim(targetClaim)
+              }
+            }}
+          />
         )}
 
         {responses.length > 0 && (
