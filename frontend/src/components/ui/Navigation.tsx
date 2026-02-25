@@ -2,13 +2,14 @@
 
 import { motion } from 'framer-motion'
 
-type Lens = 'landscape' | 'claims' | 'flow' | 'worldviews' | 'arena'
+type Lens = 'landscape' | 'claims' | 'flow' | 'worldviews' | 'tree' | 'arena'
 
 const lenses: { id: Lens; label: string }[] = [
   { id: 'landscape', label: 'Landscape' },
   { id: 'claims', label: 'Claims' },
   { id: 'flow', label: 'Flow' },
   { id: 'worldviews', label: 'Worldviews' },
+  { id: 'tree', label: 'Tree' },
   { id: 'arena', label: 'Arena' },
 ]
 

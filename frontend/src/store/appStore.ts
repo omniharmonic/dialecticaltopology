@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type Lens = 'landscape' | 'claims' | 'flow' | 'worldviews' | 'arena'
+export type Lens = 'landscape' | 'claims' | 'flow' | 'worldviews' | 'tree' | 'arena'
 
 export interface Chunk {
   id: number

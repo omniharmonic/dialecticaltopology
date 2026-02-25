@@ -32,6 +32,11 @@ const SteelManArena = dynamic(
   { loading: () => <LensLoader name="Steel Man Arena" /> }
 )
 
+const EpistemologicalTree = dynamic(
+  () => import('@/components/lenses/EpistemologicalTree').then((m) => m.EpistemologicalTree),
+  { loading: () => <LensLoader name="Epistemological Tree" /> }
+)
+
 function LensLoader({ name }: { name: string }) {
   return (
     <div className="min-h-screen pt-space-16 flex items-center justify-center gradient-field-neutral">
@@ -67,6 +72,11 @@ const LENS_PREVIEWS: { id: Lens; title: string; description: string }[] = [
     id: 'worldviews',
     title: 'Worldview Map',
     description: 'Compare how each speaker positions themselves on fundamental questions of reality and ethics.',
+  },
+  {
+    id: 'tree',
+    title: 'Epistemological Tree',
+    description: 'Trace the epistemological foundations branching from core questions about knowing, being, and ethical grounding.',
   },
   {
     id: 'flow',
@@ -196,7 +206,7 @@ function LandingPage({ onSelectLens }: { onSelectLens: (lens: Lens) => void }) {
             transition={{ delay: 0.5, duration: 0.5 }}
             className="font-display text-2xl text-ink text-center mb-space-8"
           >
-            Five Analytical Lenses
+            Six Analytical Lenses
           </motion.h2>
 
           <div className="flex flex-col gap-space-4">
@@ -237,6 +247,7 @@ const lensComponents: Record<Lens, React.ComponentType> = {
   claims: ClaimAtlas,
   flow: DialecticalFlow,
   worldviews: WorldviewMap,
+  tree: EpistemologicalTree,
   arena: SteelManArena,
 }
 
