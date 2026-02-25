@@ -8,6 +8,7 @@ import type {
   FlowData,
   OntologyData,
   DialogueData,
+  TreeData,
 } from './types'
 
 // Detect basePath for GitHub Pages deployment
@@ -140,6 +141,21 @@ export function useDialogue() {
 
   useEffect(() => {
     loadJSON<DialogueData>('dialogue.json')
+      .then(setData)
+      .catch(setError)
+      .finally(() => setLoading(false))
+  }, [])
+
+  return { data, loading, error }
+}
+
+export function useTree() {
+  const [data, setData] = useState<TreeData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+
+  useEffect(() => {
+    loadJSON<TreeData>('tree.json')
       .then(setData)
       .catch(setError)
       .finally(() => setLoading(false))
