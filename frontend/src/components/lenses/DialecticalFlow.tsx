@@ -2,14 +2,16 @@
 
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useFlow } from '@/lib/useData'
+import { useFlow, useClaims } from '@/lib/useData'
 import { LensLayout, DetailPanel, SpeakerBadge } from './LensLayout'
-import type { FlowPhase, InflectionPoint } from '@/lib/types'
+import { ClaimCard } from '@/components/ui/ClaimCard'
+import type { FlowPhase, InflectionPoint, Claim } from '@/lib/types'
 
 // Design token colors for SVG (mirrors CSS custom properties)
 const MARCUS_COLOR = '#C45A3C'      // --marcus
 const BORDER_COLOR = '#E8E8E6'      // --border
-const INSIGHT_COLOR = '#D4A853'     // --insight (for inflection points)
+const INSIGHT_COLOR = '#D4A853'     // --insight (for inflection points/peaks)
+const CONVERGENCE_COLOR = '#7B6FA0' // --convergence (for valleys)
 
 function formatTime(seconds: number): string {
   const mins = Math.floor(seconds / 60)
@@ -170,7 +172,15 @@ function EmotionalArc({
 }
 
 // Phase detail sidebar
-function PhaseDetail({ phase, onClose }: { phase: FlowPhase; onClose: () => void }) {
+function PhaseDetail({
+  phase,
+  onClose,
+  onClaimClick,
+}: {
+  phase: FlowPhase
+  onClose: () => void
+  onClaimClick?: (claimId: string) => void
+}) {
   return (
     <DetailPanel title={phase.label} onClose={onClose}>
       <div className="space-y-4">
@@ -211,12 +221,13 @@ function PhaseDetail({ phase, onClose }: { phase: FlowPhase; onClose: () => void
             <h4 className="text-xs uppercase tracking-wider text-ink-tertiary mb-2">Key Claims</h4>
             <div className="flex flex-wrap gap-1">
               {phase.key_claims.map((c) => (
-                <span
+                <button
                   key={c}
-                  className="text-xs bg-field-subtle px-2 py-0.5 rounded text-ink-secondary"
+                  onClick={() => onClaimClick?.(c)}
+                  className="text-xs bg-field-subtle px-2 py-0.5 rounded text-ink-secondary hover:bg-field-deep cursor-pointer transition-colors"
                 >
                   {c}
-                </span>
+                </button>
               ))}
             </div>
           </div>
@@ -260,13 +271,24 @@ function InflectionDetail({
 
 export function DialecticalFlow() {
   const { data, loading, error } = useFlow()
+  const { data: claimsData } = useClaims()
   const [selectedPhase, setSelectedPhase] = useState<FlowPhase | null>(null)
   const [selectedInflection, setSelectedInflection] = useState<InflectionPoint | null>(null)
+  const [selectedClaim, setSelectedClaim] = useState<Claim | null>(null)
 
   const maxTime = useMemo(() => {
     if (!data) return 6330
     return data.metadata.total_duration_seconds
   }, [data])
+
+  // Handler to find and select a claim by ID
+  const handleClaimClick = (claimId: string) => {
+    if (!claimsData) return
+    const claim = claimsData.claims.find((c) => c.id === claimId)
+    if (claim) {
+      setSelectedClaim(claim)
+    }
+  }
 
   const sidebar = useMemo(() => {
     if (selectedInflection) {
@@ -279,7 +301,11 @@ export function DialecticalFlow() {
     }
     if (selectedPhase) {
       return (
-        <PhaseDetail phase={selectedPhase} onClose={() => setSelectedPhase(null)} />
+        <PhaseDetail
+          phase={selectedPhase}
+          onClose={() => setSelectedPhase(null)}
+          onClaimClick={handleClaimClick}
+        />
       )
     }
     return (
@@ -302,7 +328,7 @@ export function DialecticalFlow() {
         </div>
       </div>
     )
-  }, [selectedPhase, selectedInflection])
+  }, [selectedPhase, selectedInflection, claimsData])
 
   return (
     <LensLayout
@@ -402,6 +428,15 @@ export function DialecticalFlow() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* ClaimCard popup */}
+      {selectedClaim && (
+        <ClaimCard
+          claim={selectedClaim}
+          onClose={() => setSelectedClaim(null)}
+          isOpen={true}
+        />
       )}
     </LensLayout>
   )
