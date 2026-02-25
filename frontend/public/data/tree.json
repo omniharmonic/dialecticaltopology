@@ -1,8 +1,8 @@
 {
   "metadata": {
     "version": "1.0.0",
-    "total_nodes": 39,
-    "total_edges": 43
+    "total_nodes": 53,
+    "total_edges": 57
   },
   "nodes": [
     {
@@ -337,6 +337,132 @@
       "claim_id": "M17",
       "parent_id": "branch-relationship",
       "depth": 3
+    },
+    {
+      "id": "claim-D06",
+      "type": "claim",
+      "label": "Discover hidden order in apparent chaos",
+      "speaker": "demartini",
+      "claim_id": "D06",
+      "parent_id": "branch-rationalism",
+      "depth": 3
+    },
+    {
+      "id": "claim-D09",
+      "type": "claim",
+      "label": "Jesus neither entirely good nor bad",
+      "speaker": "demartini",
+      "claim_id": "D09",
+      "parent_id": "branch-monism",
+      "depth": 3
+    },
+    {
+      "id": "claim-D10",
+      "type": "claim",
+      "label": "Anthropomorphizing good and evil is projection",
+      "speaker": "demartini",
+      "claim_id": "D10",
+      "parent_id": "branch-monism",
+      "depth": 3
+    },
+    {
+      "id": "claim-D11",
+      "type": "claim",
+      "label": "Life and death are paired - neither inherently good or bad",
+      "speaker": "demartini",
+      "claim_id": "D11",
+      "parent_id": "branch-monism",
+      "depth": 3
+    },
+    {
+      "id": "claim-D15",
+      "type": "claim",
+      "label": "Rumi is, in his own way, a jihadist",
+      "speaker": "demartini",
+      "claim_id": "D15",
+      "parent_id": "branch-consequentialist",
+      "depth": 3
+    },
+    {
+      "id": "claim-D17",
+      "type": "claim",
+      "label": "You react in proportion to your morality at the time",
+      "speaker": "demartini",
+      "claim_id": "D17",
+      "parent_id": "branch-rationalism",
+      "depth": 3
+    },
+    {
+      "id": "claim-D19",
+      "type": "claim",
+      "label": "Life is good and death is bad is very narrow",
+      "speaker": "demartini",
+      "claim_id": "D19",
+      "parent_id": "branch-monism",
+      "depth": 3
+    },
+    {
+      "id": "claim-D22",
+      "type": "claim",
+      "label": "Won't pacify research - upsides to every event",
+      "speaker": "demartini",
+      "claim_id": "D22",
+      "parent_id": "branch-technique",
+      "depth": 3
+    },
+    {
+      "id": "claim-M02",
+      "type": "claim",
+      "label": "Fundamental drive inside us toward life, love, freedom",
+      "speaker": "marcus",
+      "claim_id": "M02",
+      "parent_id": "branch-deontological",
+      "depth": 3
+    },
+    {
+      "id": "claim-M05",
+      "type": "claim",
+      "label": "Middle path between absolutism and relativism",
+      "speaker": "marcus",
+      "claim_id": "M05",
+      "parent_id": "branch-deontological",
+      "depth": 3
+    },
+    {
+      "id": "claim-M12",
+      "type": "claim",
+      "label": "Forgive them for they know not what they do",
+      "speaker": "marcus",
+      "claim_id": "M12",
+      "parent_id": "branch-deontological",
+      "depth": 3
+    },
+    {
+      "id": "claim-M14",
+      "type": "claim",
+      "label": "Rumi is NOT the same as a jihadist",
+      "speaker": "marcus",
+      "claim_id": "M14",
+      "parent_id": "branch-deontological",
+      "depth": 3
+    },
+    {
+      "id": "claim-M15",
+      "type": "claim",
+      "label": "The murdered child doesn't get a chance to be grateful",
+      "speaker": "marcus",
+      "claim_id": "M15",
+      "parent_id": "branch-deontological",
+      "depth": 3
+    },
+    {
+      "id": "claim-M18",
+      "type": "claim",
+      "label": "Good and evil - it's a bit of both",
+      "speaker": "marcus",
+      "claim_id": "M18",
+      "parent_id": "branch-dualism",
+      "depth": 3
     }
   ],
   "edges": [
@@ -607,6 +733,104 @@
       "strength": 1.0
     },
     {
+      "id": "e-rationalism-D06",
+      "source": "branch-rationalism",
+      "target": "claim-D06",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-monism-D09",
+      "source": "branch-monism",
+      "target": "claim-D09",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-monism-D10",
+      "source": "branch-monism",
+      "target": "claim-D10",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-monism-D11",
+      "source": "branch-monism",
+      "target": "claim-D11",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-consequentialist-D15",
+      "source": "branch-consequentialist",
+      "target": "claim-D15",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-rationalism-D17",
+      "source": "branch-rationalism",
+      "target": "claim-D17",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-monism-D19",
+      "source": "branch-monism",
+      "target": "claim-D19",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-technique-D22",
+      "source": "branch-technique",
+      "target": "claim-D22",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-deontological-M02",
+      "source": "branch-deontological",
+      "target": "claim-M02",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-deontological-M05",
+      "source": "branch-deontological",
+      "target": "claim-M05",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-deontological-M12",
+      "source": "branch-deontological",
+      "target": "claim-M12",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-deontological-M14",
+      "source": "branch-deontological",
+      "target": "claim-M14",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-deontological-M15",
+      "source": "branch-deontological",
+      "target": "claim-M15",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-dualism-M18",
+      "source": "branch-dualism",
+      "target": "claim-M18",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
       "id": "e-contradiction-D01-M09",
       "source": "claim-D01",
       "target": "claim-M09",
@@ -691,15 +915,23 @@
         "claim-D03",
         "claim-D04",
         "claim-D05",
+        "claim-D06",
         "claim-D07",
         "claim-D08",
+        "claim-D09",
+        "claim-D10",
+        "claim-D11",
         "claim-D12",
         "claim-D13",
         "claim-D14",
+        "claim-D15",
         "claim-D16",
+        "claim-D17",
         "claim-D18",
+        "claim-D19",
         "claim-D20",
-        "claim-D21"
+        "claim-D21",
+        "claim-D22"
       ]
     },
     {
@@ -710,17 +942,23 @@
         "branch-deontological",
         "branch-relationship",
         "claim-M01",
+        "claim-M02",
         "claim-M03",
         "claim-M04",
+        "claim-M05",
         "claim-M06",
         "claim-M07",
         "claim-M08",
         "claim-M09",
         "claim-M10",
         "claim-M11",
+        "claim-M12",
         "claim-M13",
+        "claim-M14",
+        "claim-M15",
         "claim-M16",
-        "claim-M17"
+        "claim-M17",
+        "claim-M18"
       ]
     }
   ]
