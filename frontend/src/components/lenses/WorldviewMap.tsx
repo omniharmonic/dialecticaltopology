@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useOntology } from '@/lib/useData'
 import { LensLayout, DetailPanel, SpeakerBadge } from './LensLayout'
+import { ClaimReference } from '@/components/ui/ClaimReference'
 import type { OntologyDimension } from '@/lib/types'
 
 // Design token colors for SVG elements (mirrors CSS custom properties)
@@ -246,9 +247,11 @@ function DimensionDetail({
           </p>
           <div className="flex flex-wrap gap-1 mt-2">
             {dimension.positions.demartini.key_claims.map((c) => (
-              <span key={c} className="text-xs bg-demartini-faint text-demartini px-2 py-0.5 rounded">
-                {c}
-              </span>
+              <ClaimReference
+                key={c}
+                claimId={c}
+                className="text-xs bg-demartini-faint text-demartini px-2 py-0.5 rounded border-none"
+              />
             ))}
           </div>
         </div>
@@ -261,9 +264,11 @@ function DimensionDetail({
           <p className="text-sm text-ink">{dimension.positions.marcus.summary}</p>
           <div className="flex flex-wrap gap-1 mt-2">
             {dimension.positions.marcus.key_claims.map((c) => (
-              <span key={c} className="text-xs bg-marcus-faint text-marcus px-2 py-0.5 rounded">
-                {c}
-              </span>
+              <ClaimReference
+                key={c}
+                claimId={c}
+                className="text-xs bg-marcus-faint text-marcus px-2 py-0.5 rounded border-none"
+              />
             ))}
           </div>
         </div>
