@@ -17,6 +17,19 @@ const MARCUS_COLOR = '#C45A3C'
 const DEMARTINI_COLOR = '#2E6B8A'
 const CONVERGENCE_COLOR = '#7B6FA0'
 const INSIGHT_COLOR = '#D4A853'
+const BORDER_COLOR = '#E8E8E6'
+
+/**
+ * Create a bezier curve path between parent and child nodes
+ * Uses cubic bezier with control points at vertical midpoint for organic curves
+ */
+const createBranchPath = (
+  parent: { x: number; y: number },
+  child: { x: number; y: number }
+): string => {
+  const midY = (parent.y + child.y) / 2
+  return `M ${parent.x} ${parent.y} C ${parent.x} ${midY}, ${child.x} ${midY}, ${child.x} ${child.y}`
+}
 
 // Node type for selection
 type SelectedNode = {
@@ -92,8 +105,7 @@ export function EpistemologicalTree() {
     setNodePositions(root.descendants())
   }, [data])
 
-  // TODO: Tasks 14-17 will add visualization logic here
-  // - Task 14: Bezier curve branch rendering
+  // TODO: Tasks 15-17 will add additional visualization logic
   // - Task 15: Node rendering with speaker colors
   // - Task 16: Cross-branch relationship edges
   // - Task 17: Zoom and pan interactions
@@ -274,23 +286,24 @@ export function EpistemologicalTree() {
           >
             {/* Main group with margin offset */}
             <g transform={`translate(${MARGIN.left}, ${MARGIN.top})`}>
-              {/* Render links (edges) between nodes - Task 14 will add bezier curves */}
-              <g className="links">
-                {nodePositions.map(node => {
-                  if (!node.parent) return null
-                  return (
-                    <line
-                      key={`link-${node.data.id}`}
-                      x1={node.parent.x}
-                      y1={node.parent.y}
-                      x2={node.x}
-                      y2={node.y}
-                      stroke="#94A3B8"
+              {/* Render branch connections with organic bezier curves */}
+              <g className="branches">
+                {nodePositions
+                  .filter(node => node.parent)
+                  .map(node => (
+                    <path
+                      key={`branch-${node.data.id}`}
+                      d={createBranchPath(
+                        { x: node.parent!.x, y: node.parent!.y },
+                        { x: node.x, y: node.y }
+                      )}
+                      fill="none"
+                      stroke={BORDER_COLOR}
                       strokeWidth={1}
-                      strokeOpacity={0.4}
+                      strokeOpacity={0.5}
+                      className="transition-opacity duration-300"
                     />
-                  )
-                })}
+                  ))}
               </g>
 
               {/* Render nodes - Task 15 will add proper styling */}
