@@ -20,6 +20,10 @@ const INSIGHT_COLOR = '#D4A853'
 const BORDER_COLOR = '#E8E8E6'
 const NEUTRAL_COLOR = '#94A3B8'
 
+// Trunk/branch colors for organic feel
+const TRUNK_COLOR = '#8B7355' // Warm brown for main trunk
+const BRANCH_COLOR = '#A0896C' // Lighter brown for branches
+
 /**
  * Get the fill color for a node based on its type and speaker
  * Uses design token colors with appropriate semantic meaning
@@ -40,26 +44,76 @@ const getNodeColor = (node: TreeNode): string => {
 }
 
 /**
- * Get the node radius based on type
+ * Get the node radius based on type - INCREASED for visibility
  * Root and category nodes are larger for visual hierarchy
  */
 const getNodeRadius = (node: TreeNode): number => {
   switch (node.type) {
-    case 'root': return 14
-    case 'category': return 10
-    case 'synthesis': return 8
-    case 'branch': return 6
-    case 'claim': return 5
-    default: return 5
+    case 'root': return 24      // Large root at the base
+    case 'category': return 16  // Medium category nodes
+    case 'synthesis': return 12 // Synthesis nodes
+    case 'branch': return 12    // Branch nodes
+    case 'claim': return 8      // Claim "leaves" at top
+    default: return 8
   }
 }
 
 /**
- * Check if a node should display its label
- * Root, category, and synthesis nodes show labels
+ * Get stroke width for branches based on depth
+ * Trunk is thick, progressively thinner toward leaves
  */
-const shouldShowLabel = (node: TreeNode): boolean => {
-  return node.type === 'root' || node.type === 'category' || node.type === 'synthesis'
+const getBranchStrokeWidth = (depth: number): number => {
+  switch (depth) {
+    case 0: return 6  // Root trunk
+    case 1: return 4  // Main branches
+    case 2: return 3  // Secondary branches
+    case 3: return 2  // Tertiary branches
+    default: return 1.5 // Leaf connections
+  }
+}
+
+/**
+ * Get the label for a node to display
+ */
+const getNodeLabel = (node: TreeNode): string => {
+  if (node.type === 'root') return 'Epistemological Roots'
+  if (node.type === 'claim' && node.id) {
+    // Extract claim ID like "D01" from the node ID
+    const match = node.id.match(/[DM]\d+/)
+    return match ? match[0] : node.label.slice(0, 12)
+  }
+  return node.label
+}
+
+/**
+ * Get label positioning based on node type
+ */
+const getLabelPosition = (node: TreeNode): { dx: number; dy: number; anchor: 'start' | 'middle' | 'end' } => {
+  switch (node.type) {
+    case 'root':
+      return { dx: 0, dy: 35, anchor: 'middle' } // Below root
+    case 'category':
+      return { dx: 0, dy: -22, anchor: 'middle' } // Above category
+    case 'branch':
+      return { dx: 18, dy: 4, anchor: 'start' } // To the right
+    case 'claim':
+      return { dx: 0, dy: -14, anchor: 'middle' } // Above claim
+    default:
+      return { dx: 0, dy: -14, anchor: 'middle' }
+  }
+}
+
+/**
+ * Get font size for labels based on node type
+ */
+const getLabelFontSize = (node: TreeNode): number => {
+  switch (node.type) {
+    case 'root': return 14
+    case 'category': return 12
+    case 'branch': return 10
+    case 'claim': return 9
+    default: return 9
+  }
 }
 
 /**
@@ -76,15 +130,47 @@ const getAncestorIds = (node: HierarchyPointNode<TreeNodeWithChildren>): Set<str
 }
 
 /**
- * Create a bezier curve path between parent and child nodes
- * Uses cubic bezier with control points at vertical midpoint for organic curves
+ * Create an organic tree branch path between parent and child nodes
+ * Uses cubic bezier curves that bow outward then up, like real tree branches
+ * The curve goes: from parent, bows outward horizontally, then sweeps up to child
  */
-const createBranchPath = (
+const createOrganicBranchPath = (
   parent: { x: number; y: number },
-  child: { x: number; y: number }
+  child: { x: number; y: number },
+  depth: number
 ): string => {
-  const midY = (parent.y + child.y) / 2
-  return `M ${parent.x} ${parent.y} C ${parent.x} ${midY}, ${child.x} ${midY}, ${child.x} ${child.y}`
+  // Calculate horizontal distance
+  const dx = child.x - parent.x
+  const dy = child.y - parent.y
+
+  // For bottom-up tree: parent is below, child is above (lower y value)
+  // Control points create an organic curve that bows outward then up
+
+  // First control point: extend horizontally from parent with slight upward curve
+  // The further out the child, the more the branch bows
+  const bowFactor = Math.min(Math.abs(dx) * 0.3, 40) // How much the branch bows
+  const verticalFactor = Math.abs(dy) * 0.4
+
+  // Control point 1: horizontal extension from parent
+  const cp1x = parent.x + dx * 0.2
+  const cp1y = parent.y + dy * 0.1 + (dx > 0 ? -bowFactor * 0.3 : bowFactor * 0.3)
+
+  // Control point 2: sweeps toward child
+  const cp2x = child.x - dx * 0.1
+  const cp2y = parent.y + dy * 0.6
+
+  return `M ${parent.x} ${parent.y} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${child.x} ${child.y}`
+}
+
+/**
+ * Create a simpler bezier for relationship edges
+ */
+const createRelationshipPath = (
+  source: { x: number; y: number },
+  target: { x: number; y: number }
+): string => {
+  const midY = (source.y + target.y) / 2
+  return `M ${source.x} ${source.y} C ${source.x} ${midY}, ${target.x} ${midY}, ${target.x} ${target.y}`
 }
 
 /**
@@ -121,10 +207,10 @@ type SelectedNode = {
   data: TreeNode | SynthesisNode | SemanticDrift
 }
 
-// Layout constants
-const SVG_WIDTH = 1000
-const SVG_HEIGHT = 600
-const MARGIN = { top: 40, right: 80, bottom: 40, left: 80 }
+// Layout constants - EXPANDED for better visibility
+const SVG_WIDTH = 1400
+const SVG_HEIGHT = 800
+const MARGIN = { top: 60, right: 100, bottom: 80, left: 100 }
 
 /**
  * Convert flat nodes array to D3 hierarchy structure
@@ -185,6 +271,7 @@ export function EpistemologicalTree() {
   }, [hoveredNode, hoveredLineage])
 
   // Calculate tree layout when data changes
+  // FLIPPED: Root at bottom, claims at top (like a real tree)
   useEffect(() => {
     if (!data || !svgRef.current) return
 
@@ -201,15 +288,23 @@ export function EpistemologicalTree() {
       .size([treeWidth, treeHeight])
       .separation((a, b) => {
         // More separation between nodes with different parents
-        // Helps visualize distinct branches
-        return a.parent === b.parent ? 1 : 1.5
+        // Wider spread for organic tree feel
+        return a.parent === b.parent ? 1.2 : 2.0
       })
 
     // Apply layout to hierarchy - this calculates x,y positions
     const root = treeLayout(hierarchy)
 
+    // FLIP Y coordinates: D3 puts root at top (y=0), we want root at bottom
+    // Invert all y values so root is at bottom of the tree
+    const descendants = root.descendants()
+    descendants.forEach(node => {
+      // Flip y: map from [0, treeHeight] to [treeHeight, 0]
+      node.y = treeHeight - node.y
+    })
+
     // Store all positioned nodes (descendants includes root)
-    setNodePositions(root.descendants())
+    setNodePositions(descendants)
   }, [data])
 
   // Filter relationship edges (non-hierarchy connections between claims)
@@ -572,7 +667,7 @@ export function EpistemologicalTree() {
             {/* Main group with zoom/pan transform and margin offset */}
             <g transform={`translate(${transform.x}, ${transform.y}) scale(${transform.k})`}>
               <g transform={`translate(${MARGIN.left}, ${MARGIN.top})`}>
-              {/* Render branch connections with organic bezier curves */}
+              {/* Render branch connections with organic tree-like bezier curves */}
               <g className="branches">
                 {nodePositions
                   .filter(node => node.parent)
@@ -581,17 +676,36 @@ export function EpistemologicalTree() {
                     const inLineage = isInLineage(node.data.id) && isInLineage(node.parent!.data.id)
                     const dimmed = hoveredNode && !inLineage
 
+                    // Get stroke width based on depth (thicker near root)
+                    const strokeWidth = getBranchStrokeWidth(node.depth)
+
+                    // Color branches by speaker for visual path tracing
+                    let branchColor = TRUNK_COLOR
+                    if (inLineage) {
+                      branchColor = getNodeColor(node.data)
+                    } else if (node.data.speaker === 'marcus') {
+                      branchColor = MARCUS_COLOR
+                    } else if (node.data.speaker === 'demartini') {
+                      branchColor = DEMARTINI_COLOR
+                    } else if (node.depth <= 1) {
+                      branchColor = TRUNK_COLOR
+                    } else {
+                      branchColor = BRANCH_COLOR
+                    }
+
                     return (
                       <path
                         key={`branch-${node.data.id}`}
-                        d={createBranchPath(
+                        d={createOrganicBranchPath(
                           { x: node.parent!.x, y: node.parent!.y },
-                          { x: node.x, y: node.y }
+                          { x: node.x, y: node.y },
+                          node.depth
                         )}
                         fill="none"
-                        stroke={inLineage ? getNodeColor(node.data) : BORDER_COLOR}
-                        strokeWidth={inLineage ? 2 : 1}
-                        strokeOpacity={dimmed ? 0.2 : inLineage ? 0.8 : 0.5}
+                        stroke={branchColor}
+                        strokeWidth={inLineage ? strokeWidth + 1 : strokeWidth}
+                        strokeOpacity={dimmed ? 0.15 : inLineage ? 0.9 : 0.6}
+                        strokeLinecap="round"
                         className="transition-all duration-200"
                       />
                     )
@@ -616,10 +730,10 @@ export function EpistemologicalTree() {
                   return (
                     <path
                       key={edge.id}
-                      d={createBranchPath(source, target)}
+                      d={createRelationshipPath(source, target)}
                       fill="none"
                       stroke={getRelationshipEdgeColor(edge.type)}
-                      strokeWidth={1}
+                      strokeWidth={1.5}
                       strokeOpacity={isVisible ? getRelationshipEdgeOpacity(edge.type) : 0}
                       strokeDasharray={edge.type === 'tension' ? '4,2' : undefined}
                       className="transition-opacity duration-300 pointer-events-none"
@@ -655,7 +769,7 @@ export function EpistemologicalTree() {
                 })}
               </g>
 
-              {/* Render nodes with enhanced styling */}
+              {/* Render nodes with enhanced styling - ALL nodes get visible labels */}
               <g className="nodes">
                 {nodePositions.map(node => {
                   const fillColor = getNodeColor(node.data)
@@ -667,10 +781,15 @@ export function EpistemologicalTree() {
                                      (selectedNode.data as TreeNode).id === node.data.id
 
                   // Calculate opacity based on interaction state
-                  let opacity = 0.8 // base opacity per design doc
+                  let opacity = 0.85 // base opacity
                   if (isHovered || isSelected) opacity = 1
-                  else if (inLineage) opacity = 0.9
-                  else if (dimmed) opacity = 0.3
+                  else if (inLineage) opacity = 0.95
+                  else if (dimmed) opacity = 0.35
+
+                  // Get label text and positioning
+                  const label = getNodeLabel(node.data)
+                  const labelPos = getLabelPosition(node.data)
+                  const fontSize = getLabelFontSize(node.data)
 
                   return (
                     <g
@@ -681,32 +800,54 @@ export function EpistemologicalTree() {
                       onMouseEnter={() => handleNodeHover(node.data.id)}
                       onMouseLeave={() => handleNodeHover(null)}
                     >
-                      {/* Node circle - soft fill, no stroke per design doc */}
+                      {/* Selection ring for hovered/selected nodes */}
+                      {(isHovered || isSelected) && (
+                        <circle
+                          r={radius + 4}
+                          fill="none"
+                          stroke={fillColor}
+                          strokeWidth={2}
+                          strokeOpacity={0.4}
+                          className="pointer-events-none"
+                        />
+                      )}
+
+                      {/* Node circle with subtle stroke for definition */}
                       <circle
                         r={radius}
                         fill={fillColor}
+                        stroke={fillColor}
+                        strokeWidth={1}
+                        strokeOpacity={0.3}
                         opacity={opacity}
-                        className="transition-opacity duration-200"
+                        className="transition-all duration-200"
                       />
 
-                      {/* Labels for root, category, and synthesis nodes */}
-                      {shouldShowLabel(node.data) && (
-                        <text
-                          y={-(radius + 6)}
-                          textAnchor="middle"
-                          className="pointer-events-none select-none"
-                          style={{
-                            fontSize: node.data.type === 'root' ? '12px' :
-                                     node.data.type === 'category' ? '10px' : '9px',
-                            fill: dimmed ? '#A0A0A0' : '#64748B',
-                            fontWeight: node.data.type === 'root' ? 600 : 500,
-                            opacity: dimmed ? 0.5 : 1,
-                            transition: 'opacity 200ms, fill 200ms'
-                          }}
-                        >
-                          {node.data.label}
-                        </text>
-                      )}
+                      {/* Inner highlight for depth */}
+                      <circle
+                        r={radius * 0.6}
+                        fill="white"
+                        opacity={0.15}
+                        className="pointer-events-none"
+                      />
+
+                      {/* Label - ALL nodes get labels now */}
+                      <text
+                        x={labelPos.dx}
+                        y={labelPos.dy}
+                        textAnchor={labelPos.anchor}
+                        className="pointer-events-none select-none"
+                        style={{
+                          fontSize: `${fontSize}px`,
+                          fill: dimmed ? '#A0A0A0' : (node.data.type === 'root' ? '#5D4E37' : '#475569'),
+                          fontWeight: node.data.type === 'root' || node.data.type === 'category' ? 600 : 500,
+                          opacity: dimmed ? 0.4 : 0.9,
+                          transition: 'opacity 200ms, fill 200ms',
+                          textShadow: '0 1px 2px rgba(255,255,255,0.8)'
+                        }}
+                      >
+                        {label}
+                      </text>
                     </g>
                   )
                 })}
