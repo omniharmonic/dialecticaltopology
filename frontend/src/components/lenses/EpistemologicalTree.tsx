@@ -87,6 +87,34 @@ const createBranchPath = (
   return `M ${parent.x} ${parent.y} C ${parent.x} ${midY}, ${child.x} ${midY}, ${child.x} ${child.y}`
 }
 
+/**
+ * Get color for relationship edge based on type
+ * Uses design tokens for semantic meaning
+ */
+const getRelationshipEdgeColor = (type: string): string => {
+  switch (type) {
+    case 'agreement': return CONVERGENCE_COLOR
+    case 'tension': return MARCUS_COLOR
+    case 'contradiction': return MARCUS_COLOR
+    case 'paradox': return INSIGHT_COLOR
+    default: return BORDER_COLOR
+  }
+}
+
+/**
+ * Get opacity for relationship edge based on type
+ * Design doc: agreement 30%, tension 25%, contradiction 30%, paradox 40%
+ */
+const getRelationshipEdgeOpacity = (type: string): number => {
+  switch (type) {
+    case 'agreement': return 0.3
+    case 'tension': return 0.25
+    case 'contradiction': return 0.3
+    case 'paradox': return 0.4
+    default: return 0.2
+  }
+}
+
 // Node type for selection
 type SelectedNode = {
   type: 'node' | 'synthesis' | 'drift'
@@ -180,9 +208,20 @@ export function EpistemologicalTree() {
     setNodePositions(root.descendants())
   }, [data])
 
-  // TODO: Tasks 16-17 will add additional visualization logic
-  // - Task 16: Cross-branch relationship edges
-  // - Task 17: Zoom and pan interactions
+  // Filter relationship edges (non-hierarchy connections between claims)
+  const relationshipEdges = useMemo(() => {
+    if (!data) return []
+    return data.edges.filter(e => e.type !== 'hierarchy')
+  }, [data])
+
+  // Create lookup map for node positions by ID
+  const nodePositionMap = useMemo(() => {
+    const map = new Map<string, { x: number; y: number }>()
+    nodePositions.forEach(n => map.set(n.data.id, { x: n.x, y: n.y }))
+    return map
+  }, [nodePositions])
+
+  // TODO: Task 17 will add zoom and pan interactions
 
   // Sidebar content
   const sidebar = useMemo(() => {
@@ -327,6 +366,45 @@ export function EpistemologicalTree() {
             />
             <span className="text-sm text-ink-secondary">Semantic Drift</span>
           </div>
+
+          {/* Relationship edge types */}
+          <h4 className="text-xs uppercase tracking-wider text-ink-tertiary mt-4">
+            Cross-Branch Relations
+          </h4>
+          <p className="text-xs text-ink-tertiary mb-2">
+            Visible on hover
+          </p>
+          <div className="flex items-center gap-2">
+            <div
+              className="w-6 h-0.5"
+              style={{ backgroundColor: CONVERGENCE_COLOR, opacity: 0.6 }}
+            />
+            <span className="text-sm text-ink-secondary">Agreement</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div
+              className="w-6 h-0.5"
+              style={{
+                backgroundImage: `repeating-linear-gradient(90deg, ${MARCUS_COLOR} 0, ${MARCUS_COLOR} 4px, transparent 4px, transparent 6px)`,
+                opacity: 0.6
+              }}
+            />
+            <span className="text-sm text-ink-secondary">Tension</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div
+              className="w-6 h-0.5"
+              style={{ backgroundColor: MARCUS_COLOR, opacity: 0.6 }}
+            />
+            <span className="text-sm text-ink-secondary">Contradiction</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div
+              className="w-6 h-0.5"
+              style={{ backgroundColor: INSIGHT_COLOR, opacity: 0.7 }}
+            />
+            <span className="text-sm text-ink-secondary">Paradox</span>
+          </div>
         </div>
 
         {data && (
@@ -418,6 +496,36 @@ export function EpistemologicalTree() {
                       />
                     )
                   })}
+              </g>
+
+              {/* Render cross-branch relationship edges (hidden by default, visible on hover) */}
+              <g className="relationship-edges">
+                {relationshipEdges.map(edge => {
+                  const source = nodePositionMap.get(edge.source)
+                  const target = nodePositionMap.get(edge.target)
+                  if (!source || target === undefined) return null
+                  if (!target) return null
+
+                  // Check if edge should be visible (either end is hovered or selected)
+                  const isVisible = hoveredNode === edge.source ||
+                                    hoveredNode === edge.target ||
+                                    (selectedNode?.type === 'node' &&
+                                     ((selectedNode.data as TreeNode).id === edge.source ||
+                                      (selectedNode.data as TreeNode).id === edge.target))
+
+                  return (
+                    <path
+                      key={edge.id}
+                      d={createBranchPath(source, target)}
+                      fill="none"
+                      stroke={getRelationshipEdgeColor(edge.type)}
+                      strokeWidth={1}
+                      strokeOpacity={isVisible ? getRelationshipEdgeOpacity(edge.type) : 0}
+                      strokeDasharray={edge.type === 'tension' ? '4,2' : undefined}
+                      className="transition-opacity duration-300 pointer-events-none"
+                    />
+                  )
+                })}
               </g>
 
               {/* Render selection highlights behind nodes */}
