@@ -1,9 +1,16 @@
 'use client'
 
-import { useState, useRef, useMemo } from 'react'
+import { useState, useRef, useMemo, useEffect } from 'react'
+import * as d3 from 'd3'
+import type { HierarchyPointNode } from 'd3'
 import { useTree } from '@/lib/useData'
 import { LensLayout, DetailPanel } from './LensLayout'
 import type { TreeNode, SynthesisNode, SemanticDrift } from '@/lib/types'
+
+// Extended TreeNode type for D3 hierarchy (includes children array)
+interface TreeNodeWithChildren extends TreeNode {
+  children: TreeNodeWithChildren[]
+}
 
 // Design token colors for SVG (matching CSS variables)
 const MARCUS_COLOR = '#C45A3C'
@@ -17,14 +24,75 @@ type SelectedNode = {
   data: TreeNode | SynthesisNode | SemanticDrift
 }
 
+// Layout constants
+const SVG_WIDTH = 1000
+const SVG_HEIGHT = 600
+const MARGIN = { top: 40, right: 80, bottom: 40, left: 80 }
+
+/**
+ * Convert flat nodes array to D3 hierarchy structure
+ * Builds parent-child relationships from parent_id references
+ */
+const buildHierarchy = (nodes: TreeNode[]): d3.HierarchyNode<TreeNodeWithChildren> | null => {
+  const root = nodes.find(n => n.parent_id === null)
+  if (!root) return null
+
+  // Create a map of all nodes with empty children arrays
+  const nodeMap = new Map<string, TreeNodeWithChildren>(
+    nodes.map(n => [n.id, { ...n, children: [] }])
+  )
+
+  // Build parent-child relationships
+  nodes.forEach(node => {
+    if (node.parent_id && nodeMap.has(node.parent_id)) {
+      const parent = nodeMap.get(node.parent_id)!
+      const child = nodeMap.get(node.id)!
+      parent.children.push(child)
+    }
+  })
+
+  const rootWithChildren = nodeMap.get(root.id)!
+  return d3.hierarchy(rootWithChildren)
+}
+
 export function EpistemologicalTree() {
   const { data, loading, error } = useTree()
   const [selectedNode, setSelectedNode] = useState<SelectedNode | null>(null)
   const [hoveredNode, setHoveredNode] = useState<string | null>(null)
   const svgRef = useRef<SVGSVGElement>(null)
 
-  // TODO: Tasks 13-17 will add visualization logic here
-  // - Task 13: D3 tree layout calculation
+  // State for computed D3 positions
+  const [nodePositions, setNodePositions] = useState<HierarchyPointNode<TreeNodeWithChildren>[]>([])
+
+  // Calculate tree layout when data changes
+  useEffect(() => {
+    if (!data || !svgRef.current) return
+
+    // Build hierarchy from flat nodes
+    const hierarchy = buildHierarchy(data.nodes)
+    if (!hierarchy) return
+
+    // Create D3 tree layout
+    // Use available space minus margins
+    const treeWidth = SVG_WIDTH - MARGIN.left - MARGIN.right
+    const treeHeight = SVG_HEIGHT - MARGIN.top - MARGIN.bottom
+
+    const treeLayout = d3.tree<TreeNodeWithChildren>()
+      .size([treeWidth, treeHeight])
+      .separation((a, b) => {
+        // More separation between nodes with different parents
+        // Helps visualize distinct branches
+        return a.parent === b.parent ? 1 : 1.5
+      })
+
+    // Apply layout to hierarchy - this calculates x,y positions
+    const root = treeLayout(hierarchy)
+
+    // Store all positioned nodes (descendants includes root)
+    setNodePositions(root.descendants())
+  }, [data])
+
+  // TODO: Tasks 14-17 will add visualization logic here
   // - Task 14: Bezier curve branch rendering
   // - Task 15: Node rendering with speaker colors
   // - Task 16: Cross-branch relationship edges
@@ -186,10 +254,6 @@ export function EpistemologicalTree() {
     )
   }, [selectedNode, data])
 
-  // Placeholder for hover state usage (will be used in Tasks 13-17)
-  const _hoveredNode = hoveredNode
-  const _setHoveredNode = setHoveredNode
-
   return (
     <LensLayout
       title="Epistemological Tree"
@@ -200,21 +264,87 @@ export function EpistemologicalTree() {
     >
       {data && (
         <div className="card overflow-hidden">
-          {/* SVG visualization area - D3 will render here */}
+          {/* SVG visualization area */}
           <svg
             ref={svgRef}
             className="w-full bg-field-subtle"
-            style={{ height: '600px' }}
+            style={{ height: `${SVG_HEIGHT}px` }}
+            viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
+            preserveAspectRatio="xMidYMid meet"
           >
-            {/* Tree visualization will be rendered here by D3 in later tasks */}
-            <text
-              x="50%"
-              y="50%"
-              textAnchor="middle"
-              className="text-sm fill-ink-tertiary"
-            >
-              Tree visualization (Tasks 13-17)
-            </text>
+            {/* Main group with margin offset */}
+            <g transform={`translate(${MARGIN.left}, ${MARGIN.top})`}>
+              {/* Render links (edges) between nodes - Task 14 will add bezier curves */}
+              <g className="links">
+                {nodePositions.map(node => {
+                  if (!node.parent) return null
+                  return (
+                    <line
+                      key={`link-${node.data.id}`}
+                      x1={node.parent.x}
+                      y1={node.parent.y}
+                      x2={node.x}
+                      y2={node.y}
+                      stroke="#94A3B8"
+                      strokeWidth={1}
+                      strokeOpacity={0.4}
+                    />
+                  )
+                })}
+              </g>
+
+              {/* Render nodes - Task 15 will add proper styling */}
+              <g className="nodes">
+                {nodePositions.map(node => {
+                  // Determine node color based on speaker
+                  let fillColor = '#6B7280' // default gray
+                  if (node.data.speaker === 'marcus') {
+                    fillColor = MARCUS_COLOR
+                  } else if (node.data.speaker === 'demartini') {
+                    fillColor = DEMARTINI_COLOR
+                  } else if (node.data.type === 'root') {
+                    fillColor = INSIGHT_COLOR
+                  } else if (node.data.type === 'category') {
+                    fillColor = CONVERGENCE_COLOR
+                  }
+
+                  // Size based on node type
+                  const radius = node.data.type === 'root' ? 12 :
+                                 node.data.type === 'category' ? 8 :
+                                 node.data.type === 'branch' ? 6 : 5
+
+                  return (
+                    <g
+                      key={node.data.id}
+                      transform={`translate(${node.x}, ${node.y})`}
+                      className="cursor-pointer"
+                      onClick={() => setSelectedNode({ type: 'node', data: node.data })}
+                      onMouseEnter={() => setHoveredNode(node.data.id)}
+                      onMouseLeave={() => setHoveredNode(null)}
+                    >
+                      <circle
+                        r={radius}
+                        fill={fillColor}
+                        stroke={hoveredNode === node.data.id ? '#fff' : 'none'}
+                        strokeWidth={2}
+                        opacity={hoveredNode && hoveredNode !== node.data.id ? 0.4 : 1}
+                      />
+                      {/* Labels for non-claim nodes */}
+                      {(node.data.type === 'root' || node.data.type === 'category') && (
+                        <text
+                          y={node.data.type === 'root' ? -18 : -12}
+                          textAnchor="middle"
+                          className="text-xs fill-ink-secondary pointer-events-none"
+                          style={{ fontSize: node.data.type === 'root' ? '12px' : '10px' }}
+                        >
+                          {node.data.label}
+                        </text>
+                      )}
+                    </g>
+                  )
+                })}
+              </g>
+            </g>
           </svg>
         </div>
       )}
