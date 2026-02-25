@@ -158,6 +158,7 @@ export function EpistemologicalTree() {
   const [hoveredNode, setHoveredNode] = useState<string | null>(null)
   const [hoveredLineage, setHoveredLineage] = useState<Set<string>>(new Set())
   const svgRef = useRef<SVGSVGElement>(null)
+  const zoomBehaviorRef = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null)
 
   // Zoom and pan transform state
   const [transform, setTransform] = useState({ x: 0, y: 0, k: 1 })
@@ -243,7 +244,7 @@ export function EpistemologicalTree() {
     svg.call(zoomBehavior)
 
     // Store zoom behavior for keyboard controls
-    ;(svgRef.current as SVGSVGElement & { __zoom_behavior?: typeof zoomBehavior }).__zoom_behavior = zoomBehavior
+    zoomBehaviorRef.current = zoomBehavior
 
     return () => {
       svg.on('.zoom', null) // Cleanup zoom listeners
@@ -253,28 +254,34 @@ export function EpistemologicalTree() {
   // Keyboard controls for zoom and selection
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if user is typing in an input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return
+      }
+
       // Escape: Deselect current node
       if (e.key === 'Escape') {
         setSelectedNode(null)
       }
-      // +/=: Zoom in
+      // +/=: Zoom in - use D3's scaleBy to keep state synced
       if (e.key === '+' || e.key === '=') {
-        setTransform(t => ({ ...t, k: Math.min(t.k * 1.2, 3) }))
-      }
-      // -: Zoom out
-      if (e.key === '-') {
-        setTransform(t => ({ ...t, k: Math.max(t.k / 1.2, 0.5) }))
-      }
-      // 0: Reset zoom and pan
-      if (e.key === '0') {
-        setTransform({ x: 0, y: 0, k: 1 })
-        // Also reset D3's internal transform state
-        if (svgRef.current) {
+        if (svgRef.current && zoomBehaviorRef.current) {
           const svg = d3.select(svgRef.current)
-          const zoomBehavior = (svgRef.current as SVGSVGElement & { __zoom_behavior?: d3.ZoomBehavior<SVGSVGElement, unknown> }).__zoom_behavior
-          if (zoomBehavior) {
-            svg.call(zoomBehavior.transform, d3.zoomIdentity)
-          }
+          svg.transition().duration(200).call(zoomBehaviorRef.current.scaleBy, 1.2)
+        }
+      }
+      // -: Zoom out - use D3's scaleBy to keep state synced
+      if (e.key === '-') {
+        if (svgRef.current && zoomBehaviorRef.current) {
+          const svg = d3.select(svgRef.current)
+          svg.transition().duration(200).call(zoomBehaviorRef.current.scaleBy, 1 / 1.2)
+        }
+      }
+      // 0: Reset zoom and pan - use D3's transform to keep state synced
+      if (e.key === '0') {
+        if (svgRef.current && zoomBehaviorRef.current) {
+          const svg = d3.select(svgRef.current)
+          svg.transition().duration(200).call(zoomBehaviorRef.current.transform, d3.zoomIdentity)
         }
       }
     }
