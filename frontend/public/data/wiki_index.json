@@ -3,56 +3,232 @@
   "source": "Aubrey Marcus Podcast #521",
   "entities": {
     "concepts": [
-      "nonduality",
-      "projection",
-      "shadow",
-      "moral_relativism",
-      "therapeutic_dissolution",
-      "sacred_obligation",
-      "embodied_knowing",
-      "cosmic_balance",
-      "intrinsic_value",
-      "agency",
-      "gratitude",
-      "forgiveness",
-      "hidden_order",
-      "logos",
-      "amygdala_reactivity",
-      "free_will",
-      "moral_evolution",
-      "victim_perspective",
-      "domain_confusion",
-      "dialectic"
+      {
+        "id": "nonduality",
+        "label": "Nonduality",
+        "description": "The philosophical view that reality is fundamentally undivided, and apparent distinctions between self/other, good/evil are perspectival rather than absolute. Central to Demartini's framework for dissolving emotional charges."
+      },
+      {
+        "id": "projection",
+        "label": "Projection",
+        "description": "A psychological mechanism where unconscious qualities, emotions, or attributes are displaced onto external objects or people. Both speakers agree this occurs but differ on whether recognizing projection eliminates moral responsibility."
+      },
+      {
+        "id": "shadow",
+        "label": "Shadow",
+        "description": "Carl Jung's concept of the unconscious aspects of personality that the conscious ego doesn't identify with. Demartini uses shadow work to find hidden benefits in trauma; Marcus questions whether this can address acts of genuine evil."
+      },
+      {
+        "id": "moral_relativism",
+        "label": "Moral Relativism",
+        "description": "The view that moral judgments are not universally valid but are relative to cultural, historical, or individual contexts. Demartini leans toward this position; Marcus argues some acts represent absolute moral failures."
+      },
+      {
+        "id": "therapeutic_dissolution",
+        "label": "Therapeutic Dissolution",
+        "description": "Demartini's process of dissolving emotional charges by systematically finding the 'hidden order' and benefits in traumatic experiences. Marcus worries this approach risks erasing genuine moral distinctions."
+      },
+      {
+        "id": "sacred_obligation",
+        "label": "Sacred Obligation",
+        "description": "Marcus's concept that humans have inherent responsibilities to protect the vulnerable, especially children, that exist independent of perspective or potential hidden benefits."
+      },
+      {
+        "id": "embodied_knowing",
+        "label": "Embodied Knowing",
+        "description": "The idea that knowledge comes through bodily experience and visceral response, not just rational analysis. Marcus appeals to this when describing the universal physical revulsion at witnessing harm to innocents."
+      },
+      {
+        "id": "cosmic_balance",
+        "label": "Cosmic Balance",
+        "description": "Demartini's view that the universe maintains an equilibrium where every negative is matched by a positive, derived from his interpretation of Heraclitus and reflected in biological processes like homeostasis."
+      },
+      {
+        "id": "intrinsic_value",
+        "label": "Intrinsic Value",
+        "description": "The quality of being valuable in itself, independent of usefulness or perspective. Marcus argues some things (life, innocence, love) have intrinsic value that makes their violation categorically wrong."
+      },
+      {
+        "id": "agency",
+        "label": "Agency",
+        "description": "The capacity to make free choices and act upon them. Central to the debate: if cosmic balance is predetermined, does genuine moral agency exist? Both speakers grapple with reconciling determinism and responsibility."
+      },
+      {
+        "id": "gratitude",
+        "label": "Gratitude",
+        "description": "A state of appreciation that Demartini identifies as the endpoint of successful shadow work. Finding gratitude for trauma is presented as liberation, though Marcus questions whether all events merit gratitude."
+      },
+      {
+        "id": "forgiveness",
+        "label": "Forgiveness",
+        "description": "The release of resentment toward an offender. Both speakers value forgiveness but differ on its basis: Demartini sees it as recognizing no wrong occurred; Marcus sees it as a gift given despite genuine wrong."
+      },
+      {
+        "id": "hidden_order",
+        "label": "Hidden Order",
+        "description": "Demartini's core concept, drawn from Heraclitus, that apparent chaos contains an invisible ordering principle. When fully perceived, seeming evils reveal themselves as necessary parts of a balanced whole."
+      },
+      {
+        "id": "logos",
+        "label": "Logos",
+        "description": "Greek term meaning word, reason, or principle of order. Heraclitus used it to describe the rational structure underlying apparent change. Demartini interprets this as cosmic intelligence maintaining balance."
+      },
+      {
+        "id": "amygdala_reactivity",
+        "label": "Amygdala Reactivity",
+        "description": "The brain's emotional response center that assigns positive or negative valence to experiences. Demartini argues moral judgments arise from amygdala reactivity rather than objective reality; prefrontal integration reveals neutrality."
+      },
+      {
+        "id": "free_will",
+        "label": "Free Will",
+        "description": "The ability to choose one's actions independent of prior causes. Demartini cites Libet's experiments suggesting choices are determined before conscious awareness, challenging traditional notions of moral responsibility."
+      },
+      {
+        "id": "moral_evolution",
+        "label": "Moral Evolution",
+        "description": "Marcus's argument that humanity has genuinely progressed morally, evidenced by ending practices like child sacrifice and slavery. This suggests some moral truths are discovered, not merely constructed."
+      },
+      {
+        "id": "victim_perspective",
+        "label": "Victim Perspective",
+        "description": "The viewpoint of those who suffer harm. Marcus argues this perspective reveals truths that cosmic balance frameworks may obscure, particularly the irreversibility of death and the reality of suffering."
+      },
+      {
+        "id": "domain_confusion",
+        "label": "Domain Confusion",
+        "description": "Marcus's critique that Demartini conflates therapeutic techniques (helpful for healing) with metaphysical claims (about the nature of good and evil). What heals isn't necessarily what's true."
+      },
+      {
+        "id": "dialectic",
+        "label": "Dialectic",
+        "description": "A method of argument through dialogue, seeking truth via reasoned exchange. The Marcus-Demartini conversation itself demonstrates dialectic as both speakers refine positions through engagement."
+      }
     ],
     "thinkers": [
-      "heraclitus",
-      "aristotle",
-      "epictetus",
-      "maimonides",
-      "jung",
-      "rumi",
-      "einstein",
-      "montaigne",
-      "libet",
-      "christ",
-      "sean_o_laoire"
+      {
+        "id": "heraclitus",
+        "label": "Heraclitus",
+        "description": "Pre-Socratic Greek philosopher (c. 535-475 BCE) known for his doctrine of change and the unity of opposites. Demartini frequently cites his concept of 'hidden order in apparent chaos' as foundational to cosmic balance theory."
+      },
+      {
+        "id": "aristotle",
+        "label": "Aristotle",
+        "description": "Greek philosopher (384-322 BCE) who developed virtue ethics and the golden mean. His framework of balanced virtues between extremes resonates with Demartini's equilibrium model."
+      },
+      {
+        "id": "epictetus",
+        "label": "Epictetus",
+        "description": "Stoic philosopher (c. 50-135 CE) who taught that all humans act according to their perception of the good. Demartini invokes him to argue that even perpetrators believe they're doing right."
+      },
+      {
+        "id": "maimonides",
+        "label": "Maimonides",
+        "description": "Medieval Jewish philosopher (1135-1204) who synthesized Aristotelian philosophy with Jewish theology. Referenced in discussions of how different traditions understand the relationship between reason and revelation."
+      },
+      {
+        "id": "jung",
+        "label": "Carl Jung",
+        "description": "Swiss psychiatrist (1875-1961) who developed analytical psychology, including concepts of shadow, projection, and individuation. Both speakers draw on Jungian concepts but interpret their moral implications differently."
+      },
+      {
+        "id": "rumi",
+        "label": "Rumi",
+        "description": "13th-century Persian poet and Sufi mystic whose poetry expresses divine love and unity. Marcus contrasts Rumi's expression of Islamic spirituality with violent jihadism to argue for qualitative distinctions within traditions."
+      },
+      {
+        "id": "einstein",
+        "label": "Albert Einstein",
+        "description": "Theoretical physicist (1879-1955) whose work on relativity is sometimes invoked in discussions of perspective-dependent reality. Demartini draws parallels between physical relativity and moral relativity."
+      },
+      {
+        "id": "montaigne",
+        "label": "Michel de Montaigne",
+        "description": "French Renaissance philosopher (1533-1592) who traveled seeking universal morality and found only cultural variation. Demartini cites him as evidence for moral relativism; Marcus notes Montaigne still made moral judgments."
+      },
+      {
+        "id": "libet",
+        "label": "Benjamin Libet",
+        "description": "Neuroscientist (1916-2007) whose experiments showed brain activity precedes conscious awareness of decisions. Demartini uses this to question whether free will and thus moral responsibility exist as traditionally conceived."
+      },
+      {
+        "id": "christ",
+        "label": "Jesus Christ",
+        "description": "Central figure of Christianity whose teachings on forgiveness ('forgive them for they know not what they do') are cited by Marcus as a model that acknowledges both genuine wrong and the possibility of grace."
+      },
+      {
+        "id": "sean_o_laoire",
+        "label": "Sean O'Laoire",
+        "description": "Contemporary theologian and psychologist who developed participatory theology. Marcus draws on his concept that humans co-create reality with the divine, suggesting moral agency in an evolving cosmos."
+      }
     ],
     "frameworks": [
-      "demartini_method",
-      "ho_oponopono",
-      "somatic_epistemology",
-      "unity_of_opposites",
-      "participatory_theology"
+      {
+        "id": "demartini_method",
+        "label": "Demartini Method",
+        "description": "A systematic approach developed by Dr. John Demartini for finding balance in perceptions by identifying both sides of any experience. Through methodical questioning, practitioners dissolve emotional charges by discovering hidden benefits in apparent traumas."
+      },
+      {
+        "id": "ho_oponopono",
+        "label": "Ho'oponopono",
+        "description": "A Hawaiian practice of reconciliation and forgiveness involving the recognition that external conflicts reflect internal states. Marcus uses it to support shadow work while arguing it doesn't eliminate the reality of wrongdoing by others."
+      },
+      {
+        "id": "somatic_epistemology",
+        "label": "Somatic Epistemology",
+        "description": "The view that the body is a source of knowledge, and physical sensations carry truth-value. Marcus appeals to visceral responses (revulsion at harm) as evidence for moral realism that transcends cultural conditioning."
+      },
+      {
+        "id": "unity_of_opposites",
+        "label": "Unity of Opposites",
+        "description": "Heraclitean doctrine that apparent opposites are actually interdependent aspects of a unified whole. Demartini extends this to argue that good and evil, benefit and harm, are always perfectly balanced from the cosmic perspective."
+      },
+      {
+        "id": "participatory_theology",
+        "label": "Participatory Theology",
+        "description": "A theological framework where humans actively participate in divine creation rather than passively receiving a finished reality. Marcus uses this to argue for genuine moral agency and the possibility that human choices matter cosmically."
+      }
     ],
     "traditions": [
-      "stoicism",
-      "buddhism",
-      "nonduality",
-      "christianity",
-      "greek_philosophy",
-      "sufism",
-      "zoroastrianism",
-      "depth_psychology"
+      {
+        "id": "stoicism",
+        "label": "Stoicism",
+        "description": "Ancient Greek philosophy emphasizing virtue, reason, and acceptance of what cannot be changed. Both speakers draw on Stoic concepts, though they interpret the relationship between acceptance and action differently."
+      },
+      {
+        "id": "buddhism",
+        "label": "Buddhism",
+        "description": "Eastern tradition teaching liberation from suffering through wisdom and compassion. Relevant for its teachings on non-attachment and the emptiness of fixed categories, which parallel some of Demartini's claims."
+      },
+      {
+        "id": "nonduality",
+        "label": "Nondual Traditions",
+        "description": "Spiritual traditions (Advaita Vedanta, certain Buddhist schools, mystical Christianity) that teach the fundamental unity of all reality. Demartini's framework aligns with these traditions; Marcus questions their ethical implications."
+      },
+      {
+        "id": "christianity",
+        "label": "Christianity",
+        "description": "Religious tradition centered on Jesus Christ, whose teachings on forgiveness, love, and redemption are invoked by Marcus as a model that combines recognition of genuine evil with the possibility of grace and transformation."
+      },
+      {
+        "id": "greek_philosophy",
+        "label": "Greek Philosophy",
+        "description": "The philosophical tradition originating in ancient Greece, including Pre-Socratics, Plato, Aristotle, and Hellenistic schools. Both speakers draw heavily on this tradition for concepts of logos, virtue, and the nature of reality."
+      },
+      {
+        "id": "sufism",
+        "label": "Sufism",
+        "description": "Islamic mystical tradition emphasizing direct experience of the divine through love and devotion. Rumi, a Sufi master, is cited by Marcus to argue that genuine spiritual traditions transcend violence despite sharing religious contexts."
+      },
+      {
+        "id": "zoroastrianism",
+        "label": "Zoroastrianism",
+        "description": "Ancient Persian religion teaching cosmic dualism between good and evil. Marcus cites Zoroastrian reforms ending child sacrifice as evidence of genuine moral progress, suggesting some moral truths can be discovered."
+      },
+      {
+        "id": "depth_psychology",
+        "label": "Depth Psychology",
+        "description": "Psychological tradition exploring the unconscious mind, including Freud, Jung, and post-Jungians. Central to the debate through concepts of shadow, projection, and the relationship between personal healing and moral truth."
+      }
     ],
     "claims": [
       "D01",
