@@ -4,7 +4,8 @@ import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useDialogue } from '@/lib/useData'
 import { LensLayout, DetailPanel } from './LensLayout'
-import type { DialogueRound, DialogueExchange } from '@/lib/types'
+import { WikiCard } from '@/components/ui/WikiCard'
+import type { DialogueRound, DialogueExchange, WarrantEntry } from '@/lib/types'
 
 // Speaker avatar component
 function SpeakerAvatar({ speaker }: { speaker: string }) {
@@ -40,12 +41,23 @@ function SpeakerAvatar({ speaker }: { speaker: string }) {
 
 // Exchange bubble
 function ExchangeBubble({ exchange }: { exchange: DialogueExchange }) {
+  const [selectedWarrant, setSelectedWarrant] = useState<WarrantEntry | null>(null)
+
   const bgColor =
     exchange.speaker === 'demartini_steelmanned'
       ? 'bg-demartini-faint border-demartini/30'
       : exchange.speaker === 'marcus_steelmanned'
       ? 'bg-marcus-faint border-marcus/30'
       : 'bg-convergence-soft border-convergence/30'
+
+  // Create a WarrantEntry from a warrant string
+  const createWarrantEntry = (warrantText: string, index: number): WarrantEntry => ({
+    id: `warrant-${index}`,
+    text: warrantText,
+    type: 'logical',  // Default type, can be refined when wiki data has full warrant info
+    used_by: [],
+    strength: 'moderate'
+  })
 
   return (
     <motion.div
@@ -66,9 +78,13 @@ function ExchangeBubble({ exchange }: { exchange: DialogueExchange }) {
           </h5>
           <div className="flex flex-wrap gap-1">
             {exchange.warrants.map((w, i) => (
-              <span key={i} className="text-xs bg-field-subtle px-2 py-0.5 rounded text-ink-secondary">
+              <button
+                key={i}
+                onClick={() => setSelectedWarrant(createWarrantEntry(w, i))}
+                className="text-xs bg-field-subtle px-2 py-0.5 rounded text-ink-secondary hover:bg-field-deep transition-colors cursor-pointer"
+              >
                 {w}
-              </span>
+              </button>
             ))}
           </div>
         </div>
@@ -85,9 +101,17 @@ function ExchangeBubble({ exchange }: { exchange: DialogueExchange }) {
       {exchange.insight && (
         <div className="mt-3 p-2 bg-convergence-soft rounded-lg border-l-4 border-insight pl-4">
           <p className="text-xs text-ink">
-            <span className="font-medium">💡 Insight:</span> {exchange.insight}
+            <span className="font-medium">Insight:</span> {exchange.insight}
           </p>
         </div>
+      )}
+
+      {selectedWarrant && (
+        <WikiCard
+          type="warrant"
+          entry={selectedWarrant}
+          onClose={() => setSelectedWarrant(null)}
+        />
       )}
     </motion.div>
   )
