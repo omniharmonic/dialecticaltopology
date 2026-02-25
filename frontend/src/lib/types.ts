@@ -318,3 +318,83 @@ export interface Manifest {
     arena_rounds: number
   }
 }
+
+// Tree data (Epistemological Tree lens)
+export interface TreeNode {
+  id: string
+  type: 'root' | 'category' | 'branch' | 'claim' | 'synthesis'
+  label: string
+  speaker?: 'marcus' | 'demartini' | 'shared'
+  claim_id?: string
+  parent_id: string | null
+  depth: number
+  position?: { x: number; y: number }
+  collapsed?: boolean
+}
+
+export interface TreeEdge {
+  id: string
+  source: string
+  target: string
+  type: 'hierarchy' | 'agreement' | 'contradiction' | 'paradox' | 'tension'
+  strength: number
+}
+
+export interface SynthesisNode {
+  id: string
+  label: string
+  contributing_claims: string[]
+  synthesis_text: string
+  position: { x: number; y: number }
+}
+
+export interface SemanticDrift {
+  term: string
+  marcus_meaning: string
+  demartini_meaning: string
+  affected_claims: string[]
+}
+
+export interface FrameworkBoundary {
+  speaker: 'marcus' | 'demartini'
+  node_ids: string[]
+}
+
+export interface TreeData {
+  metadata: {
+    version: string
+    total_nodes: number
+    total_edges: number
+  }
+  nodes: TreeNode[]
+  edges: TreeEdge[]
+  synthesis_nodes: SynthesisNode[]
+  semantic_drift: SemanticDrift[]
+  framework_boundaries: FrameworkBoundary[]
+}
+
+// Wiki data extensions
+export interface WarrantEntry {
+  id: string
+  text: string
+  type: 'logical' | 'empirical' | 'experiential' | 'authoritative'
+  used_by: string[]
+  strength: 'strong' | 'moderate' | 'weak'
+}
+
+export interface EvidenceEntry {
+  id: string
+  text: string
+  source_type: 'anecdote' | 'study' | 'authority' | 'example' | 'analogy'
+  cited_by: string[]
+  verifiable: boolean
+}
+
+export interface WikiIndex {
+  concepts: { id: string; label: string; description: string }[]
+  thinkers: { id: string; label: string; description: string }[]
+  frameworks: { id: string; label: string; description: string }[]
+  traditions: { id: string; label: string; description: string }[]
+  warrants: WarrantEntry[]
+  evidence: EvidenceEntry[]
+}
