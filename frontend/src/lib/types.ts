@@ -379,6 +379,7 @@ export interface WarrantEntry {
   id: string
   title?: string
   text: string
+  description?: string
   type: 'logical' | 'empirical' | 'experiential' | 'authoritative'
   used_by: string[]
   strength: 'strong' | 'moderate' | 'weak'
@@ -388,6 +389,7 @@ export interface EvidenceEntry {
   id: string
   title?: string
   text: string
+  description?: string
   source_type: 'anecdote' | 'study' | 'authority' | 'example' | 'analogy'
   cited_by: string[]
   verifiable: boolean

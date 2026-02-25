@@ -276,11 +276,12 @@ function EmotionalArc({
             y="-6"
             textAnchor="middle"
             fill="#F5F5F3"
-            fontSize="8"
+            fontSize="11"
+            fontWeight="500"
             fontFamily="system-ui, sans-serif"
           >
-            {trajectory[hoveredIndex].note.length > 40
-              ? trajectory[hoveredIndex].note.substring(0, 40) + '...'
+            {trajectory[hoveredIndex].note.length > 45
+              ? trajectory[hoveredIndex].note.substring(0, 45) + '...'
               : trajectory[hoveredIndex].note
             }
           </text>

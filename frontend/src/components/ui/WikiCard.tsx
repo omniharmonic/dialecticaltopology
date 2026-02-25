@@ -236,6 +236,13 @@ export function WikiCard({
             "{entry.text}"
           </blockquote>
 
+          {/* Description */}
+          {entry.description && (
+            <p className="text-sm text-ink-secondary leading-relaxed">
+              {entry.description}
+            </p>
+          )}
+
           {/* Badges */}
           <div className="flex flex-wrap gap-2">
             <span
@@ -266,6 +273,13 @@ export function WikiCard({
           <blockquote className="text-sm italic border-l-2 border-insight pl-3 text-ink-secondary">
             "{entry.text}"
           </blockquote>
+
+          {/* Description */}
+          {entry.description && (
+            <p className="text-sm text-ink-secondary leading-relaxed">
+              {entry.description}
+            </p>
+          )}
 
           {/* Badges */}
           <div className="flex flex-wrap gap-2">

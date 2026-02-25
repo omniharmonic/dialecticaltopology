@@ -229,10 +229,10 @@ type SelectedNode = {
   data: TreeNode | SynthesisNode | SemanticDrift
 }
 
-// Layout constants - EXPANDED for better visibility
-const SVG_WIDTH = 1400
-const SVG_HEIGHT = 800
-const MARGIN = { top: 60, right: 100, bottom: 80, left: 100 }
+// Layout constants - MASSIVELY EXPANDED for organic tree with spreading claims
+const SVG_WIDTH = 2400
+const SVG_HEIGHT = 1000
+const MARGIN = { top: 80, right: 120, bottom: 100, left: 120 }
 
 /**
  * Convert flat nodes array to D3 hierarchy structure
@@ -317,9 +317,21 @@ export function EpistemologicalTree() {
     const treeLayout = d3.tree<TreeNodeWithChildren>()
       .size([treeWidth, treeHeight])
       .separation((a, b) => {
-        // More separation between nodes with different parents
-        // Wider spread for organic tree feel
-        return a.parent === b.parent ? 1.2 : 2.0
+        // Massive separation for claims to fan out like leaves
+        // Claims should be very spread out to show cross-branch relationships
+        const aClaim = a.data.type === 'claim'
+        const bClaim = b.data.type === 'claim'
+
+        if (aClaim && bClaim) {
+          // Claims get maximum separation
+          return a.parent === b.parent ? 1.8 : 3.5
+        } else if (aClaim || bClaim) {
+          // Mixed claim/non-claim
+          return 1.5
+        } else {
+          // Non-claims (categories, branches)
+          return a.parent === b.parent ? 1.2 : 2.0
+        }
       })
 
     // Apply layout to hierarchy - this calculates x,y positions
@@ -352,7 +364,7 @@ export function EpistemologicalTree() {
 
   // Zoom behavior setup - enables pinch/scroll zoom and drag pan
   useEffect(() => {
-    if (!svgRef.current) return
+    if (!svgRef.current || !data) return
 
     const svg = d3.select(svgRef.current)
 
@@ -374,7 +386,7 @@ export function EpistemologicalTree() {
     return () => {
       svg.on('.zoom', null) // Cleanup zoom listeners
     }
-  }, [])
+  }, [data])
 
   // Keyboard controls for zoom and selection
   useEffect(() => {
