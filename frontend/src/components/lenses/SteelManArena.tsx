@@ -83,8 +83,8 @@ function ExchangeBubble({ exchange }: { exchange: DialogueExchange }) {
       )}
 
       {exchange.insight && (
-        <div className="mt-3 p-2 bg-insight/20 rounded-lg">
-          <p className="text-xs text-insight">
+        <div className="mt-3 p-2 bg-convergence-soft rounded-lg border-l-4 border-insight pl-4">
+          <p className="text-xs text-ink">
             <span className="font-medium">💡 Insight:</span> {exchange.insight}
           </p>
         </div>
