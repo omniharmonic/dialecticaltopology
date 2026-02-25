@@ -669,7 +669,7 @@
       "term": "understanding",
       "marcus_meaning": "Comprehending why something happened while still maintaining that it was wrong; compatible with moral judgment",
       "demartini_meaning": "Seeing both sides of an event until the label of 'evil' dissolves; incompatible with maintaining moral judgment",
-      "affected_claims": ["D07", "M12", "M13"]
+      "affected_claims": ["D07", "M10", "M13"]
     },
     {
       "term": "morality",
