@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useMemo, useEffect } from 'react'
+import { useState, useRef, useMemo, useEffect, useCallback } from 'react'
 import * as d3 from 'd3'
 import type { HierarchyPointNode } from 'd3'
 import { useTree } from '@/lib/useData'
@@ -18,6 +18,62 @@ const DEMARTINI_COLOR = '#2E6B8A'
 const CONVERGENCE_COLOR = '#7B6FA0'
 const INSIGHT_COLOR = '#D4A853'
 const BORDER_COLOR = '#E8E8E6'
+const NEUTRAL_COLOR = '#94A3B8'
+
+/**
+ * Get the fill color for a node based on its type and speaker
+ * Uses design token colors with appropriate semantic meaning
+ */
+const getNodeColor = (node: TreeNode): string => {
+  // Root gets the insight/gold color
+  if (node.type === 'root') return INSIGHT_COLOR
+  // Category nodes get neutral gray
+  if (node.type === 'category') return NEUTRAL_COLOR
+  // Synthesis nodes get convergence purple
+  if (node.type === 'synthesis') return CONVERGENCE_COLOR
+  // Speaker-attributed nodes get their speaker colors
+  if (node.speaker === 'marcus') return MARCUS_COLOR
+  if (node.speaker === 'demartini') return DEMARTINI_COLOR
+  if (node.speaker === 'shared') return CONVERGENCE_COLOR
+  // Default fallback
+  return NEUTRAL_COLOR
+}
+
+/**
+ * Get the node radius based on type
+ * Root and category nodes are larger for visual hierarchy
+ */
+const getNodeRadius = (node: TreeNode): number => {
+  switch (node.type) {
+    case 'root': return 14
+    case 'category': return 10
+    case 'synthesis': return 8
+    case 'branch': return 6
+    case 'claim': return 5
+    default: return 5
+  }
+}
+
+/**
+ * Check if a node should display its label
+ * Root, category, and synthesis nodes show labels
+ */
+const shouldShowLabel = (node: TreeNode): boolean => {
+  return node.type === 'root' || node.type === 'category' || node.type === 'synthesis'
+}
+
+/**
+ * Get all ancestor node IDs for lineage highlighting
+ */
+const getAncestorIds = (node: HierarchyPointNode<TreeNodeWithChildren>): Set<string> => {
+  const ancestors = new Set<string>()
+  let current = node.parent
+  while (current) {
+    ancestors.add(current.data.id)
+    current = current.parent
+  }
+  return ancestors
+}
 
 /**
  * Create a bezier curve path between parent and child nodes
@@ -72,10 +128,29 @@ export function EpistemologicalTree() {
   const { data, loading, error } = useTree()
   const [selectedNode, setSelectedNode] = useState<SelectedNode | null>(null)
   const [hoveredNode, setHoveredNode] = useState<string | null>(null)
+  const [hoveredLineage, setHoveredLineage] = useState<Set<string>>(new Set())
   const svgRef = useRef<SVGSVGElement>(null)
 
   // State for computed D3 positions
   const [nodePositions, setNodePositions] = useState<HierarchyPointNode<TreeNodeWithChildren>[]>([])
+
+  // Handle node hover with lineage tracking
+  const handleNodeHover = useCallback((nodeId: string | null) => {
+    setHoveredNode(nodeId)
+    if (nodeId) {
+      const node = nodePositions.find(n => n.data.id === nodeId)
+      if (node) {
+        setHoveredLineage(getAncestorIds(node))
+      }
+    } else {
+      setHoveredLineage(new Set())
+    }
+  }, [nodePositions])
+
+  // Check if a node is in the current hover lineage (including the hovered node itself)
+  const isInLineage = useCallback((nodeId: string): boolean => {
+    return hoveredNode === nodeId || hoveredLineage.has(nodeId)
+  }, [hoveredNode, hoveredLineage])
 
   // Calculate tree layout when data changes
   useEffect(() => {
@@ -105,8 +180,7 @@ export function EpistemologicalTree() {
     setNodePositions(root.descendants())
   }, [data])
 
-  // TODO: Tasks 15-17 will add additional visualization logic
-  // - Task 15: Node rendering with speaker colors
+  // TODO: Tasks 16-17 will add additional visualization logic
   // - Task 16: Cross-branch relationship edges
   // - Task 17: Zoom and pan interactions
 
@@ -284,47 +358,111 @@ export function EpistemologicalTree() {
             viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
             preserveAspectRatio="xMidYMid meet"
           >
+            {/* SVG Definitions for gradients and effects */}
+            <defs>
+              {/* Radial gradient for Marcus selection highlight */}
+              <radialGradient id="selection-marcus" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor={MARCUS_COLOR} stopOpacity="0.15" />
+                <stop offset="70%" stopColor={MARCUS_COLOR} stopOpacity="0.05" />
+                <stop offset="100%" stopColor={MARCUS_COLOR} stopOpacity="0" />
+              </radialGradient>
+              {/* Radial gradient for Demartini selection highlight */}
+              <radialGradient id="selection-demartini" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor={DEMARTINI_COLOR} stopOpacity="0.15" />
+                <stop offset="70%" stopColor={DEMARTINI_COLOR} stopOpacity="0.05" />
+                <stop offset="100%" stopColor={DEMARTINI_COLOR} stopOpacity="0" />
+              </radialGradient>
+              {/* Radial gradient for Convergence/Synthesis selection highlight */}
+              <radialGradient id="selection-convergence" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor={CONVERGENCE_COLOR} stopOpacity="0.15" />
+                <stop offset="70%" stopColor={CONVERGENCE_COLOR} stopOpacity="0.05" />
+                <stop offset="100%" stopColor={CONVERGENCE_COLOR} stopOpacity="0" />
+              </radialGradient>
+              {/* Radial gradient for Insight/Root selection highlight */}
+              <radialGradient id="selection-insight" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor={INSIGHT_COLOR} stopOpacity="0.15" />
+                <stop offset="70%" stopColor={INSIGHT_COLOR} stopOpacity="0.05" />
+                <stop offset="100%" stopColor={INSIGHT_COLOR} stopOpacity="0" />
+              </radialGradient>
+              {/* Radial gradient for neutral selection highlight */}
+              <radialGradient id="selection-neutral" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor={NEUTRAL_COLOR} stopOpacity="0.15" />
+                <stop offset="70%" stopColor={NEUTRAL_COLOR} stopOpacity="0.05" />
+                <stop offset="100%" stopColor={NEUTRAL_COLOR} stopOpacity="0" />
+              </radialGradient>
+            </defs>
+
             {/* Main group with margin offset */}
             <g transform={`translate(${MARGIN.left}, ${MARGIN.top})`}>
               {/* Render branch connections with organic bezier curves */}
               <g className="branches">
                 {nodePositions
                   .filter(node => node.parent)
-                  .map(node => (
-                    <path
-                      key={`branch-${node.data.id}`}
-                      d={createBranchPath(
-                        { x: node.parent!.x, y: node.parent!.y },
-                        { x: node.x, y: node.y }
-                      )}
-                      fill="none"
-                      stroke={BORDER_COLOR}
-                      strokeWidth={1}
-                      strokeOpacity={0.5}
-                      className="transition-opacity duration-300"
-                    />
-                  ))}
+                  .map(node => {
+                    // Check if this branch is in the hover lineage
+                    const inLineage = isInLineage(node.data.id) && isInLineage(node.parent!.data.id)
+                    const dimmed = hoveredNode && !inLineage
+
+                    return (
+                      <path
+                        key={`branch-${node.data.id}`}
+                        d={createBranchPath(
+                          { x: node.parent!.x, y: node.parent!.y },
+                          { x: node.x, y: node.y }
+                        )}
+                        fill="none"
+                        stroke={inLineage ? getNodeColor(node.data) : BORDER_COLOR}
+                        strokeWidth={inLineage ? 2 : 1}
+                        strokeOpacity={dimmed ? 0.2 : inLineage ? 0.8 : 0.5}
+                        className="transition-all duration-200"
+                      />
+                    )
+                  })}
               </g>
 
-              {/* Render nodes - Task 15 will add proper styling */}
+              {/* Render selection highlights behind nodes */}
+              <g className="selection-highlights">
+                {nodePositions.map(node => {
+                  const isSelected = selectedNode?.type === 'node' &&
+                                     (selectedNode.data as TreeNode).id === node.data.id
+                  if (!isSelected) return null
+
+                  // Get appropriate gradient based on node type/speaker
+                  let gradientId = 'selection-neutral'
+                  if (node.data.type === 'root') gradientId = 'selection-insight'
+                  else if (node.data.type === 'synthesis' || node.data.speaker === 'shared') gradientId = 'selection-convergence'
+                  else if (node.data.speaker === 'marcus') gradientId = 'selection-marcus'
+                  else if (node.data.speaker === 'demartini') gradientId = 'selection-demartini'
+
+                  return (
+                    <circle
+                      key={`selection-${node.data.id}`}
+                      cx={node.x}
+                      cy={node.y}
+                      r={24}
+                      fill={`url(#${gradientId})`}
+                      className="pointer-events-none"
+                    />
+                  )
+                })}
+              </g>
+
+              {/* Render nodes with enhanced styling */}
               <g className="nodes">
                 {nodePositions.map(node => {
-                  // Determine node color based on speaker
-                  let fillColor = '#6B7280' // default gray
-                  if (node.data.speaker === 'marcus') {
-                    fillColor = MARCUS_COLOR
-                  } else if (node.data.speaker === 'demartini') {
-                    fillColor = DEMARTINI_COLOR
-                  } else if (node.data.type === 'root') {
-                    fillColor = INSIGHT_COLOR
-                  } else if (node.data.type === 'category') {
-                    fillColor = CONVERGENCE_COLOR
-                  }
+                  const fillColor = getNodeColor(node.data)
+                  const radius = getNodeRadius(node.data)
+                  const isHovered = hoveredNode === node.data.id
+                  const inLineage = isInLineage(node.data.id)
+                  const dimmed = hoveredNode && !inLineage
+                  const isSelected = selectedNode?.type === 'node' &&
+                                     (selectedNode.data as TreeNode).id === node.data.id
 
-                  // Size based on node type
-                  const radius = node.data.type === 'root' ? 12 :
-                                 node.data.type === 'category' ? 8 :
-                                 node.data.type === 'branch' ? 6 : 5
+                  // Calculate opacity based on interaction state
+                  let opacity = 0.8 // base opacity per design doc
+                  if (isHovered || isSelected) opacity = 1
+                  else if (inLineage) opacity = 0.9
+                  else if (dimmed) opacity = 0.3
 
                   return (
                     <g
@@ -332,23 +470,31 @@ export function EpistemologicalTree() {
                       transform={`translate(${node.x}, ${node.y})`}
                       className="cursor-pointer"
                       onClick={() => setSelectedNode({ type: 'node', data: node.data })}
-                      onMouseEnter={() => setHoveredNode(node.data.id)}
-                      onMouseLeave={() => setHoveredNode(null)}
+                      onMouseEnter={() => handleNodeHover(node.data.id)}
+                      onMouseLeave={() => handleNodeHover(null)}
                     >
+                      {/* Node circle - soft fill, no stroke per design doc */}
                       <circle
                         r={radius}
                         fill={fillColor}
-                        stroke={hoveredNode === node.data.id ? '#fff' : 'none'}
-                        strokeWidth={2}
-                        opacity={hoveredNode && hoveredNode !== node.data.id ? 0.4 : 1}
+                        opacity={opacity}
+                        className="transition-opacity duration-200"
                       />
-                      {/* Labels for non-claim nodes */}
-                      {(node.data.type === 'root' || node.data.type === 'category') && (
+
+                      {/* Labels for root, category, and synthesis nodes */}
+                      {shouldShowLabel(node.data) && (
                         <text
-                          y={node.data.type === 'root' ? -18 : -12}
+                          y={-(radius + 6)}
                           textAnchor="middle"
-                          className="text-xs fill-ink-secondary pointer-events-none"
-                          style={{ fontSize: node.data.type === 'root' ? '12px' : '10px' }}
+                          className="pointer-events-none select-none"
+                          style={{
+                            fontSize: node.data.type === 'root' ? '12px' :
+                                     node.data.type === 'category' ? '10px' : '9px',
+                            fill: dimmed ? '#A0A0A0' : '#64748B',
+                            fontWeight: node.data.type === 'root' ? 600 : 500,
+                            opacity: dimmed ? 0.5 : 1,
+                            transition: 'opacity 200ms, fill 200ms'
+                          }}
                         >
                           {node.data.label}
                         </text>
