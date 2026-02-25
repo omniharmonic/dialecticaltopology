@@ -3,9 +3,10 @@
 import { useState, useRef, useMemo, useEffect, useCallback } from 'react'
 import * as d3 from 'd3'
 import type { HierarchyPointNode } from 'd3'
-import { useTree } from '@/lib/useData'
-import { LensLayout, DetailPanel } from './LensLayout'
-import type { TreeNode, SynthesisNode, SemanticDrift } from '@/lib/types'
+import { useTree, useClaims, useWikiIndex } from '@/lib/useData'
+import { LensLayout, DetailPanel, SpeakerBadge, ClaimTypeBadge } from './LensLayout'
+import { TimecodeLink } from '@/components/ui/TimecodeLink'
+import type { TreeNode, SynthesisNode, SemanticDrift, Claim, TreeEdge } from '@/lib/types'
 
 // Extended TreeNode type for D3 hierarchy (includes children array)
 interface TreeNodeWithChildren extends TreeNode {
@@ -188,16 +189,37 @@ const getRelationshipEdgeColor = (type: string): string => {
 }
 
 /**
- * Get opacity for relationship edge based on type
- * Design doc: agreement 30%, tension 25%, contradiction 30%, paradox 40%
+ * Get base opacity for relationship edge based on type
+ * These are the "always visible" opacities
  */
 const getRelationshipEdgeOpacity = (type: string): number => {
   switch (type) {
-    case 'agreement': return 0.3
-    case 'tension': return 0.25
-    case 'contradiction': return 0.3
-    case 'paradox': return 0.4
-    default: return 0.2
+    case 'agreement': return 0.5
+    case 'tension': return 0.4
+    case 'contradiction': return 0.6
+    case 'paradox': return 0.6
+    default: return 0.3
+  }
+}
+
+/**
+ * Get stroke width for relationship edge based on type
+ */
+const getRelationshipEdgeStrokeWidth = (type: string): number => {
+  switch (type) {
+    case 'contradiction': return 2
+    default: return 1.5
+  }
+}
+
+/**
+ * Get stroke dash array for relationship edge based on type
+ */
+const getRelationshipEdgeDashArray = (type: string): string | undefined => {
+  switch (type) {
+    case 'tension': return '4,2'
+    case 'paradox': return '2,2'
+    default: return undefined
   }
 }
 
@@ -240,6 +262,8 @@ const buildHierarchy = (nodes: TreeNode[]): d3.HierarchyNode<TreeNodeWithChildre
 
 export function EpistemologicalTree() {
   const { data, loading, error } = useTree()
+  const { data: claimsData } = useClaims()
+  const { data: wikiData } = useWikiIndex()
   const [selectedNode, setSelectedNode] = useState<SelectedNode | null>(null)
   const [hoveredNode, setHoveredNode] = useState<string | null>(null)
   const [hoveredLineage, setHoveredLineage] = useState<Set<string>>(new Set())
@@ -248,6 +272,12 @@ export function EpistemologicalTree() {
 
   // Zoom and pan transform state
   const [transform, setTransform] = useState({ x: 0, y: 0, k: 1 })
+
+  // Create a lookup map for claims by ID
+  const claimsMap = useMemo(() => {
+    if (!claimsData) return new Map<string, Claim>()
+    return new Map(claimsData.claims.map(c => [c.id, c]))
+  }, [claimsData])
 
   // State for computed D3 positions
   const [nodePositions, setNodePositions] = useState<HierarchyPointNode<TreeNodeWithChildren>[]>([])
@@ -401,30 +431,328 @@ export function EpistemologicalTree() {
 
       return (
         <DetailPanel title={getTitle()} onClose={() => setSelectedNode(null)}>
-          {selectedNode.type === 'node' && (
-            <div className="space-y-3">
-              <div className="text-sm text-ink-secondary">
-                <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-1">
-                  Type
-                </span>
-                <span className="capitalize">{(selectedNode.data as TreeNode).type}</span>
-              </div>
-              {(selectedNode.data as TreeNode).speaker && (
+          {selectedNode.type === 'node' && (() => {
+            const node = selectedNode.data as TreeNode
+
+            // ROOT NODE - Show overview and categories
+            if (node.type === 'root') {
+              const categories = data?.nodes.filter(n => n.parent_id === node.id) || []
+              const totalClaims = data?.nodes.filter(n => n.type === 'claim').length || 0
+
+              return (
+                <div className="space-y-4">
+                  <p className="text-sm text-ink-secondary">
+                    The foundational assumptions and worldviews that underpin all claims in this debate.
+                    Each branch traces how philosophical positions flow from deeper epistemological commitments.
+                  </p>
+
+                  <div>
+                    <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-2">
+                      Statistics
+                    </span>
+                    <div className="text-sm text-ink-secondary space-y-1">
+                      <div>{totalClaims} claims mapped</div>
+                      <div>{categories.length} major categories</div>
+                      <div>{relationshipEdges.length} cross-branch relationships</div>
+                    </div>
+                  </div>
+
+                  {categories.length > 0 && (
+                    <div>
+                      <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-2">
+                        Categories
+                      </span>
+                      <div className="space-y-1">
+                        {categories.map(cat => (
+                          <button
+                            key={cat.id}
+                            onClick={() => setSelectedNode({ type: 'node', data: cat })}
+                            className="w-full text-left text-sm text-ink-secondary hover:text-ink hover:bg-field-subtle px-2 py-1 rounded transition-colors"
+                          >
+                            {cat.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )
+            }
+
+            // CATEGORY NODE - Show branches and scope
+            if (node.type === 'category') {
+              const branches = data?.nodes.filter(n => n.parent_id === node.id) || []
+              const claimsInCategory = data?.nodes.filter(n => {
+                // Find all claims that are descendants of this category
+                let current = data?.nodes.find(nd => nd.id === n.id)
+                while (current && current.parent_id) {
+                  if (current.parent_id === node.id) return true
+                  current = data?.nodes.find(nd => nd.id === current?.parent_id)
+                }
+                return false
+              }).filter(n => n.type === 'claim') || []
+
+              return (
+                <div className="space-y-4">
+                  <p className="text-sm text-ink-secondary">
+                    {node.id === 'ontological' && 'Claims about the nature of reality, existence, and what is fundamentally real.'}
+                    {node.id === 'epistemological' && 'Claims about how we know what we know, and the validity of different ways of knowing.'}
+                    {node.id === 'ethical' && 'Claims about right and wrong, moral obligations, and how to evaluate actions.'}
+                    {node.id === 'psychological' && 'Claims about human psychology, perception, and the therapeutic frame.'}
+                  </p>
+
+                  <div className="text-sm text-ink-secondary">
+                    <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-1">
+                      Scope
+                    </span>
+                    {claimsInCategory.length} claims in this category
+                  </div>
+
+                  {branches.length > 0 && (
+                    <div>
+                      <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-2">
+                        Branches
+                      </span>
+                      <div className="space-y-1">
+                        {branches.map(branch => (
+                          <button
+                            key={branch.id}
+                            onClick={() => setSelectedNode({ type: 'node', data: branch })}
+                            className="w-full text-left text-sm text-ink-secondary hover:text-ink hover:bg-field-subtle px-2 py-1 rounded transition-colors"
+                          >
+                            {branch.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )
+            }
+
+            // BRANCH NODE - Show claims and tensions
+            if (node.type === 'branch') {
+              const claimsInBranch = data?.nodes.filter(n => n.parent_id === node.id && n.type === 'claim') || []
+              const tensions = relationshipEdges.filter(e =>
+                claimsInBranch.some(c => c.id === e.source || c.id === e.target)
+              )
+
+              return (
+                <div className="space-y-4">
+                  {node.speaker && (
+                    <div className="flex items-center gap-2">
+                      <SpeakerBadge speaker={node.speaker} />
+                    </div>
+                  )}
+
+                  <div className="text-sm text-ink-secondary">
+                    <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-1">
+                      Scope
+                    </span>
+                    {claimsInBranch.length} claims in this branch
+                  </div>
+
+                  {claimsInBranch.length > 0 && (
+                    <div>
+                      <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-2">
+                        Claims
+                      </span>
+                      <div className="space-y-1">
+                        {claimsInBranch.map(claim => {
+                          const claimData = claimsMap.get(claim.id)
+                          return (
+                            <button
+                              key={claim.id}
+                              onClick={() => setSelectedNode({ type: 'node', data: claim })}
+                              className="w-full text-left text-sm text-ink-secondary hover:text-ink hover:bg-field-subtle px-2 py-1 rounded transition-colors"
+                            >
+                              <span className="font-mono text-xs">{claim.id}</span>
+                              {claimData && <span className="ml-2">{claimData.text.slice(0, 40)}...</span>}
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {tensions.length > 0 && (
+                    <div>
+                      <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-2">
+                        Cross-Branch Relations
+                      </span>
+                      <div className="text-sm text-ink-secondary space-y-1">
+                        {tensions.slice(0, 5).map(t => (
+                          <div key={t.id} className="text-xs">
+                            <span className="capitalize font-medium">{t.type}</span> with other claims
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )
+            }
+
+            // CLAIM NODE - Show full claim details
+            if (node.type === 'claim') {
+              const claim = claimsMap.get(node.id)
+              const claimRelationships = relationshipEdges.filter(e =>
+                e.source === node.id || e.target === node.id
+              )
+
+              if (!claim) {
+                return (
+                  <div className="text-sm text-ink-secondary">
+                    Claim data not found for {node.id}
+                  </div>
+                )
+              }
+
+              return (
+                <div className="space-y-4">
+                  {/* Claim header info */}
+                  <div className="flex items-center gap-2">
+                    <SpeakerBadge speaker={claim.speaker} />
+                    <ClaimTypeBadge type={claim.type} />
+                  </div>
+
+                  {/* Claim text */}
+                  <p className="text-sm text-ink leading-relaxed">
+                    {claim.text}
+                  </p>
+
+                  {/* Timestamp */}
+                  {claim.timestamp && (
+                    <div>
+                      <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-1">
+                        Timestamp
+                      </span>
+                      <TimecodeLink seconds={claim.timestamp} />
+                    </div>
+                  )}
+
+                  {/* Warrants */}
+                  {claim.warrants && claim.warrants.length > 0 && (
+                    <div>
+                      <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-2">
+                        Supporting Warrants
+                      </span>
+                      <div className="space-y-2">
+                        {claim.warrants.map((warrant, i) => (
+                          <div key={i} className="text-sm text-ink-secondary bg-field-subtle px-3 py-2 rounded">
+                            {warrant}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Evidence */}
+                  {claim.evidence && claim.evidence.length > 0 && (
+                    <div>
+                      <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-2">
+                        Evidence Cited
+                      </span>
+                      <div className="space-y-2">
+                        {claim.evidence.map((evidence, i) => (
+                          <div key={i} className="text-sm text-ink-secondary bg-field-subtle px-3 py-2 rounded">
+                            {evidence}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Related concepts */}
+                  {claim.related_concepts && claim.related_concepts.length > 0 && (
+                    <div>
+                      <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-2">
+                        Related Concepts
+                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        {claim.related_concepts.map((concept) => (
+                          <span
+                            key={concept}
+                            className="text-xs bg-field-deep px-2 py-1 rounded"
+                          >
+                            {concept}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Relationships */}
+                  {claimRelationships.length > 0 && (
+                    <div>
+                      <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-2">
+                        Relationships
+                      </span>
+                      <div className="space-y-1">
+                        {claimRelationships.map(rel => {
+                          const otherNodeId = rel.source === node.id ? rel.target : rel.source
+                          const otherNode = data?.nodes.find(n => n.id === otherNodeId)
+                          return (
+                            <div key={rel.id} className="text-sm text-ink-secondary">
+                              <span className="capitalize font-medium text-xs">{rel.type}</span>
+                              {' with '}
+                              <span className="font-mono text-xs">{otherNodeId}</span>
+                              {otherNode && ` - ${otherNode.label.slice(0, 30)}...`}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )
+            }
+
+            // SYNTHESIS NODE (if we have any)
+            if (node.type === 'synthesis') {
+              return (
+                <div className="space-y-3">
+                  <div className="text-sm text-ink-secondary">
+                    <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-1">
+                      Type
+                    </span>
+                    <span className="capitalize">{node.type}</span>
+                  </div>
+                  {node.speaker && (
+                    <div className="flex items-center gap-2">
+                      <SpeakerBadge speaker={node.speaker} />
+                    </div>
+                  )}
+                </div>
+              )
+            }
+
+            // Fallback for unknown node types
+            return (
+              <div className="space-y-3">
                 <div className="text-sm text-ink-secondary">
                   <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-1">
-                    Speaker
+                    Type
                   </span>
-                  <span className="capitalize">{(selectedNode.data as TreeNode).speaker}</span>
+                  <span className="capitalize">{node.type}</span>
                 </div>
-              )}
-              <div className="text-sm text-ink-secondary">
-                <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-1">
-                  Depth
-                </span>
-                Level {(selectedNode.data as TreeNode).depth}
+                {node.speaker && (
+                  <div className="text-sm text-ink-secondary">
+                    <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-1">
+                      Speaker
+                    </span>
+                    <span className="capitalize">{node.speaker}</span>
+                  </div>
+                )}
+                <div className="text-sm text-ink-secondary">
+                  <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-1">
+                    Depth
+                  </span>
+                  Level {node.depth}
+                </div>
               </div>
-            </div>
-          )}
+            )
+          })()}
           {selectedNode.type === 'synthesis' && (
             <div className="space-y-3">
               <p className="text-sm text-ink-secondary">
@@ -533,13 +861,10 @@ export function EpistemologicalTree() {
           <h4 className="text-xs uppercase tracking-wider text-ink-tertiary mt-4">
             Cross-Branch Relations
           </h4>
-          <p className="text-xs text-ink-tertiary mb-2">
-            Visible on hover
-          </p>
           <div className="flex items-center gap-2">
             <div
               className="w-6 h-0.5"
-              style={{ backgroundColor: CONVERGENCE_COLOR, opacity: 0.6 }}
+              style={{ backgroundColor: CONVERGENCE_COLOR, opacity: 0.5 }}
             />
             <span className="text-sm text-ink-secondary">Agreement</span>
           </div>
@@ -548,14 +873,14 @@ export function EpistemologicalTree() {
               className="w-6 h-0.5"
               style={{
                 backgroundImage: `repeating-linear-gradient(90deg, ${MARCUS_COLOR} 0, ${MARCUS_COLOR} 4px, transparent 4px, transparent 6px)`,
-                opacity: 0.6
+                opacity: 0.4
               }}
             />
             <span className="text-sm text-ink-secondary">Tension</span>
           </div>
           <div className="flex items-center gap-2">
             <div
-              className="w-6 h-0.5"
+              className="w-6 h-1"
               style={{ backgroundColor: MARCUS_COLOR, opacity: 0.6 }}
             />
             <span className="text-sm text-ink-secondary">Contradiction</span>
@@ -563,7 +888,10 @@ export function EpistemologicalTree() {
           <div className="flex items-center gap-2">
             <div
               className="w-6 h-0.5"
-              style={{ backgroundColor: INSIGHT_COLOR, opacity: 0.7 }}
+              style={{
+                backgroundImage: `repeating-linear-gradient(90deg, ${INSIGHT_COLOR} 0, ${INSIGHT_COLOR} 2px, transparent 2px, transparent 4px)`,
+                opacity: 0.6
+              }}
             />
             <span className="text-sm text-ink-secondary">Paradox</span>
           </div>
@@ -610,7 +938,7 @@ export function EpistemologicalTree() {
         )}
       </div>
     )
-  }, [selectedNode, data, transform.k])
+  }, [selectedNode, data, transform.k, claimsMap, relationshipEdges])
 
   return (
     <LensLayout
@@ -712,7 +1040,7 @@ export function EpistemologicalTree() {
                   })}
               </g>
 
-              {/* Render cross-branch relationship edges (hidden by default, visible on hover) */}
+              {/* Render cross-branch relationship edges (always visible, enhanced on hover) */}
               <g className="relationship-edges">
                 {relationshipEdges.map(edge => {
                   const source = nodePositionMap.get(edge.source)
@@ -720,12 +1048,21 @@ export function EpistemologicalTree() {
                   if (!source || target === undefined) return null
                   if (!target) return null
 
-                  // Check if edge should be visible (either end is hovered or selected)
-                  const isVisible = hoveredNode === edge.source ||
+                  // Check if edge is related to hovered/selected node
+                  const isRelated = hoveredNode === edge.source ||
                                     hoveredNode === edge.target ||
                                     (selectedNode?.type === 'node' &&
                                      ((selectedNode.data as TreeNode).id === edge.source ||
                                       (selectedNode.data as TreeNode).id === edge.target))
+
+                  // Calculate opacity: base opacity, +0.2 if related, dimmed if another node is hovered
+                  const baseOpacity = getRelationshipEdgeOpacity(edge.type)
+                  let opacity = baseOpacity
+                  if (isRelated) {
+                    opacity = Math.min(baseOpacity + 0.2, 1)
+                  } else if (hoveredNode) {
+                    opacity = baseOpacity * 0.5 // dim non-related edges when something is hovered
+                  }
 
                   return (
                     <path
@@ -733,9 +1070,9 @@ export function EpistemologicalTree() {
                       d={createRelationshipPath(source, target)}
                       fill="none"
                       stroke={getRelationshipEdgeColor(edge.type)}
-                      strokeWidth={1.5}
-                      strokeOpacity={isVisible ? getRelationshipEdgeOpacity(edge.type) : 0}
-                      strokeDasharray={edge.type === 'tension' ? '4,2' : undefined}
+                      strokeWidth={getRelationshipEdgeStrokeWidth(edge.type)}
+                      strokeOpacity={opacity}
+                      strokeDasharray={getRelationshipEdgeDashArray(edge.type)}
                       className="transition-opacity duration-300 pointer-events-none"
                     />
                   )
