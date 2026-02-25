@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useDialogue } from '@/lib/useData'
+import { useDialogue, useWikiIndex } from '@/lib/useData'
 import { LensLayout, DetailPanel } from './LensLayout'
 import { WikiCard } from '@/components/ui/WikiCard'
-import type { DialogueRound, DialogueExchange, WarrantEntry } from '@/lib/types'
+import type { DialogueRound, DialogueExchange, WarrantEntry, WikiIndex } from '@/lib/types'
 
 // Speaker avatar component
 function SpeakerAvatar({ speaker }: { speaker: string }) {
@@ -40,7 +40,13 @@ function SpeakerAvatar({ speaker }: { speaker: string }) {
 }
 
 // Exchange bubble
-function ExchangeBubble({ exchange }: { exchange: DialogueExchange }) {
+function ExchangeBubble({
+  exchange,
+  wikiIndex
+}: {
+  exchange: DialogueExchange
+  wikiIndex: WikiIndex | null
+}) {
   const [selectedWarrant, setSelectedWarrant] = useState<WarrantEntry | null>(null)
 
   const bgColor =
@@ -50,14 +56,33 @@ function ExchangeBubble({ exchange }: { exchange: DialogueExchange }) {
       ? 'bg-marcus-faint border-marcus/30'
       : 'bg-convergence-soft border-convergence/30'
 
-  // Create a WarrantEntry from a warrant string
-  const createWarrantEntry = (warrantText: string, index: number): WarrantEntry => ({
-    id: `warrant-${index}`,
-    text: warrantText,
-    type: 'logical',  // Default type, can be refined when wiki data has full warrant info
-    used_by: [],
-    strength: 'moderate'
-  })
+  // Look up a warrant in the wiki index by text (partial match)
+  // Falls back to creating a basic entry if not found
+  const findWarrantEntry = useCallback((warrantText: string, index: number): WarrantEntry => {
+    if (wikiIndex?.warrants) {
+      // Try to find a matching warrant by partial text match
+      const normalizedSearch = warrantText.toLowerCase().trim()
+      const found = wikiIndex.warrants.find(w => {
+        const normalizedWarrant = w.text.toLowerCase().trim()
+        // Match if the warrant text contains the search text or vice versa
+        return normalizedWarrant.includes(normalizedSearch) ||
+               normalizedSearch.includes(normalizedWarrant) ||
+               // Also try matching by removing common prefixes
+               normalizedWarrant.replace(/^appeal to /i, '').includes(normalizedSearch.replace(/^appeal to /i, ''))
+      })
+      if (found) {
+        return found
+      }
+    }
+    // Fallback to creating a basic entry
+    return {
+      id: `warrant-${index}`,
+      text: warrantText,
+      type: 'logical',
+      used_by: [],
+      strength: 'moderate'
+    }
+  }, [wikiIndex])
 
   return (
     <motion.div
@@ -77,15 +102,24 @@ function ExchangeBubble({ exchange }: { exchange: DialogueExchange }) {
             Warrants
           </h5>
           <div className="flex flex-wrap gap-1">
-            {exchange.warrants.map((w, i) => (
-              <button
-                key={i}
-                onClick={() => setSelectedWarrant(createWarrantEntry(w, i))}
-                className="text-xs bg-field-subtle px-2 py-0.5 rounded text-ink-secondary hover:bg-field-deep transition-colors cursor-pointer"
-              >
-                {w}
-              </button>
-            ))}
+            {exchange.warrants.map((w, i) => {
+              const warrantEntry = findWarrantEntry(w, i)
+              const hasFullData = warrantEntry.id.startsWith('W')
+              return (
+                <button
+                  key={i}
+                  onClick={() => setSelectedWarrant(warrantEntry)}
+                  className={`text-xs px-2 py-0.5 rounded transition-colors cursor-pointer ${
+                    hasFullData
+                      ? 'bg-convergence-soft text-convergence hover:bg-convergence/20'
+                      : 'bg-field-subtle text-ink-secondary hover:bg-field-deep'
+                  }`}
+                  title={hasFullData ? `${warrantEntry.id}: ${warrantEntry.type} (${warrantEntry.strength})` : warrantEntry.text}
+                >
+                  {hasFullData ? warrantEntry.id : w}
+                </button>
+              )
+            })}
           </div>
         </div>
       )}
@@ -122,10 +156,12 @@ function RoundSection({
   round,
   isExpanded,
   onToggle,
+  wikiIndex,
 }: {
   round: DialogueRound
   isExpanded: boolean
   onToggle: () => void
+  wikiIndex: WikiIndex | null
 }) {
   return (
     <div className="card overflow-hidden">
@@ -157,7 +193,7 @@ function RoundSection({
           >
             <div className="p-4 pt-0 space-y-4">
               {round.exchanges.map((exchange, i) => (
-                <ExchangeBubble key={i} exchange={exchange} />
+                <ExchangeBubble key={i} exchange={exchange} wikiIndex={wikiIndex} />
               ))}
             </div>
           </motion.div>
@@ -328,6 +364,7 @@ function FinalSynthesis({
 
 export function SteelManArena() {
   const { data, loading, error } = useDialogue()
+  const { data: wikiIndex } = useWikiIndex()
   const [expandedRound, setExpandedRound] = useState<number | null>(1)
   const [showGenerator, setShowGenerator] = useState(false)
 
@@ -416,6 +453,7 @@ export function SteelManArena() {
                 onToggle={() =>
                   setExpandedRound(expandedRound === round.id ? null : round.id)
                 }
+                wikiIndex={wikiIndex}
               />
             ))}
           </div>
