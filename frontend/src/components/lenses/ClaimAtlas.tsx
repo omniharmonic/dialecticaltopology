@@ -5,13 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useClaims } from '@/lib/useData'
 import { useAppStore } from '@/store/appStore'
 import { LensLayout, DetailPanel, SpeakerBadge, ClaimTypeBadge } from './LensLayout'
+import { TimecodeLink } from '@/components/ui/TimecodeLink'
 import type { Claim, ThematicCluster } from '@/lib/types'
-
-function formatTime(seconds: number): string {
-  const mins = Math.floor(seconds / 60)
-  const secs = Math.floor(seconds % 60)
-  return `${mins}:${secs.toString().padStart(2, '0')}`
-}
 
 // Claim card component
 function ClaimCard({
@@ -44,7 +39,7 @@ function ClaimCard({
           <SpeakerBadge speaker={claim.speaker} />
           <ClaimTypeBadge type={claim.type} />
         </div>
-        <span className="text-xs text-ink-tertiary">{formatTime(claim.timestamp)}</span>
+        <TimecodeLink seconds={claim.timestamp} />
       </div>
 
       <p className="text-sm line-clamp-3">{claim.text}</p>
@@ -130,7 +125,7 @@ function ClaimDetail({
         <div className="flex flex-wrap gap-2">
           <SpeakerBadge speaker={claim.speaker} />
           <ClaimTypeBadge type={claim.type} />
-          <span className="text-xs text-ink-tertiary">{formatTime(claim.timestamp)}</span>
+          <TimecodeLink seconds={claim.timestamp} />
         </div>
 
         <blockquote className="text-sm italic border-l-2 border-border pl-3">
