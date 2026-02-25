@@ -58,7 +58,7 @@ function DimensionSpectrum({
         </div>
 
         {/* Track */}
-        <div className="relative h-6 bg-field-deep rounded-full overflow-hidden">
+        <div className="relative h-6 bg-field-deep rounded-full">
           {/* Gap indicator */}
           <div
             className="absolute top-0 h-full bg-ink/5"
