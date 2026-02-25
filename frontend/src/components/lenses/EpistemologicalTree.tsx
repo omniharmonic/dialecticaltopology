@@ -441,10 +441,17 @@ export function EpistemologicalTree() {
 
               return (
                 <div className="space-y-4">
-                  <p className="text-sm text-ink-secondary">
-                    The foundational assumptions and worldviews that underpin all claims in this debate.
-                    Each branch traces how philosophical positions flow from deeper epistemological commitments.
-                  </p>
+                  {node.description && (
+                    <p className="text-sm text-ink-secondary leading-relaxed">
+                      {node.description}
+                    </p>
+                  )}
+                  {!node.description && (
+                    <p className="text-sm text-ink-secondary">
+                      The foundational assumptions and worldviews that underpin all claims in this debate.
+                      Each branch traces how philosophical positions flow from deeper epistemological commitments.
+                    </p>
+                  )}
 
                   <div>
                     <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-2">
@@ -494,12 +501,19 @@ export function EpistemologicalTree() {
 
               return (
                 <div className="space-y-4">
-                  <p className="text-sm text-ink-secondary">
-                    {node.id === 'ontological' && 'Claims about the nature of reality, existence, and what is fundamentally real.'}
-                    {node.id === 'epistemological' && 'Claims about how we know what we know, and the validity of different ways of knowing.'}
-                    {node.id === 'ethical' && 'Claims about right and wrong, moral obligations, and how to evaluate actions.'}
-                    {node.id === 'psychological' && 'Claims about human psychology, perception, and the therapeutic frame.'}
-                  </p>
+                  {node.description && (
+                    <p className="text-sm text-ink-secondary leading-relaxed">
+                      {node.description}
+                    </p>
+                  )}
+                  {!node.description && (
+                    <p className="text-sm text-ink-secondary">
+                      {node.id === 'cat-ontology' && 'Claims about the nature of reality, existence, and what is fundamentally real.'}
+                      {node.id === 'cat-epistemology' && 'Claims about how we know what we know, and the validity of different ways of knowing.'}
+                      {node.id === 'cat-ethics' && 'Claims about right and wrong, moral obligations, and how to evaluate actions.'}
+                      {node.id === 'cat-methodology' && 'Claims about human psychology, perception, and the therapeutic frame.'}
+                    </p>
+                  )}
 
                   <div className="text-sm text-ink-secondary">
                     <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-1">
@@ -543,6 +557,12 @@ export function EpistemologicalTree() {
                     <div className="flex items-center gap-2">
                       <SpeakerBadge speaker={node.speaker} />
                     </div>
+                  )}
+
+                  {node.description && (
+                    <p className="text-sm text-ink-secondary leading-relaxed">
+                      {node.description}
+                    </p>
                   )}
 
                   <div className="text-sm text-ink-secondary">

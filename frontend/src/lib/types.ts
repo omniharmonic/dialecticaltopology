@@ -324,6 +324,7 @@ export interface TreeNode {
   id: string
   type: 'root' | 'category' | 'branch' | 'claim' | 'synthesis'
   label: string
+  description?: string
   speaker?: 'marcus' | 'demartini' | 'shared'
   claim_id?: string
   parent_id: string | null
