@@ -73,7 +73,7 @@ export function LensLayout({
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
-                className="lg:col-span-1"
+                className="lg:col-span-1 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto"
               >
                 {sidebar}
               </motion.aside>
