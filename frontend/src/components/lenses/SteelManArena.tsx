@@ -7,6 +7,29 @@ import { LensLayout, DetailPanel } from './LensLayout'
 import { WikiCard } from '@/components/ui/WikiCard'
 import type { DialogueRound, DialogueExchange, WarrantEntry, WikiIndex } from '@/lib/types'
 
+// Simple markdown formatter for basic formatting
+function formatMarkdown(text: string): JSX.Element {
+  // Split by lines
+  const lines = text.split('\n')
+
+  return (
+    <>
+      {lines.map((line, i) => {
+        // Handle bold **text**
+        const parts = line.split(/(\*\*.*?\*\*)/)
+        const formatted = parts.map((part, j) => {
+          if (part.startsWith('**') && part.endsWith('**')) {
+            return <strong key={j} className="font-semibold text-ink">{part.slice(2, -2)}</strong>
+          }
+          return part
+        })
+
+        return <div key={i} className="mb-2">{formatted}</div>
+      })}
+    </>
+  )
+}
+
 // Speaker avatar component
 function SpeakerAvatar({ speaker }: { speaker: string }) {
   const config: Record<string, { color: string; label: string; icon: string }> = {
@@ -324,8 +347,8 @@ function FinalSynthesis({
       <h3 className="font-display font-semibold text-xl text-ink mb-4">{synthesis.title}</h3>
 
       <div className="prose prose-sm max-w-none">
-        <div className="whitespace-pre-line text-ink-secondary text-sm">
-          {synthesis.content}
+        <div className="text-ink-secondary text-sm leading-relaxed">
+          {formatMarkdown(synthesis.content)}
         </div>
       </div>
 
