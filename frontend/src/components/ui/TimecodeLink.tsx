@@ -1,8 +1,6 @@
 'use client'
 
-// YouTube video ID for Aubrey Marcus Podcast #521: "No Such Thing As Evil? (SHOCKING DEBATE) | Dr. John Demartini"
-// TODO: Replace with actual YouTube video ID once available
-const YOUTUBE_VIDEO_ID = 'dQw4w9WgXcQ'
+import { YOUTUBE_VIDEO_ID } from '@/lib/config'
 
 /**
  * Formats seconds into MM:SS or HH:MM:SS format
