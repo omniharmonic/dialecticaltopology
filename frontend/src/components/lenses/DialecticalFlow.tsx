@@ -122,22 +122,63 @@ function InflectionMarker({
   )
 }
 
+// Trajectory point type for emotional arc
+type TrajectoryPoint = { time: number; intensity: number; note: string }
+
 // Emotional arc visualization
 function EmotionalArc({
   trajectory,
   maxTime,
+  onPointClick,
 }: {
-  trajectory: { time: number; intensity: number; note: string }[]
+  trajectory: TrajectoryPoint[]
   maxTime: number
+  onPointClick?: (point: TrajectoryPoint) => void
 }) {
-  const points = trajectory.map((p) => ({
-    x: (p.time / maxTime) * 100,
-    y: 100 - p.intensity * 100,
-  }))
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+
+  // Calculate points and identify peaks/valleys
+  const { points, peakIndex, valleyIndex } = useMemo(() => {
+    const pts = trajectory.map((p) => ({
+      x: (p.time / maxTime) * 100,
+      y: 100 - p.intensity * 100,
+    }))
+
+    // Find peak (highest intensity = lowest y value)
+    let peakIdx = 0
+    let valleyIdx = 0
+    let maxIntensity = trajectory[0]?.intensity ?? 0
+    let minIntensity = trajectory[0]?.intensity ?? 1
+
+    trajectory.forEach((p, i) => {
+      if (p.intensity > maxIntensity) {
+        maxIntensity = p.intensity
+        peakIdx = i
+      }
+      if (p.intensity < minIntensity) {
+        minIntensity = p.intensity
+        valleyIdx = i
+      }
+    })
+
+    return { points: pts, peakIndex: peakIdx, valleyIndex: valleyIdx }
+  }, [trajectory, maxTime])
 
   const pathD = points
     .map((p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`))
     .join(' ')
+
+  // Determine point color based on whether it's a peak, valley, or normal
+  const getPointColor = (index: number) => {
+    if (index === peakIndex) return INSIGHT_COLOR
+    if (index === valleyIndex) return CONVERGENCE_COLOR
+    return MARCUS_COLOR
+  }
+
+  // Calculate tooltip width based on text length
+  const getTooltipWidth = (text: string) => {
+    return Math.min(Math.max(text.length * 1.5, 20), 60)
+  }
 
   return (
     <svg className="w-full h-24" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -163,10 +204,94 @@ function EmotionalArc({
       {/* Line */}
       <path d={pathD} fill="none" stroke={MARCUS_COLOR} strokeWidth="0.5" />
 
-      {/* Points */}
-      {points.map((p, i) => (
-        <circle key={i} cx={p.x} cy={p.y} r="1" fill={MARCUS_COLOR} />
-      ))}
+      {/* Interactive Points */}
+      {points.map((p, i) => {
+        const isHovered = hoveredIndex === i
+        const isPeak = i === peakIndex
+        const isValley = i === valleyIndex
+        const color = getPointColor(i)
+        const baseRadius = isPeak || isValley ? 1.5 : 1
+        const radius = isHovered ? 2 : baseRadius
+
+        return (
+          <g key={i}>
+            {/* Invisible larger hit area for easier interaction */}
+            <circle
+              cx={p.x}
+              cy={p.y}
+              r="3"
+              fill="transparent"
+              style={{ cursor: 'pointer' }}
+              onMouseEnter={() => setHoveredIndex(i)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              onClick={() => onPointClick?.(trajectory[i])}
+            />
+            {/* Visible point */}
+            <circle
+              cx={p.x}
+              cy={p.y}
+              r={radius}
+              fill={color}
+              style={{
+                transition: 'r 0.15s ease-out',
+                pointerEvents: 'none'
+              }}
+            />
+            {/* Highlight ring for peaks/valleys */}
+            {(isPeak || isValley) && (
+              <circle
+                cx={p.x}
+                cy={p.y}
+                r={isHovered ? 3 : 2.5}
+                fill="none"
+                stroke={color}
+                strokeWidth="0.3"
+                strokeOpacity={isHovered ? 0.8 : 0.4}
+                style={{ pointerEvents: 'none' }}
+              />
+            )}
+          </g>
+        )
+      })}
+
+      {/* Tooltip for hovered point */}
+      {hoveredIndex !== null && trajectory[hoveredIndex] && (
+        <g
+          transform={`translate(${points[hoveredIndex].x}, ${Math.max(points[hoveredIndex].y - 8, 12)})`}
+          style={{ pointerEvents: 'none' }}
+        >
+          {/* Tooltip background */}
+          <rect
+            x={-getTooltipWidth(trajectory[hoveredIndex].note) / 2}
+            y="-6"
+            width={getTooltipWidth(trajectory[hoveredIndex].note)}
+            height="5"
+            rx="1"
+            fill="#2A2A28"
+            fillOpacity="0.9"
+          />
+          {/* Tooltip text */}
+          <text
+            x="0"
+            y="-2.5"
+            textAnchor="middle"
+            fill="#F5F5F3"
+            fontSize="2.5"
+            fontFamily="system-ui, sans-serif"
+          >
+            {trajectory[hoveredIndex].note.length > 35
+              ? trajectory[hoveredIndex].note.substring(0, 35) + '...'
+              : trajectory[hoveredIndex].note
+            }
+          </text>
+          {/* Tooltip arrow */}
+          <polygon
+            points="-1.5,-1 1.5,-1 0,1"
+            fill="#2A2A28"
+            fillOpacity="0.9"
+          />
+        </g>
+      )}
     </svg>
   )
 }
