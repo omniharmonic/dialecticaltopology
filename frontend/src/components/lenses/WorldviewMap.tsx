@@ -2,10 +2,10 @@
 
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useOntology } from '@/lib/useData'
+import { useOntology, useClaims } from '@/lib/useData'
 import { LensLayout, DetailPanel, SpeakerBadge } from './LensLayout'
-import { ClaimReference } from '@/components/ui/ClaimReference'
-import type { OntologyDimension } from '@/lib/types'
+import { ClaimCard } from '@/components/ui/ClaimCard'
+import type { OntologyDimension, Claim } from '@/lib/types'
 
 // Design token colors for SVG elements (mirrors CSS custom properties)
 const MARCUS_COLOR = '#C45A3C'      // --marcus
@@ -203,9 +203,11 @@ function RadarChart({ dimensions }: { dimensions: OntologyDimension[] }) {
 function DimensionDetail({
   dimension,
   onClose,
+  onClaimClick,
 }: {
   dimension: OntologyDimension
   onClose: () => void
+  onClaimClick: (claimId: string) => void
 }) {
   // Semantic bridging colors
   const bridgingColors: Record<string, string> = {
@@ -245,11 +247,13 @@ function DimensionDetail({
           </p>
           <div className="flex flex-wrap gap-1 mt-2">
             {dimension.positions.demartini.key_claims.map((c) => (
-              <ClaimReference
+              <button
                 key={c}
-                claimId={c}
-                className="text-xs bg-demartini-faint text-demartini px-2 py-0.5 rounded border-none"
-              />
+                onClick={() => onClaimClick(c)}
+                className="text-xs bg-demartini-faint text-demartini px-2 py-0.5 rounded border-none font-mono hover:bg-demartini/20 transition-colors cursor-pointer"
+              >
+                {c}
+              </button>
             ))}
           </div>
         </div>
@@ -262,11 +266,13 @@ function DimensionDetail({
           <p className="text-sm text-ink">{dimension.positions.marcus.summary}</p>
           <div className="flex flex-wrap gap-1 mt-2">
             {dimension.positions.marcus.key_claims.map((c) => (
-              <ClaimReference
+              <button
                 key={c}
-                claimId={c}
-                className="text-xs bg-marcus-faint text-marcus px-2 py-0.5 rounded border-none"
-              />
+                onClick={() => onClaimClick(c)}
+                className="text-xs bg-marcus-faint text-marcus px-2 py-0.5 rounded border-none font-mono hover:bg-marcus/20 transition-colors cursor-pointer"
+              >
+                {c}
+              </button>
             ))}
           </div>
         </div>
@@ -303,8 +309,20 @@ function DimensionDetail({
 
 export function WorldviewMap() {
   const { data, loading, error } = useOntology()
+  const { data: claimsData } = useClaims()
   const [selectedDimension, setSelectedDimension] = useState<OntologyDimension | null>(null)
+  const [selectedClaim, setSelectedClaim] = useState<Claim | null>(null)
   const [viewMode, setViewMode] = useState<'spectrum' | 'radar'>('spectrum')
+
+  // Handler for claim clicks
+  const handleClaimClick = (claimId: string) => {
+    if (claimsData) {
+      const claim = claimsData.claims.find((c) => c.id === claimId)
+      if (claim) {
+        setSelectedClaim(claim)
+      }
+    }
+  }
 
   const sidebar = useMemo(() => {
     if (selectedDimension) {
@@ -312,6 +330,7 @@ export function WorldviewMap() {
         <DimensionDetail
           dimension={selectedDimension}
           onClose={() => setSelectedDimension(null)}
+          onClaimClick={handleClaimClick}
         />
       )
     }
@@ -352,7 +371,7 @@ export function WorldviewMap() {
         )}
       </div>
     )
-  }, [selectedDimension, data])
+  }, [selectedDimension, data, claimsData])
 
   return (
     <LensLayout
@@ -423,6 +442,15 @@ export function WorldviewMap() {
             <p className="text-sm text-ink-secondary mt-2">{data.synthesis.domain_confusion}</p>
           </div>
         </div>
+      )}
+
+      {/* Claim Card popup */}
+      {selectedClaim && (
+        <ClaimCard
+          claim={selectedClaim}
+          onClose={() => setSelectedClaim(null)}
+          isOpen={true}
+        />
       )}
     </LensLayout>
   )
