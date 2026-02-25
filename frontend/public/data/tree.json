@@ -635,9 +635,9 @@
       "strength": 0.6
     },
     {
-      "id": "e-paradox-D02-M18",
+      "id": "e-paradox-D02-M17",
       "source": "claim-D02",
-      "target": "claim-M18",
+      "target": "claim-M17",
       "type": "paradox",
       "strength": 0.7
     }
@@ -653,7 +653,7 @@
     {
       "id": "synthesis-middle-path",
       "label": "Middle Path Ethics",
-      "contributing_claims": ["D05", "M04", "M05"],
+      "contributing_claims": ["D05", "M04", "M09"],
       "synthesis_text": "Between complete relativism and rigid absolutism lies a middle path that acknowledges contextual factors while maintaining that certain acts (intentional torture of innocents) remain wrong across contexts. Moral evolution suggests movement toward this integration.",
       "position": { "x": 200, "y": 200 }
     }
