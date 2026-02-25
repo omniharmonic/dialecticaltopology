@@ -283,7 +283,7 @@ export default function Home() {
         onSelectLens={handleSelectLens}
         onGoHome={handleGoHome}
       />
-      <LensComponent />
+      <LensComponent key={activeLens} />
     </main>
   )
 }

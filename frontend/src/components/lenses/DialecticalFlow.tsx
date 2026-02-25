@@ -140,7 +140,7 @@ function EmotionalArc({
   // Calculate points and identify peaks/valleys
   const { points, peakIndex, valleyIndex } = useMemo(() => {
     const pts = trajectory.map((p) => ({
-      x: (p.time / maxTime) * 100,
+      x: (p.time / maxTime) * 1000,
       y: 100 - p.intensity * 100,
     }))
 
@@ -175,17 +175,17 @@ function EmotionalArc({
     return MARCUS_COLOR
   }
 
-  // Calculate tooltip width based on text length
+  // Calculate tooltip width based on text length (adjusted for wider viewBox)
   const getTooltipWidth = (text: string) => {
-    return Math.min(Math.max(text.length * 1.5, 20), 60)
+    return Math.min(Math.max(text.length * 4, 80), 250)
   }
 
   return (
-    <svg className="w-full h-24" viewBox="0 0 100 100" preserveAspectRatio="none">
+    <svg className="w-full h-24" viewBox="0 0 1000 100" preserveAspectRatio="none">
       {/* Grid lines */}
-      <line x1="0" y1="50" x2="100" y2="50" stroke={BORDER_COLOR} strokeWidth="0.2" />
-      <line x1="0" y1="25" x2="100" y2="25" stroke={BORDER_COLOR} strokeWidth="0.1" />
-      <line x1="0" y1="75" x2="100" y2="75" stroke={BORDER_COLOR} strokeWidth="0.1" />
+      <line x1="0" y1="50" x2="1000" y2="50" stroke={BORDER_COLOR} strokeWidth="0.2" />
+      <line x1="0" y1="25" x2="1000" y2="25" stroke={BORDER_COLOR} strokeWidth="0.1" />
+      <line x1="0" y1="75" x2="1000" y2="75" stroke={BORDER_COLOR} strokeWidth="0.1" />
 
       {/* Gradient fill */}
       <defs>
@@ -197,7 +197,7 @@ function EmotionalArc({
 
       {/* Fill area */}
       <path
-        d={`${pathD} L ${points[points.length - 1]?.x || 100} 100 L ${points[0]?.x || 0} 100 Z`}
+        d={`${pathD} L ${points[points.length - 1]?.x || 1000} 100 L ${points[0]?.x || 0} 100 Z`}
         fill="url(#arcGradient)"
       />
 
@@ -210,8 +210,8 @@ function EmotionalArc({
         const isPeak = i === peakIndex
         const isValley = i === valleyIndex
         const color = getPointColor(i)
-        const baseRadius = isPeak || isValley ? 1.5 : 1
-        const radius = isHovered ? 2 : baseRadius
+        const baseRadius = isPeak || isValley ? 4 : 3
+        const radius = isHovered ? 5 : baseRadius
 
         return (
           <g key={i}>
@@ -219,7 +219,7 @@ function EmotionalArc({
             <circle
               cx={p.x}
               cy={p.y}
-              r="3"
+              r="15"
               fill="transparent"
               style={{ cursor: 'pointer' }}
               onMouseEnter={() => setHoveredIndex(i)}
@@ -242,10 +242,10 @@ function EmotionalArc({
               <circle
                 cx={p.x}
                 cy={p.y}
-                r={isHovered ? 3 : 2.5}
+                r={isHovered ? 8 : 6.5}
                 fill="none"
                 stroke={color}
-                strokeWidth="0.3"
+                strokeWidth="0.8"
                 strokeOpacity={isHovered ? 0.8 : 0.4}
                 style={{ pointerEvents: 'none' }}
               />
@@ -257,30 +257,30 @@ function EmotionalArc({
       {/* Tooltip for hovered point */}
       {hoveredIndex !== null && trajectory[hoveredIndex] && (
         <g
-          transform={`translate(${points[hoveredIndex].x}, ${Math.max(points[hoveredIndex].y - 8, 12)})`}
+          transform={`translate(${points[hoveredIndex].x}, ${Math.max(points[hoveredIndex].y - 18, 20)})`}
           style={{ pointerEvents: 'none' }}
         >
           {/* Tooltip background */}
           <rect
             x={-getTooltipWidth(trajectory[hoveredIndex].note) / 2}
-            y="-6"
+            y="-14"
             width={getTooltipWidth(trajectory[hoveredIndex].note)}
-            height="5"
-            rx="1"
+            height="12"
+            rx="2"
             fill="#2A2A28"
             fillOpacity="0.9"
           />
           {/* Tooltip text */}
           <text
             x="0"
-            y="-2.5"
+            y="-6"
             textAnchor="middle"
             fill="#F5F5F3"
-            fontSize="2.5"
+            fontSize="8"
             fontFamily="system-ui, sans-serif"
           >
-            {trajectory[hoveredIndex].note.length > 35
-              ? trajectory[hoveredIndex].note.substring(0, 35) + '...'
+            {trajectory[hoveredIndex].note.length > 40
+              ? trajectory[hoveredIndex].note.substring(0, 40) + '...'
               : trajectory[hoveredIndex].note
             }
           </text>
