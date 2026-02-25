@@ -2,9 +2,10 @@
 
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useOntology, useClaims } from '@/lib/useData'
+import { useOntology, useClaims, useWikiIndex } from '@/lib/useData'
 import { LensLayout, DetailPanel, SpeakerBadge } from './LensLayout'
 import { ClaimCard } from '@/components/ui/ClaimCard'
+import { WikiCard } from '@/components/ui/WikiCard'
 import type { OntologyDimension, Claim } from '@/lib/types'
 
 // Design token colors for SVG elements (mirrors CSS custom properties)
@@ -310,8 +311,10 @@ function DimensionDetail({
 export function WorldviewMap() {
   const { data, loading, error } = useOntology()
   const { data: claimsData } = useClaims()
+  const { data: wikiData } = useWikiIndex()
   const [selectedDimension, setSelectedDimension] = useState<OntologyDimension | null>(null)
   const [selectedClaim, setSelectedClaim] = useState<Claim | null>(null)
+  const [selectedConcept, setSelectedConcept] = useState<string | null>(null)
   const [viewMode, setViewMode] = useState<'spectrum' | 'radar'>('spectrum')
 
   // Handler for claim clicks
@@ -449,6 +452,18 @@ export function WorldviewMap() {
         <ClaimCard
           claim={selectedClaim}
           onClose={() => setSelectedClaim(null)}
+          wikiData={wikiData}
+          onConceptClick={(conceptId) => setSelectedConcept(conceptId)}
+          isOpen={true}
+        />
+      )}
+
+      {/* WikiCard popup for concepts */}
+      {selectedConcept && wikiData && (
+        <WikiCard
+          type="concept"
+          entry={wikiData.concepts.find(c => c.id === selectedConcept)!}
+          onClose={() => setSelectedConcept(null)}
           isOpen={true}
         />
       )}

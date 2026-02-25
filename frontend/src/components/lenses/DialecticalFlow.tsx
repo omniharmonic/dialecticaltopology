@@ -2,9 +2,10 @@
 
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useFlow, useClaims } from '@/lib/useData'
+import { useFlow, useClaims, useWikiIndex } from '@/lib/useData'
 import { LensLayout, DetailPanel, SpeakerBadge } from './LensLayout'
 import { ClaimCard } from '@/components/ui/ClaimCard'
+import { WikiCard } from '@/components/ui/WikiCard'
 import type { FlowPhase, InflectionPoint, Claim } from '@/lib/types'
 
 // Design token colors for SVG (mirrors CSS custom properties)
@@ -398,9 +399,11 @@ function InflectionDetail({
 export function DialecticalFlow() {
   const { data, loading, error } = useFlow()
   const { data: claimsData } = useClaims()
+  const { data: wikiData } = useWikiIndex()
   const [selectedPhase, setSelectedPhase] = useState<FlowPhase | null>(null)
   const [selectedInflection, setSelectedInflection] = useState<InflectionPoint | null>(null)
   const [selectedClaim, setSelectedClaim] = useState<Claim | null>(null)
+  const [selectedConcept, setSelectedConcept] = useState<string | null>(null)
 
   const maxTime = useMemo(() => {
     if (!data) return 6330
@@ -561,6 +564,18 @@ export function DialecticalFlow() {
         <ClaimCard
           claim={selectedClaim}
           onClose={() => setSelectedClaim(null)}
+          wikiData={wikiData}
+          onConceptClick={(conceptId) => setSelectedConcept(conceptId)}
+          isOpen={true}
+        />
+      )}
+
+      {/* WikiCard popup for concepts */}
+      {selectedConcept && wikiData && (
+        <WikiCard
+          type="concept"
+          entry={wikiData.concepts.find(c => c.id === selectedConcept)!}
+          onClose={() => setSelectedConcept(null)}
           isOpen={true}
         />
       )}

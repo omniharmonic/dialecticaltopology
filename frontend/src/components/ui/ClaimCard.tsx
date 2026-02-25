@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/cn'
 import { TimecodeLink } from './TimecodeLink'
 import { SpeakerBadge, ClaimTypeBadge } from '@/components/lenses/LensLayout'
-import type { Claim } from '@/lib/types'
+import type { Claim, WikiIndex } from '@/lib/types'
 
 // Props for the ClaimCard component
 export interface ClaimCardProps {
@@ -13,6 +13,8 @@ export interface ClaimCardProps {
   onClose: () => void
   onWarrantClick?: (warrantText: string) => void
   onEvidenceClick?: (evidenceText: string) => void
+  onConceptClick?: (conceptId: string) => void
+  wikiData?: WikiIndex | null
   isOpen?: boolean
 }
 
@@ -113,6 +115,8 @@ export function ClaimCard({
   onClose,
   onWarrantClick,
   onEvidenceClick,
+  onConceptClick,
+  wikiData,
   isOpen = true,
 }: ClaimCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
@@ -240,18 +244,27 @@ export function ClaimCard({
             Related Concepts
           </h3>
           <div className="flex flex-wrap gap-2">
-            {claim.related_concepts.map((concept, index) => (
-              <span
-                key={index}
-                className={cn(
-                  'inline-flex items-center px-2 py-1 rounded-full',
-                  'bg-field-deep text-xs text-ink-secondary',
-                  'border border-border'
-                )}
-              >
-                {concept}
-              </span>
-            ))}
+            {claim.related_concepts.map((conceptId, index) => {
+              // Find concept in wiki index
+              const concept = wikiData?.concepts.find(c => c.id === conceptId)
+              const label = concept?.label || conceptId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+
+              return (
+                <button
+                  key={index}
+                  onClick={() => onConceptClick?.(conceptId)}
+                  className={cn(
+                    'inline-flex items-center px-2 py-1 rounded-full',
+                    'bg-field-deep text-xs text-ink-secondary',
+                    'border border-border',
+                    onConceptClick && concept ? 'hover:bg-field-subtle hover:border-demartini cursor-pointer transition-colors' : ''
+                  )}
+                  disabled={!concept || !onConceptClick}
+                >
+                  {label}
+                </button>
+              )
+            })}
           </div>
         </div>
       )}
