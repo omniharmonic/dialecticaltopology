@@ -1,0 +1,727 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "total_nodes": 39,
+    "total_edges": 43
+  },
+  "nodes": [
+    {
+      "id": "root",
+      "type": "root",
+      "label": "Philosophical Foundations",
+      "parent_id": null,
+      "depth": 0
+    },
+    {
+      "id": "cat-epistemology",
+      "type": "category",
+      "label": "EPISTEMOLOGY",
+      "parent_id": "root",
+      "depth": 1
+    },
+    {
+      "id": "cat-ontology",
+      "type": "category",
+      "label": "ONTOLOGY",
+      "parent_id": "root",
+      "depth": 1
+    },
+    {
+      "id": "cat-ethics",
+      "type": "category",
+      "label": "ETHICS",
+      "parent_id": "root",
+      "depth": 1
+    },
+    {
+      "id": "cat-methodology",
+      "type": "category",
+      "label": "METHODOLOGY",
+      "parent_id": "root",
+      "depth": 1
+    },
+    {
+      "id": "branch-rationalism",
+      "type": "branch",
+      "label": "Rationalism",
+      "speaker": "demartini",
+      "parent_id": "cat-epistemology",
+      "depth": 2
+    },
+    {
+      "id": "branch-empiricism",
+      "type": "branch",
+      "label": "Empiricism / Experiential",
+      "speaker": "marcus",
+      "parent_id": "cat-epistemology",
+      "depth": 2
+    },
+    {
+      "id": "branch-monism",
+      "type": "branch",
+      "label": "Monism / Non-duality",
+      "speaker": "demartini",
+      "parent_id": "cat-ontology",
+      "depth": 2
+    },
+    {
+      "id": "branch-dualism",
+      "type": "branch",
+      "label": "Dualism / Moral Realism",
+      "speaker": "marcus",
+      "parent_id": "cat-ontology",
+      "depth": 2
+    },
+    {
+      "id": "branch-consequentialist",
+      "type": "branch",
+      "label": "Consequentialist / Balance",
+      "speaker": "demartini",
+      "parent_id": "cat-ethics",
+      "depth": 2
+    },
+    {
+      "id": "branch-deontological",
+      "type": "branch",
+      "label": "Deontological / Virtue",
+      "speaker": "marcus",
+      "parent_id": "cat-ethics",
+      "depth": 2
+    },
+    {
+      "id": "branch-technique",
+      "type": "branch",
+      "label": "Technique-based",
+      "speaker": "demartini",
+      "parent_id": "cat-methodology",
+      "depth": 2
+    },
+    {
+      "id": "branch-relationship",
+      "type": "branch",
+      "label": "Relationship-based",
+      "speaker": "marcus",
+      "parent_id": "cat-methodology",
+      "depth": 2
+    },
+    {
+      "id": "claim-D03",
+      "type": "claim",
+      "label": "Moral development from amygdala to prefrontal cortex",
+      "speaker": "demartini",
+      "claim_id": "D03",
+      "parent_id": "branch-rationalism",
+      "depth": 3
+    },
+    {
+      "id": "claim-D07",
+      "type": "claim",
+      "label": "Labeling prevents understanding",
+      "speaker": "demartini",
+      "claim_id": "D07",
+      "parent_id": "branch-rationalism",
+      "depth": 3
+    },
+    {
+      "id": "claim-D13",
+      "type": "claim",
+      "label": "World is projection of self",
+      "speaker": "demartini",
+      "claim_id": "D13",
+      "parent_id": "branch-rationalism",
+      "depth": 3
+    },
+    {
+      "id": "claim-D14",
+      "type": "claim",
+      "label": "Most people are unconscious automatons",
+      "speaker": "demartini",
+      "claim_id": "D14",
+      "parent_id": "branch-rationalism",
+      "depth": 3
+    },
+    {
+      "id": "claim-M01",
+      "type": "claim",
+      "label": "Embodied knowledge of right and wrong",
+      "speaker": "marcus",
+      "claim_id": "M01",
+      "parent_id": "branch-empiricism",
+      "depth": 3
+    },
+    {
+      "id": "claim-M10",
+      "type": "claim",
+      "label": "Values anthropologically embedded",
+      "speaker": "marcus",
+      "claim_id": "M10",
+      "parent_id": "branch-empiricism",
+      "depth": 3
+    },
+    {
+      "id": "claim-M16",
+      "type": "claim",
+      "label": "Value intrinsic to the cosmos",
+      "speaker": "marcus",
+      "claim_id": "M16",
+      "parent_id": "branch-empiricism",
+      "depth": 3
+    },
+    {
+      "id": "claim-D01",
+      "type": "claim",
+      "label": "Evil is incomplete awareness",
+      "speaker": "demartini",
+      "claim_id": "D01",
+      "parent_id": "branch-monism",
+      "depth": 3
+    },
+    {
+      "id": "claim-D02",
+      "type": "claim",
+      "label": "Unity of opposites",
+      "speaker": "demartini",
+      "claim_id": "D02",
+      "parent_id": "branch-monism",
+      "depth": 3
+    },
+    {
+      "id": "claim-D12",
+      "type": "claim",
+      "label": "Beyond appearance is only love",
+      "speaker": "demartini",
+      "claim_id": "D12",
+      "parent_id": "branch-monism",
+      "depth": 3
+    },
+    {
+      "id": "claim-D20",
+      "type": "claim",
+      "label": "Good and evil are projections",
+      "speaker": "demartini",
+      "claim_id": "D20",
+      "parent_id": "branch-monism",
+      "depth": 3
+    },
+    {
+      "id": "claim-M07",
+      "type": "claim",
+      "label": "Evil as cosmic conspiracy",
+      "speaker": "marcus",
+      "claim_id": "M07",
+      "parent_id": "branch-dualism",
+      "depth": 3
+    },
+    {
+      "id": "claim-M06",
+      "type": "claim",
+      "label": "We participate in and co-create with God",
+      "speaker": "marcus",
+      "claim_id": "M06",
+      "parent_id": "branch-dualism",
+      "depth": 3
+    },
+    {
+      "id": "claim-M08",
+      "type": "claim",
+      "label": "Life itself is good",
+      "speaker": "marcus",
+      "claim_id": "M08",
+      "parent_id": "branch-dualism",
+      "depth": 3
+    },
+    {
+      "id": "claim-D05",
+      "type": "claim",
+      "label": "Morality is culturally relative",
+      "speaker": "demartini",
+      "claim_id": "D05",
+      "parent_id": "branch-consequentialist",
+      "depth": 3
+    },
+    {
+      "id": "claim-D08",
+      "type": "claim",
+      "label": "Everyone acts for perceived advantage",
+      "speaker": "demartini",
+      "claim_id": "D08",
+      "parent_id": "branch-consequentialist",
+      "depth": 3
+    },
+    {
+      "id": "claim-D18",
+      "type": "claim",
+      "label": "Upsides exist to all events",
+      "speaker": "demartini",
+      "claim_id": "D18",
+      "parent_id": "branch-consequentialist",
+      "depth": 3
+    },
+    {
+      "id": "claim-M03",
+      "type": "claim",
+      "label": "Sacred obligation to act against evil",
+      "speaker": "marcus",
+      "claim_id": "M03",
+      "parent_id": "branch-deontological",
+      "depth": 3
+    },
+    {
+      "id": "claim-M09",
+      "type": "claim",
+      "label": "Torture of innocents is absolutely evil",
+      "speaker": "marcus",
+      "claim_id": "M09",
+      "parent_id": "branch-deontological",
+      "depth": 3
+    },
+    {
+      "id": "claim-M04",
+      "type": "claim",
+      "label": "Morality has evolved (progress exists)",
+      "speaker": "marcus",
+      "claim_id": "M04",
+      "parent_id": "branch-deontological",
+      "depth": 3
+    },
+    {
+      "id": "claim-D04",
+      "type": "claim",
+      "label": "Therapeutic dissolution frees from victimhood",
+      "speaker": "demartini",
+      "claim_id": "D04",
+      "parent_id": "branch-technique",
+      "depth": 3
+    },
+    {
+      "id": "claim-D16",
+      "type": "claim",
+      "label": "Gratitude over forgiveness",
+      "speaker": "demartini",
+      "claim_id": "D16",
+      "parent_id": "branch-technique",
+      "depth": 3
+    },
+    {
+      "id": "claim-D21",
+      "type": "claim",
+      "label": "Masters of destiny, not victims of history",
+      "speaker": "demartini",
+      "claim_id": "D21",
+      "parent_id": "branch-technique",
+      "depth": 3
+    },
+    {
+      "id": "claim-M11",
+      "type": "claim",
+      "label": "Ho'oponopono: locate in self what we reject",
+      "speaker": "marcus",
+      "claim_id": "M11",
+      "parent_id": "branch-relationship",
+      "depth": 3
+    },
+    {
+      "id": "claim-M13",
+      "type": "claim",
+      "label": "Both therapeutic value and moral judgment",
+      "speaker": "marcus",
+      "claim_id": "M13",
+      "parent_id": "branch-relationship",
+      "depth": 3
+    },
+    {
+      "id": "claim-M17",
+      "type": "claim",
+      "label": "Debate is healthy - dialectic seeks truth",
+      "speaker": "marcus",
+      "claim_id": "M17",
+      "parent_id": "branch-relationship",
+      "depth": 3
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-root-epistemology",
+      "source": "root",
+      "target": "cat-epistemology",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-root-ontology",
+      "source": "root",
+      "target": "cat-ontology",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-root-ethics",
+      "source": "root",
+      "target": "cat-ethics",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-root-methodology",
+      "source": "root",
+      "target": "cat-methodology",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-epistemology-rationalism",
+      "source": "cat-epistemology",
+      "target": "branch-rationalism",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-epistemology-empiricism",
+      "source": "cat-epistemology",
+      "target": "branch-empiricism",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-ontology-monism",
+      "source": "cat-ontology",
+      "target": "branch-monism",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-ontology-dualism",
+      "source": "cat-ontology",
+      "target": "branch-dualism",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-ethics-consequentialist",
+      "source": "cat-ethics",
+      "target": "branch-consequentialist",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-ethics-deontological",
+      "source": "cat-ethics",
+      "target": "branch-deontological",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-methodology-technique",
+      "source": "cat-methodology",
+      "target": "branch-technique",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-methodology-relationship",
+      "source": "cat-methodology",
+      "target": "branch-relationship",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-rationalism-D03",
+      "source": "branch-rationalism",
+      "target": "claim-D03",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-rationalism-D07",
+      "source": "branch-rationalism",
+      "target": "claim-D07",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-rationalism-D13",
+      "source": "branch-rationalism",
+      "target": "claim-D13",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-rationalism-D14",
+      "source": "branch-rationalism",
+      "target": "claim-D14",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-empiricism-M01",
+      "source": "branch-empiricism",
+      "target": "claim-M01",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-empiricism-M10",
+      "source": "branch-empiricism",
+      "target": "claim-M10",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-empiricism-M16",
+      "source": "branch-empiricism",
+      "target": "claim-M16",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-monism-D01",
+      "source": "branch-monism",
+      "target": "claim-D01",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-monism-D02",
+      "source": "branch-monism",
+      "target": "claim-D02",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-monism-D12",
+      "source": "branch-monism",
+      "target": "claim-D12",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-monism-D20",
+      "source": "branch-monism",
+      "target": "claim-D20",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-dualism-M07",
+      "source": "branch-dualism",
+      "target": "claim-M07",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-dualism-M06",
+      "source": "branch-dualism",
+      "target": "claim-M06",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-dualism-M08",
+      "source": "branch-dualism",
+      "target": "claim-M08",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-consequentialist-D05",
+      "source": "branch-consequentialist",
+      "target": "claim-D05",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-consequentialist-D08",
+      "source": "branch-consequentialist",
+      "target": "claim-D08",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-consequentialist-D18",
+      "source": "branch-consequentialist",
+      "target": "claim-D18",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-deontological-M03",
+      "source": "branch-deontological",
+      "target": "claim-M03",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-deontological-M09",
+      "source": "branch-deontological",
+      "target": "claim-M09",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-deontological-M04",
+      "source": "branch-deontological",
+      "target": "claim-M04",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-technique-D04",
+      "source": "branch-technique",
+      "target": "claim-D04",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-technique-D16",
+      "source": "branch-technique",
+      "target": "claim-D16",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-technique-D21",
+      "source": "branch-technique",
+      "target": "claim-D21",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-relationship-M11",
+      "source": "branch-relationship",
+      "target": "claim-M11",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-relationship-M13",
+      "source": "branch-relationship",
+      "target": "claim-M13",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-relationship-M17",
+      "source": "branch-relationship",
+      "target": "claim-M17",
+      "type": "hierarchy",
+      "strength": 1.0
+    },
+    {
+      "id": "e-contradiction-D01-M09",
+      "source": "claim-D01",
+      "target": "claim-M09",
+      "type": "contradiction",
+      "strength": 0.9
+    },
+    {
+      "id": "e-contradiction-D05-M04",
+      "source": "claim-D05",
+      "target": "claim-M04",
+      "type": "contradiction",
+      "strength": 0.7
+    },
+    {
+      "id": "e-tension-D04-M03",
+      "source": "claim-D04",
+      "target": "claim-M03",
+      "type": "tension",
+      "strength": 0.8
+    },
+    {
+      "id": "e-agreement-D04-M13",
+      "source": "claim-D04",
+      "target": "claim-M13",
+      "type": "agreement",
+      "strength": 0.6
+    },
+    {
+      "id": "e-paradox-D02-M18",
+      "source": "claim-D02",
+      "target": "claim-M18",
+      "type": "paradox",
+      "strength": 0.7
+    }
+  ],
+  "synthesis_nodes": [
+    {
+      "id": "synthesis-therapeutic-moral",
+      "label": "Temporal Integration",
+      "contributing_claims": ["D04", "D07", "M03", "M13"],
+      "synthesis_text": "Both therapeutic dissolution (after harm) and moral action (during/before harm) can coexist. The apparent contradiction dissolves when we recognize they operate in different temporal frames: understanding serves healing; judgment serves prevention.",
+      "position": { "x": 0, "y": 200 }
+    },
+    {
+      "id": "synthesis-middle-path",
+      "label": "Middle Path Ethics",
+      "contributing_claims": ["D05", "M04", "M05"],
+      "synthesis_text": "Between complete relativism and rigid absolutism lies a middle path that acknowledges contextual factors while maintaining that certain acts (intentional torture of innocents) remain wrong across contexts. Moral evolution suggests movement toward this integration.",
+      "position": { "x": 200, "y": 200 }
+    }
+  ],
+  "semantic_drift": [
+    {
+      "term": "evil",
+      "marcus_meaning": "A real force in the cosmos that works to separate beings from love; something that objectively exists and can be identified through embodied knowing",
+      "demartini_meaning": "A label we apply to events when we fail to see their benefits; an epistemological error rather than an ontological reality",
+      "affected_claims": ["D01", "D02", "M01", "M07", "M09"]
+    },
+    {
+      "term": "understanding",
+      "marcus_meaning": "Comprehending why something happened while still maintaining that it was wrong; compatible with moral judgment",
+      "demartini_meaning": "Seeing both sides of an event until the label of 'evil' dissolves; incompatible with maintaining moral judgment",
+      "affected_claims": ["D07", "M12", "M13"]
+    },
+    {
+      "term": "morality",
+      "marcus_meaning": "Embodied knowledge of right and wrong that transcends culture; sacred obligations that arise from our participation in the divine",
+      "demartini_meaning": "Culturally constructed rules that evolve from primitive amygdala reactions to sophisticated relativism; situational rather than absolute",
+      "affected_claims": ["D03", "D05", "M01", "M04", "M10"]
+    }
+  ],
+  "framework_boundaries": [
+    {
+      "speaker": "demartini",
+      "node_ids": [
+        "branch-rationalism",
+        "branch-monism",
+        "branch-consequentialist",
+        "branch-technique",
+        "claim-D01",
+        "claim-D02",
+        "claim-D03",
+        "claim-D04",
+        "claim-D05",
+        "claim-D07",
+        "claim-D08",
+        "claim-D12",
+        "claim-D13",
+        "claim-D14",
+        "claim-D16",
+        "claim-D18",
+        "claim-D20",
+        "claim-D21"
+      ]
+    },
+    {
+      "speaker": "marcus",
+      "node_ids": [
+        "branch-empiricism",
+        "branch-dualism",
+        "branch-deontological",
+        "branch-relationship",
+        "claim-M01",
+        "claim-M03",
+        "claim-M04",
+        "claim-M06",
+        "claim-M07",
+        "claim-M08",
+        "claim-M09",
+        "claim-M10",
+        "claim-M11",
+        "claim-M13",
+        "claim-M16",
+        "claim-M17"
+      ]
+    }
+  ]
+}
