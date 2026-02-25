@@ -190,15 +190,15 @@ const getRelationshipEdgeColor = (type: string): string => {
 
 /**
  * Get base opacity for relationship edge based on type
- * These are the "always visible" opacities
+ * These are the "always visible" opacities - increased for better visibility
  */
 const getRelationshipEdgeOpacity = (type: string): number => {
   switch (type) {
-    case 'agreement': return 0.5
-    case 'tension': return 0.4
-    case 'contradiction': return 0.6
-    case 'paradox': return 0.6
-    default: return 0.3
+    case 'agreement': return 0.7
+    case 'tension': return 0.6
+    case 'contradiction': return 0.8
+    case 'paradox': return 0.7
+    default: return 0.5
   }
 }
 
@@ -559,7 +559,8 @@ export function EpistemologicalTree() {
                       </span>
                       <div className="space-y-1">
                         {claimsInBranch.map(claim => {
-                          const claimData = claimsMap.get(claim.id)
+                          const claimId = claim.id.replace(/^claim-/, '')
+                          const claimData = claimsMap.get(claimId)
                           return (
                             <button
                               key={claim.id}
@@ -595,7 +596,9 @@ export function EpistemologicalTree() {
 
             // CLAIM NODE - Show full claim details
             if (node.type === 'claim') {
-              const claim = claimsMap.get(node.id)
+              // Strip "claim-" prefix from tree.json IDs to match claims.json format (e.g., "claim-M14" -> "M14")
+              const claimId = node.id.replace(/^claim-/, '')
+              const claim = claimsMap.get(claimId)
               const claimRelationships = relationshipEdges.filter(e =>
                 e.source === node.id || e.target === node.id
               )
