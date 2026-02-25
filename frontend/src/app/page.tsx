@@ -34,7 +34,7 @@ const SteelManArena = dynamic(
 
 const EpistemologicalTree = dynamic(
   () => import('@/components/lenses/EpistemologicalTree').then((m) => m.EpistemologicalTree),
-  { loading: () => <LensLoader name="Epistemological Tree" /> }
+  { ssr: false, loading: () => <LensLoader name="Epistemological Tree" /> }
 )
 
 function LensLoader({ name }: { name: string }) {
