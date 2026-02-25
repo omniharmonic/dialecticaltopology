@@ -1,3 +1,5 @@
+export { ClaimCard, ClaimCardPortal } from './ClaimCard'
+export type { ClaimCardProps } from './ClaimCard'
 export { ClaimReference } from './ClaimReference'
 export { Navigation } from './Navigation'
 export { TimelineBar } from './TimelineBar'
