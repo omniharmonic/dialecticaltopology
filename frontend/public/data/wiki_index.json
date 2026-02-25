@@ -102,6 +102,366 @@
         "id": "dialectic",
         "label": "Dialectic",
         "description": "A method of argument through dialogue, seeking truth via reasoned exchange. The Marcus-Demartini conversation itself demonstrates dialectic as both speakers refine positions through engagement."
+      },
+      {
+        "id": "dualism",
+        "label": "Dualism",
+        "description": "The metaphysical view that reality consists of two fundamentally opposed principles, such as good and evil, or mind and matter. Marcus argues some dualities reflect genuine differences; Demartini sees them as perspectival illusions."
+      },
+      {
+        "id": "both_and",
+        "label": "Both-And Thinking",
+        "description": "A cognitive approach that embraces paradox and holds multiple perspectives simultaneously without forcing resolution. Demartini uses this to dissolve moral binaries; Marcus questions whether it can address absolute wrongs."
+      },
+      {
+        "id": "middle_path",
+        "label": "Middle Path",
+        "description": "A Buddhist concept of avoiding extremes, finding balance between opposing views. Related to Aristotle's golden mean, this principle appears in discussions of whether virtue lies between vices or requires clear moral stands."
+      },
+      {
+        "id": "synthesis",
+        "label": "Synthesis",
+        "description": "The integration of opposing ideas into a higher-order understanding that transcends their contradiction. Central to dialectical thinking and Demartini's method of finding balance through opposing perspectives."
+      },
+      {
+        "id": "integration",
+        "label": "Integration",
+        "description": "The process of bringing together fragmented parts into a coherent whole. In shadow work, this means owning disowned aspects of self; in moral philosophy, it refers to unifying competing values or perspectives."
+      },
+      {
+        "id": "consciousness",
+        "label": "Consciousness",
+        "description": "The state of awareness and subjective experience. The debate touches on whether expanding consciousness reveals moral truth or merely changes perspective, and whether awareness itself carries ethical obligations."
+      },
+      {
+        "id": "objectivity",
+        "label": "Objectivity",
+        "description": "The quality of being independent of individual perspective or bias. Marcus argues some moral truths are objective; Demartini suggests all moral judgments are subjective projections from the amygdala."
+      },
+      {
+        "id": "subjectivity",
+        "label": "Subjectivity",
+        "description": "The quality of being shaped by personal perspective, emotions, and experiences. Demartini emphasizes the subjective nature of moral judgments; Marcus argues subjectivity doesn't negate objective moral reality."
+      },
+      {
+        "id": "perspective_shift",
+        "label": "Perspective Shift",
+        "description": "A change in viewpoint that reveals previously hidden aspects of a situation. Central to Demartini's method, where shifting perspective dissolves judgments; Marcus worries this can rationalize genuine wrongs."
+      },
+      {
+        "id": "moral_psychology",
+        "label": "Moral Psychology",
+        "description": "The study of how moral judgments arise from cognitive and emotional processes. Demartini uses neuroscience to argue morality is amygdala-based emotion; Marcus argues psychology describes how we know, not what's true."
+      },
+      {
+        "id": "moral_perception",
+        "label": "Moral Perception",
+        "description": "The capacity to recognize moral features of situations directly, without inference. Marcus appeals to immediate moral perception of wrongness; Demartini sees this as conditioned emotional reactivity."
+      },
+      {
+        "id": "moral_development",
+        "label": "Moral Development",
+        "description": "The psychological process of acquiring moral understanding and sensitivity. Discussed in relation to brain development, cultural influence, and whether moral maturity reveals objective truths or merely changes preferences."
+      },
+      {
+        "id": "moral_equivalence",
+        "label": "Moral Equivalence",
+        "description": "The claim that seemingly different moral positions are actually equivalent in value or validity. Marcus accuses Demartini's framework of creating false moral equivalences between victims and perpetrators."
+      },
+      {
+        "id": "false_equivalence",
+        "label": "False Equivalence",
+        "description": "A logical fallacy where two things are incorrectly treated as equivalent when they differ in important ways. Marcus's central concern is that cosmic balance creates false equivalence between rape and consensual sex."
+      },
+      {
+        "id": "universal_ethics",
+        "label": "Universal Ethics",
+        "description": "Moral principles that apply to all humans regardless of culture or context. Marcus argues for universal values like protecting children; Demartini argues historical and cultural variation disproves universality."
+      },
+      {
+        "id": "cultural_ethics",
+        "label": "Cultural Ethics",
+        "description": "Moral systems shaped by specific cultural contexts and traditions. Demartini emphasizes cultural variation in moral norms; Marcus counters that some principles transcend culture."
+      },
+      {
+        "id": "cosmic_ethics",
+        "label": "Cosmic Ethics",
+        "description": "Moral principles operating at the scale of the universe rather than human society. Demartini's framework appeals to cosmic balance; Marcus questions whether cosmic perspective erases human-scale moral truth."
+      },
+      {
+        "id": "anthropological_ethics",
+        "label": "Anthropological Ethics",
+        "description": "The study of moral systems across cultures and how they vary or converge. Cited in discussions of whether cross-cultural differences prove moral relativism or reveal deeper universal patterns."
+      },
+      {
+        "id": "situational_ethics",
+        "label": "Situational Ethics",
+        "description": "The view that moral judgment depends on context rather than universal rules. Related to Demartini's contextual approach, where meaning depends on perspective, challenging absolute moral categories."
+      },
+      {
+        "id": "nuanced_ethics",
+        "label": "Nuanced Ethics",
+        "description": "Moral reasoning that recognizes complexity, context, and shades of gray rather than absolute binaries. Both speakers value nuance but differ on whether it applies to all cases or some acts remain categorically wrong."
+      },
+      {
+        "id": "anthropomorphism",
+        "label": "Anthropomorphism",
+        "description": "Attributing human characteristics to non-human things. Discussed in relation to projecting human moral categories onto the universe and whether the cosmos has moral qualities or is morally neutral."
+      },
+      {
+        "id": "natural_law",
+        "label": "Natural Law",
+        "description": "The philosophical view that moral principles are inherent in nature and discoverable through reason. Marcus appeals to natural order that values life; Demartini argues nature shows amoral balance."
+      },
+      {
+        "id": "law",
+        "label": "Law",
+        "description": "Codified rules enforced by society. Discussed as evidence for moral convergence across cultures (universal laws against murder) and as distinct from cosmic laws or natural principles."
+      },
+      {
+        "id": "justice",
+        "label": "Justice",
+        "description": "The principle of fairness and appropriate consequences for actions. Marcus emphasizes the necessity of justice; Demartini's framework seems to dissolve the category by finding balance in all outcomes."
+      },
+      {
+        "id": "duty",
+        "label": "Duty",
+        "description": "Moral obligations that exist independent of personal preference or benefit. Central to Marcus's deontological ethics of sacred responsibility; challenged by Demartini's view that all perception is subjective."
+      },
+      {
+        "id": "absolute_evil",
+        "label": "Absolute Evil",
+        "description": "Actions or states that are wrong independent of perspective, context, or potential benefits. Marcus's core claim is that child torture represents absolute evil; Demartini argues no absolute evil exists cosmically."
+      },
+      {
+        "id": "cosmic_evil",
+        "label": "Cosmic Evil",
+        "description": "Evil as a cosmic principle or force, not merely human perspective. The debate centers on whether evil exists at the cosmic level or is only a subjective human perception of imbalance."
+      },
+      {
+        "id": "innocence",
+        "label": "Innocence",
+        "description": "The state of being free from guilt or moral responsibility, especially in children. Marcus argues innocence has intrinsic value that makes its violation categorically wrong; Demartini questions whether innocence is absolute."
+      },
+      {
+        "id": "violence_vs_peace",
+        "label": "Violence vs Peace",
+        "description": "The distinction between harm and harmony. Marcus argues these represent qualitatively different values; Demartini sees them as complementary opposites maintaining cosmic equilibrium."
+      },
+      {
+        "id": "torture",
+        "label": "Torture",
+        "description": "The infliction of severe physical or psychological pain. Marcus uses child torture as his test case for absolute evil; Demartini argues even torture has hidden benefits for the victim's soul evolution."
+      },
+      {
+        "id": "empowerment",
+        "label": "Empowerment",
+        "description": "The process of becoming stronger and more confident, especially in controlling one's life. Demartini sees his method as empowering victims by revealing hidden benefits; Marcus worries it disempowers by denying real harm."
+      },
+      {
+        "id": "action_imperative",
+        "label": "Action Imperative",
+        "description": "The moral requirement to act in response to perceived wrong. Marcus emphasizes the imperative to protect innocents; Demartini's framework seems to undermine motivation by dissolving the perception of wrong."
+      },
+      {
+        "id": "separation",
+        "label": "Separation",
+        "description": "The state of being divided or disconnected. Discussed as either illusion to overcome (Demartini's nonduality) or necessary for moral agency and distinct values (Marcus's position)."
+      },
+      {
+        "id": "participation",
+        "label": "Participation",
+        "description": "Active engagement in creating reality rather than passive observation. Central to Marcus's participatory theology where humans co-create with the divine, implying genuine moral agency."
+      },
+      {
+        "id": "co_creation",
+        "label": "Co-Creation",
+        "description": "The process of creating together with the divine or cosmos. Marcus uses this concept to argue human choices matter cosmically and aren't predetermined by cosmic balance."
+      },
+      {
+        "id": "divine_purpose",
+        "label": "Divine Purpose",
+        "description": "The idea that the universe or deity has intentions or goals. Discussed in relation to whether the cosmos is purposefully balanced or whether purpose emerges through human participation."
+      },
+      {
+        "id": "divine_omnipresence",
+        "label": "Divine Omnipresence",
+        "description": "The theological concept that the divine is present everywhere. Relevant to whether God's presence in all things means all things are equally good or whether evil represents absence of divine."
+      },
+      {
+        "id": "telos",
+        "label": "Telos",
+        "description": "Greek term for purpose or end goal. Aristotelian concept that things have inherent purposes; relevant to whether protecting life is humanity's telos or whether all purposes are subjective constructs."
+      },
+      {
+        "id": "destiny",
+        "label": "Destiny",
+        "description": "A predetermined course of events. Discussed in relation to whether cosmic balance means everything is destined, challenging notions of free will and moral responsibility."
+      },
+      {
+        "id": "necessity",
+        "label": "Necessity",
+        "description": "The quality of being required or unavoidable. Demartini implies evil is necessary for cosmic balance; Marcus argues nothing necessitates child torture and such claims rationalize the inexcusable."
+      },
+      {
+        "id": "irreversibility",
+        "label": "Irreversibility",
+        "description": "The quality of being impossible to undo or reverse. Marcus emphasizes death's irreversibility as evidence against cosmic balance claims that all negative experiences have offsetting positives."
+      },
+      {
+        "id": "transformation",
+        "label": "Transformation",
+        "description": "Fundamental change in form, nature, or character. Both speakers value transformation through adversity but differ on whether transformation justifies the adversity or redeems genuine wrong."
+      },
+      {
+        "id": "healing",
+        "label": "Healing",
+        "description": "The process of recovery from trauma or injury. Demartini's method aims to heal by finding benefits; Marcus argues healing techniques shouldn't be confused with metaphysical claims about the nature of evil."
+      },
+      {
+        "id": "liberation",
+        "label": "Liberation",
+        "description": "Freedom from limiting conditions, suffering, or attachments. Demartini sees liberation in dissolving moral judgments; Marcus sees liberation in acting from love while acknowledging evil."
+      },
+      {
+        "id": "shadow_work",
+        "label": "Shadow Work",
+        "description": "Psychological practice of identifying and integrating disowned aspects of the self. Both speakers value shadow work but Marcus argues owning one's shadow doesn't eliminate others' moral responsibility."
+      },
+      {
+        "id": "shadow_integration",
+        "label": "Shadow Integration",
+        "description": "The process of bringing unconscious shadow material into conscious awareness and wholeness. Discussed as personally valuable but potentially confused with dissolving external moral realities."
+      },
+      {
+        "id": "truth_seeking",
+        "label": "Truth Seeking",
+        "description": "The pursuit of accurate understanding of reality. Both speakers claim to seek truth but differ on whether truth is found in perspective-transcendent balance or in acknowledging genuine moral distinctions."
+      },
+      {
+        "id": "truth_commitment",
+        "label": "Truth Commitment",
+        "description": "The dedication to truth regardless of comfort or convenience. Both speakers demonstrate this commitment while disagreeing about what truth reveals regarding good and evil."
+      },
+      {
+        "id": "inquiry",
+        "label": "Inquiry",
+        "description": "The process of questioning and investigating to reach understanding. The debate itself exemplifies philosophical inquiry as both speakers probe the implications of their positions."
+      },
+      {
+        "id": "intellectual_courage",
+        "label": "Intellectual Courage",
+        "description": "The willingness to question deeply held beliefs and face uncomfortable truths. Both speakers demonstrate this virtue while challenging each other's fundamental assumptions."
+      },
+      {
+        "id": "understanding_vs_judgment",
+        "label": "Understanding vs Judgment",
+        "description": "The tension between comprehending why people act as they do and morally evaluating their actions. Demartini emphasizes understanding that perpetrators believe they're doing right; Marcus argues understanding doesn't preclude judgment."
+      },
+      {
+        "id": "ignorance_vs_malice",
+        "label": "Ignorance vs Malice",
+        "description": "The distinction between harmful actions from lack of knowledge versus intentional cruelty. Christ's 'forgive them for they know not what they do' suggests ignorance; Marcus questions whether all evil stems from ignorance."
+      },
+      {
+        "id": "value_systems",
+        "label": "Value Systems",
+        "description": "Structured frameworks of what matters and why. Discussed in relation to whether different value systems are equally valid or whether some values (like protecting innocence) are objectively superior."
+      },
+      {
+        "id": "universal_values",
+        "label": "Universal Values",
+        "description": "Principles or goods recognized across cultures as valuable. Marcus argues for universal values like life and love; Demartini argues apparent universals reflect shared conditioning, not objective truth."
+      },
+      {
+        "id": "life_value",
+        "label": "Life Value",
+        "description": "The intrinsic worth of living beings. Marcus argues life has inherent value that makes its destruction wrong; Demartini sees value as always relative to individual perception."
+      },
+      {
+        "id": "life_force",
+        "label": "Life Force",
+        "description": "The vital energy or principle that animates living beings. Discussed in relation to whether the universe fundamentally supports life or is indifferent to it, with implications for cosmic ethics."
+      },
+      {
+        "id": "life_death_balance",
+        "label": "Life-Death Balance",
+        "description": "The complementary relationship between creation and destruction. Demartini uses biological examples to argue death balances life; Marcus argues premature death of innocents isn't balanced."
+      },
+      {
+        "id": "love",
+        "label": "Love",
+        "description": "A fundamental value or force characterized by care, connection, and goodwill. Marcus sees love as categorically different from hate; Demartini sees them as complementary opposites maintaining balance."
+      },
+      {
+        "id": "productive_disagreement",
+        "label": "Productive Disagreement",
+        "description": "Conflict that advances understanding rather than merely entrenching positions. The Marcus-Demartini dialogue exemplifies this, with both speakers refining their views through respectful challenge."
+      },
+      {
+        "id": "controversy",
+        "label": "Controversy",
+        "description": "Strong disagreement or debate around a contested issue. The podcast itself acknowledges the controversial nature of the topic, highlighting the difficulty of discussing evil and moral absolutes."
+      },
+      {
+        "id": "self_knowledge",
+        "label": "Self-Knowledge",
+        "description": "Understanding one's own nature, motivations, and shadow aspects. Both speakers value self-knowledge but Marcus argues it must be paired with recognition of external moral realities."
+      },
+      {
+        "id": "reaction",
+        "label": "Reaction",
+        "description": "Immediate emotional or behavioral response to stimuli. Demartini sees moral judgments as amygdala reactions to overcome; Marcus argues some reactions reveal truth rather than obscure it."
+      },
+      {
+        "id": "automaticity",
+        "label": "Automaticity",
+        "description": "Actions that occur without conscious deliberation. Libet's research suggests choices happen automatically before awareness; Demartini uses this to question moral responsibility."
+      },
+      {
+        "id": "progress",
+        "label": "Progress",
+        "description": "Advancement toward better states or conditions. Marcus argues humanity has made genuine moral progress; Demartini suggests 'progress' merely reflects changing perspectives, not objective improvement."
+      },
+      {
+        "id": "evolution",
+        "label": "Evolution",
+        "description": "Gradual development toward more complex forms. Discussed both biologically and morally - whether consciousness and moral understanding genuinely evolve or merely change."
+      },
+      {
+        "id": "biology",
+        "label": "Biology",
+        "description": "The science of living organisms. Demartini frequently uses biological examples (cell division, homeostasis) to argue for cosmic balance; Marcus questions whether biological metaphors apply to ethics."
+      },
+      {
+        "id": "idealism",
+        "label": "Idealism",
+        "description": "Philosophical position that reality is fundamentally mental or consciousness-based. Relevant to whether the material world has independent moral qualities or all morality is projection of consciousness."
+      },
+      {
+        "id": "anti_reductionism",
+        "label": "Anti-Reductionism",
+        "description": "The view that complex phenomena can't be fully explained by simpler components. Marcus argues moral reality can't be reduced to neuroscience or psychology; meaning exists beyond mechanism."
+      },
+      {
+        "id": "therapy_and_ethics",
+        "label": "Therapy and Ethics",
+        "description": "The relationship between therapeutic healing practices and moral philosophy. Marcus's core concern is that Demartini conflates therapeutic efficacy with metaphysical truth about good and evil."
+      },
+      {
+        "id": "therapeutic_progression",
+        "label": "Therapeutic Progression",
+        "description": "The staged process of healing from trauma. Demartini's method involves progressive reframing; Marcus argues therapeutic stages don't reveal cosmic truth but help people cope."
+      },
+      {
+        "id": "religious_motivation",
+        "label": "Religious Motivation",
+        "description": "Actions driven by religious beliefs and values. Discussed in relation to whether religious certainty can justify violence and whether all religious expressions are morally equivalent."
+      },
+      {
+        "id": "silver_lining",
+        "label": "Silver Lining",
+        "description": "The positive aspect found in negative situations. Demartini's method systematically seeks silver linings in all experiences; Marcus argues some situations have no silver lining and claiming otherwise trivializes suffering."
       }
     ],
     "thinkers": [
@@ -488,7 +848,7 @@
     }
   ],
   "counts": {
-    "concepts": 20,
+    "concepts": 92,
     "thinkers": 11,
     "frameworks": 5,
     "traditions": 8,
