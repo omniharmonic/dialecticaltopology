@@ -159,6 +159,9 @@ export function EpistemologicalTree() {
   const [hoveredLineage, setHoveredLineage] = useState<Set<string>>(new Set())
   const svgRef = useRef<SVGSVGElement>(null)
 
+  // Zoom and pan transform state
+  const [transform, setTransform] = useState({ x: 0, y: 0, k: 1 })
+
   // State for computed D3 positions
   const [nodePositions, setNodePositions] = useState<HierarchyPointNode<TreeNodeWithChildren>[]>([])
 
@@ -221,7 +224,64 @@ export function EpistemologicalTree() {
     return map
   }, [nodePositions])
 
-  // TODO: Task 17 will add zoom and pan interactions
+  // Zoom behavior setup - enables pinch/scroll zoom and drag pan
+  useEffect(() => {
+    if (!svgRef.current) return
+
+    const svg = d3.select(svgRef.current)
+
+    const zoomBehavior = d3.zoom<SVGSVGElement, unknown>()
+      .scaleExtent([0.5, 3]) // Min 0.5x, max 3x zoom
+      .on('zoom', (event: d3.D3ZoomEvent<SVGSVGElement, unknown>) => {
+        setTransform({
+          x: event.transform.x,
+          y: event.transform.y,
+          k: event.transform.k
+        })
+      })
+
+    svg.call(zoomBehavior)
+
+    // Store zoom behavior for keyboard controls
+    ;(svgRef.current as SVGSVGElement & { __zoom_behavior?: typeof zoomBehavior }).__zoom_behavior = zoomBehavior
+
+    return () => {
+      svg.on('.zoom', null) // Cleanup zoom listeners
+    }
+  }, [])
+
+  // Keyboard controls for zoom and selection
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Escape: Deselect current node
+      if (e.key === 'Escape') {
+        setSelectedNode(null)
+      }
+      // +/=: Zoom in
+      if (e.key === '+' || e.key === '=') {
+        setTransform(t => ({ ...t, k: Math.min(t.k * 1.2, 3) }))
+      }
+      // -: Zoom out
+      if (e.key === '-') {
+        setTransform(t => ({ ...t, k: Math.max(t.k / 1.2, 0.5) }))
+      }
+      // 0: Reset zoom and pan
+      if (e.key === '0') {
+        setTransform({ x: 0, y: 0, k: 1 })
+        // Also reset D3's internal transform state
+        if (svgRef.current) {
+          const svg = d3.select(svgRef.current)
+          const zoomBehavior = (svgRef.current as SVGSVGElement & { __zoom_behavior?: d3.ZoomBehavior<SVGSVGElement, unknown> }).__zoom_behavior
+          if (zoomBehavior) {
+            svg.call(zoomBehavior.transform, d3.zoomIdentity)
+          }
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   // Sidebar content
   const sidebar = useMemo(() => {
@@ -407,6 +467,38 @@ export function EpistemologicalTree() {
           </div>
         </div>
 
+        {/* Keyboard shortcuts */}
+        <div className="mt-4 pt-4 border-t border-border">
+          <h4 className="text-xs uppercase tracking-wider text-ink-tertiary mb-2">Controls</h4>
+          <div className="space-y-1 text-xs text-ink-tertiary">
+            <div className="flex justify-between">
+              <span>Zoom in/out</span>
+              <span className="font-mono">+/-</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Reset view</span>
+              <span className="font-mono">0</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Deselect</span>
+              <span className="font-mono">Esc</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Pan</span>
+              <span>Drag</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Zoom</span>
+              <span>Scroll/Pinch</span>
+            </div>
+          </div>
+          {transform.k !== 1 && (
+            <div className="mt-2 text-xs text-ink-tertiary">
+              Zoom: {Math.round(transform.k * 100)}%
+            </div>
+          )}
+        </div>
+
         {data && (
           <div className="mt-4 pt-4 border-t border-border">
             <p className="text-xs text-ink-tertiary">
@@ -416,7 +508,7 @@ export function EpistemologicalTree() {
         )}
       </div>
     )
-  }, [selectedNode, data])
+  }, [selectedNode, data, transform.k])
 
   return (
     <LensLayout
@@ -470,8 +562,9 @@ export function EpistemologicalTree() {
               </radialGradient>
             </defs>
 
-            {/* Main group with margin offset */}
-            <g transform={`translate(${MARGIN.left}, ${MARGIN.top})`}>
+            {/* Main group with zoom/pan transform and margin offset */}
+            <g transform={`translate(${transform.x}, ${transform.y}) scale(${transform.k})`}>
+              <g transform={`translate(${MARGIN.left}, ${MARGIN.top})`}>
               {/* Render branch connections with organic bezier curves */}
               <g className="branches">
                 {nodePositions
@@ -610,6 +703,7 @@ export function EpistemologicalTree() {
                     </g>
                   )
                 })}
+              </g>
               </g>
             </g>
           </svg>
