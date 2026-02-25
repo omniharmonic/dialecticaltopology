@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useClaims } from '@/lib/useData'
+import { useAppStore } from '@/store/appStore'
 import { LensLayout, DetailPanel, SpeakerBadge, ClaimTypeBadge } from './LensLayout'
 import type { Claim, ThematicCluster } from '@/lib/types'
 
@@ -236,6 +237,21 @@ export function ClaimAtlas() {
     type: string | null
   }>({ speaker: null, type: null })
   const [viewMode, setViewMode] = useState<'clusters' | 'list'>('clusters')
+
+  // Subscribe to global store for cross-component navigation
+  const storeSelectedClaimId = useAppStore((state) => state.selectedClaimId)
+  const setStoreSelectedClaim = useAppStore((state) => state.setSelectedClaim)
+
+  // Sync store selectedClaimId to local state
+  useEffect(() => {
+    if (storeSelectedClaimId && data) {
+      const claim = data.claims.find((c) => c.id === storeSelectedClaimId)
+      if (claim) {
+        setSelectedClaim(claim)
+        setStoreSelectedClaim(null) // Clear after consuming
+      }
+    }
+  }, [storeSelectedClaimId, data, setStoreSelectedClaim])
 
   // Build engagement map (claim -> responses)
   const engagementMap = useMemo(() => {
