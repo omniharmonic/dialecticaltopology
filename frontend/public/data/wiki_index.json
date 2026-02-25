@@ -636,6 +636,7 @@
   "warrants": [
     {
       "id": "W01",
+      "title": "Therapeutic Experience",
       "text": "Therapeutic experience with thousands of trauma survivors",
       "description": "This warrant draws on Demartini's decades of clinical work helping people reframe traumatic experiences. The experiential basis is strong: thousands of case studies showing post-traumatic growth. Demartini uses this to support his claim that all events can be perceived as balanced when viewed from expanded perspective. However, therapeutic outcomes don't necessarily validate the ontological claims about evil's non-existence - what helps people heal doesn't automatically reveal cosmic truth.",
       "type": "experiential",
@@ -644,6 +645,7 @@
     },
     {
       "id": "W02",
+      "title": "Hidden Order",
       "text": "Appeal to Heraclitus's 'hidden order in apparent chaos'",
       "description": "This warrant invokes the Pre-Socratic philosopher's doctrine that an invisible ordering principle (logos) governs all change. Demartini interprets Heraclitus as teaching that opposites form a unified whole, justifying the claim that apparent evil contains hidden good. This provides ancient philosophical pedigree for cosmic balance theory. Critics note that Heraclitus's unity of opposites doesn't necessarily imply moral equivalence - fire and water can be complementary without torture being equivalent to love.",
       "type": "authoritative",
@@ -652,6 +654,7 @@
     },
     {
       "id": "W03",
+      "title": "Moral Neuroscience",
       "text": "Neuroscience of moral development",
       "description": "This warrant uses brain science to support moral relativism, arguing that moral judgments arise from the amygdala assigning emotional valence rather than perceiving objective reality. Demartini claims that prefrontal cortex integration reveals the neutrality of events. The neuroscience is accurate regarding how moral judgments are processed, but critics argue this commits the genetic fallacy - explaining how we come to know something doesn't determine whether it's true. Evolution could have equipped us to perceive real moral features.",
       "type": "empirical",
@@ -660,6 +663,7 @@
     },
     {
       "id": "W04",
+      "title": "Bodily Knowing",
       "text": "Somatic epistemology - bodily knowing",
       "description": "This warrant grounds moral knowledge in visceral, embodied responses rather than abstract reasoning. Marcus argues that the universal physical revulsion at witnessing harm to innocents reveals moral truth directly through the body. This challenges purely cognitive or culturally-relative accounts of morality. However, somatic responses can be conditioned by culture and experience, and not all gut reactions track truth - people once felt visceral disgust at interracial relationships. The strength depends on distinguishing universal from conditioned bodily responses.",
       "type": "experiential",
@@ -668,6 +672,7 @@
     },
     {
       "id": "W05",
+      "title": "Biological Balance",
       "text": "Biological analogy: mitosis and apoptosis in perfect balance",
       "description": "This warrant uses cellular biology to argue for cosmic equilibrium - cells divide and die in balanced processes maintaining organismal health. Demartini extrapolates from biological homeostasis to metaphysical claims about good and evil maintaining universal balance. The biology is accurate, but the analogy faces limitations: biological balance operates within living systems working toward survival, not across arbitrary events. Cell death in development differs categorically from murder - one serves the organism's telos while the other violates it.",
       "type": "empirical",
@@ -676,6 +681,7 @@
     },
     {
       "id": "W06",
+      "title": "Moral Diversity",
       "text": "Reference to Montaigne's travels seeking universal morality",
       "description": "This warrant cites the Renaissance philosopher's observations of moral diversity across cultures as evidence against moral universalism. Montaigne found practices acceptable in one culture condemned in another, supporting Demartini's relativism. The anthropological observation is valuable, but Marcus counters that Montaigne himself still made moral judgments and that variation in implementation doesn't disprove universal principles - all cultures condemn unjustified killing even while defining 'unjustified' differently. Diversity in application may reflect universal values adapted to contexts.",
       "type": "authoritative",
@@ -684,6 +690,7 @@
     },
     {
       "id": "W07",
+      "title": "Shadow Projection",
       "text": "Jungian shadow concept and projection psychology",
       "description": "This warrant draws on depth psychology's insight that unconscious aspects of ourselves are projected onto others, making external judgments reflect internal states. Both speakers value shadow work, but Demartini uses it to suggest all moral judgments are projections, while Marcus argues recognizing our own shadow doesn't eliminate others' genuine wrongdoing. The psychology is well-established - we do project. The philosophical question is whether all moral perception is projection or whether some perceptions, informed by shadow integration, track real moral features of the world.",
       "type": "authoritative",
@@ -692,6 +699,7 @@
     },
     {
       "id": "W08",
+      "title": "Sacred Duty",
       "text": "Deontological ethics and sacred responsibility",
       "description": "This warrant grounds morality in duties that exist independent of consequences or perspective. Marcus argues humans have sacred obligations to protect the vulnerable, especially children, that aren't dissolved by finding hidden benefits or shifting perspective. Deontological ethics, from Kant through contemporary virtue ethics, provides robust frameworks for such duties. The limitation is that pure deontology can seem rigid and unresponsive to context. Marcus's version combines duty with compassion, maintaining obligations while allowing for understanding and forgiveness.",
       "type": "logical",
@@ -700,6 +708,7 @@
     },
     {
       "id": "W09",
+      "title": "Moral Progress",
       "text": "Historical evidence of moral evolution",
       "description": "This warrant argues that humanity's moral trajectory - ending practices like child sacrifice, slavery, and torture - demonstrates genuine moral progress rather than mere perspective shifts. Marcus claims this progress reveals that some moral truths are discovered, not constructed. The historical evidence is strong, though Demartini could counter that what we call progress reflects changing values rather than approaching objective truth. The debate hinges on whether moral change is analogous to scientific discovery (approaching truth) or aesthetic taste (evolving preferences).",
       "type": "empirical",
@@ -708,6 +717,7 @@
     },
     {
       "id": "W10",
+      "title": "Universal Revulsion",
       "text": "Universal human response to witnessing harm",
       "description": "This warrant observes that across cultures, people show immediate horror when witnessing harm to innocents, suggesting moral realism transcending cultural conditioning. Marcus argues this universality indicates we're perceiving objective moral features. The strength lies in cross-cultural consistency; the limitation is that some responses once thought universal (disgust at homosexuality) have proven culturally variable. The warrant works if we can distinguish genuinely universal responses from widespread but contingent ones, which may require exactly the kind of moral reasoning it's meant to ground.",
       "type": "experiential",
@@ -716,6 +726,7 @@
     },
     {
       "id": "W11",
+      "title": "Perceived Good",
       "text": "Reference to Epictetus on human motivation",
       "description": "This warrant invokes the Stoic philosopher's teaching that all humans act according to their perception of the good - even perpetrators believe they're doing right. Demartini uses this to support moral relativism and to cultivate understanding over judgment. The Stoic psychology is insightful - people do act on their perceived good. However, the move from 'everyone thinks they're right' to 'no one is wrong' doesn't follow logically. Epictetus himself maintained clear moral standards while understanding human motivation. Sincere belief doesn't validate actions.",
       "type": "authoritative",
@@ -724,6 +735,7 @@
     },
     {
       "id": "W12",
+      "title": "Divine Co-Creation",
       "text": "Participatory theology - co-creation with divine",
       "description": "This warrant draws on contemporary theology (particularly Sean O'Laoire's work) arguing that humans actively co-create reality with the divine rather than inhabiting a finished cosmos. Marcus uses this to argue for genuine moral agency - our choices matter and aren't predetermined by cosmic balance. This framework offers middle ground between pure determinism and pure free will. The limitation is that participatory theology is one theological model among many, and it presupposes a particular relationship between human and divine agency that not all traditions accept.",
       "type": "authoritative",
@@ -732,6 +744,7 @@
     },
     {
       "id": "W13",
+      "title": "Death's Finality",
       "text": "Victim-centered ethics and irreversibility of death",
       "description": "This warrant grounds moral evaluation in the victim's experience, particularly death's finality. Marcus argues that murdered children don't experience offsetting benefits, making cosmic balance claims ring hollow. The irreversibility of death provides a hard case against perfect equilibrium - there's no perspective from which the dead person experiences the 'other side' of their murder. Demartini might respond that benefits accrue to others or in larger timescales, but this shifts from the individual victim's experience to collective or cosmic scales, which may validate Marcus's concern about whose perspective counts.",
       "type": "logical",
@@ -740,6 +753,7 @@
     },
     {
       "id": "W14",
+      "title": "Intrinsic Value",
       "text": "Intrinsic value in the universe",
       "description": "This warrant claims that some things - life, consciousness, love - have value in themselves, not merely as means to other ends or from particular perspectives. Marcus argues intrinsic value makes its violation categorically wrong regardless of hidden benefits. This opposes pure instrumentalism and subjectivism. The philosophical challenge is grounding intrinsic value: does it exist objectively (Platonism), emerge from conscious beings (phenomenology), or come from divine source (theology)? The warrant's strength depends on establishing not just that we perceive intrinsic value but that it exists mind-independently.",
       "type": "logical",
@@ -748,6 +762,7 @@
     },
     {
       "id": "W15",
+      "title": "Delayed Awareness",
       "text": "Libet experiments on free will and delayed conscious awareness",
       "description": "This warrant uses neuroscientist Benjamin Libet's experiments showing brain activity precedes conscious awareness of decisions. Demartini interprets this as evidence against free will and thus traditional moral responsibility - if choices are determined before we're aware, how can we be held accountable? The neuroscience is well-replicated, but the philosophical interpretation is contested. Critics argue Libet's findings address conscious awareness timing, not whether the brain's prior activity itself is free or determined. The experiments may show consciousness isn't the agent, but don't settle whether agency exists at other levels.",
       "type": "empirical",
@@ -758,6 +773,7 @@
   "evidence": [
     {
       "id": "E01",
+      "title": "150,000+ Cases",
       "text": "Work with 150,000+ people finding benefits in traumatic events",
       "source_type": "anecdote",
       "cited_by": ["D01", "D21"],
@@ -765,6 +781,7 @@
     },
     {
       "id": "E02",
+      "title": "Brain Structure",
       "text": "Brain structure: amygdala assigns valency, prefrontal cortex sees objectively",
       "source_type": "study",
       "cited_by": ["D03"],
@@ -772,6 +789,7 @@
     },
     {
       "id": "E03",
+      "title": "Ending Child Sacrifice",
       "text": "Zoroastrians ending child sacrifice rituals",
       "source_type": "example",
       "cited_by": ["M04"],
@@ -779,6 +797,7 @@
     },
     {
       "id": "E04",
+      "title": "Oklahoma City Family",
       "text": "Oklahoma City bombing family's transformation and gratitude",
       "source_type": "anecdote",
       "cited_by": ["D04", "D18"],
@@ -786,6 +805,7 @@
     },
     {
       "id": "E05",
+      "title": "Visceral Horror",
       "text": "Visceral reaction to images of abuse - universal horror at torture",
       "source_type": "anecdote",
       "cited_by": ["M01", "M09"],
@@ -793,6 +813,7 @@
     },
     {
       "id": "E06",
+      "title": "Bell Curve Outcomes",
       "text": "Central limit theorem showing bell curve of positive/negative outcomes",
       "source_type": "study",
       "cited_by": ["D02"],
@@ -800,6 +821,7 @@
     },
     {
       "id": "E07",
+      "title": "Trauma Understanding",
       "text": "Understanding pedophile's childhood trauma led to cure",
       "source_type": "anecdote",
       "cited_by": ["D04", "D07"],
@@ -807,6 +829,7 @@
     },
     {
       "id": "E08",
+      "title": "Jihadist Belief",
       "text": "Jihadist believes he's doing God's will",
       "source_type": "example",
       "cited_by": ["D08", "D15"],
@@ -814,6 +837,7 @@
     },
     {
       "id": "E09",
+      "title": "Cultural Relativity",
       "text": "Older men marrying young girls acceptable in Middle East, criminal in America",
       "source_type": "example",
       "cited_by": ["D05"],
@@ -821,6 +845,7 @@
     },
     {
       "id": "E10",
+      "title": "Universal Laws",
       "text": "Existence of laws against murder and abuse across cultures",
       "source_type": "example",
       "cited_by": ["M10"],
@@ -828,6 +853,7 @@
     },
     {
       "id": "E11",
+      "title": "Cellular Processes",
       "text": "Mitosis and apoptosis, oxidation and reduction in cellular biology",
       "source_type": "study",
       "cited_by": ["D11", "D19"],
@@ -835,6 +861,7 @@
     },
     {
       "id": "E12",
+      "title": "Ho'oponopono Practice",
       "text": "Ho'oponopono practice for locating shadow in self",
       "source_type": "authority",
       "cited_by": ["M11"],
@@ -842,6 +869,7 @@
     },
     {
       "id": "E13",
+      "title": "Gospel Forgiveness",
       "text": "Gospel account: 'forgive them for they know not what they do'",
       "source_type": "authority",
       "cited_by": ["M12"],
@@ -849,6 +877,7 @@
     },
     {
       "id": "E14",
+      "title": "Life's Complexity",
       "text": "Life has been increasing in complexity and diversity over time",
       "source_type": "study",
       "cited_by": ["M08"],
@@ -856,6 +885,7 @@
     },
     {
       "id": "E15",
+      "title": "Rumi vs Jihadist",
       "text": "Rumi's poetry of love vs jihadist violence as qualitative distinction",
       "source_type": "example",
       "cited_by": ["M14"],

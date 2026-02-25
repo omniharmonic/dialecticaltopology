@@ -376,6 +376,7 @@ export interface TreeData {
 // Wiki data extensions
 export interface WarrantEntry {
   id: string
+  title?: string
   text: string
   type: 'logical' | 'empirical' | 'experiential' | 'authoritative'
   used_by: string[]
@@ -384,6 +385,7 @@ export interface WarrantEntry {
 
 export interface EvidenceEntry {
   id: string
+  title?: string
   text: string
   source_type: 'anecdote' | 'study' | 'authority' | 'example' | 'analogy'
   cited_by: string[]

@@ -305,8 +305,11 @@ export function WikiCard({
 
   // Get title based on entry type
   const getTitle = (): string => {
-    if (isWarrantEntry(entry) || isEvidenceEntry(entry)) {
-      return entry.id
+    if (isWarrantEntry(entry)) {
+      return `${entry.id}: ${entry.title || entry.id}`
+    }
+    if (isEvidenceEntry(entry)) {
+      return `${entry.id}: ${entry.title || entry.id}`
     }
     return (entry as GenericEntry).label
   }
