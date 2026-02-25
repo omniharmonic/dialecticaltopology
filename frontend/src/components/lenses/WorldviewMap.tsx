@@ -71,16 +71,14 @@ function DimensionSpectrum({
 
           {/* Demartini marker */}
           <motion.div
-            className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-demartini border-2 border-field z-10"
+            className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-demartini border-2 border-field z-10"
             style={{ left: `${demartiniPos}%` }}
-            animate={{ x: '-50%' }}
           />
 
           {/* Marcus marker */}
           <motion.div
-            className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-marcus border-2 border-field z-10"
+            className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-marcus border-2 border-field z-10"
             style={{ left: `${marcusPos}%` }}
-            animate={{ x: '-50%' }}
           />
         </div>
 
