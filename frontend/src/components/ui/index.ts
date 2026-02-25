@@ -1,3 +1,4 @@
+export { ClaimReference } from './ClaimReference'
 export { Navigation } from './Navigation'
 export { TimelineBar } from './TimelineBar'
 export { TimecodeLink, formatTime } from './TimecodeLink'
