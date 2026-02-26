@@ -119,15 +119,22 @@ function ClaimDetail({
   onClose,
   onSelectClaim,
   allClaims,
+  onWikiCardOpenChange,
 }: {
   claim: Claim
   responses: string[]
   onClose: () => void
   onSelectClaim: (claim: Claim) => void
   allClaims: Claim[]
+  onWikiCardOpenChange?: (isOpen: boolean) => void
 }) {
   const { data: wikiIndex } = useWikiIndex()
   const [selectedWikiEntry, setSelectedWikiEntry] = useState<WikiEntryState>(null)
+
+  // Notify parent when WikiCard opens/closes
+  useEffect(() => {
+    onWikiCardOpenChange?.(selectedWikiEntry !== null)
+  }, [selectedWikiEntry, onWikiCardOpenChange])
 
   // Find warrant in wiki index by matching text (partial match)
   const findWarrant = (warrantText: string): WarrantEntry | null => {
@@ -313,6 +320,7 @@ function ClaimDetail({
 export function ClaimAtlas() {
   const { data, loading, error } = useClaims()
   const [selectedClaim, setSelectedClaim] = useState<Claim | null>(null)
+  const [isWikiCardOpen, setIsWikiCardOpen] = useState(false)
   const [filter, setFilter] = useState<{
     speaker: string | null
     type: string | null
@@ -366,6 +374,7 @@ export function ClaimAtlas() {
           onClose={() => setSelectedClaim(null)}
           onSelectClaim={setSelectedClaim}
           allClaims={data?.claims || []}
+          onWikiCardOpenChange={setIsWikiCardOpen}
         />
       )
     }
@@ -430,7 +439,8 @@ export function ClaimAtlas() {
     >
       {data && (
         <div className="space-y-6">
-          {/* Filters */}
+          {/* Filters - Hidden when WikiCard is open to prevent z-index issues with native select dropdowns */}
+          {!isWikiCardOpen && (
           <div className="flex flex-wrap gap-2 sticky top-16 z-10 py-2 bg-field">
             <div className="flex gap-1">
               <button
@@ -475,6 +485,7 @@ export function ClaimAtlas() {
               </select>
             </div>
           </div>
+          )}
 
           {/* Cluster view */}
           {viewMode === 'clusters' && (
