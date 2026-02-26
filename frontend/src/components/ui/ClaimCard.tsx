@@ -14,6 +14,7 @@ export interface ClaimCardProps {
   onWarrantClick?: (warrantText: string) => void
   onEvidenceClick?: (evidenceText: string) => void
   onConceptClick?: (conceptId: string) => void
+  onClaimClick?: (claimId: string) => void
   wikiData?: WikiIndex | null
   isOpen?: boolean
 }

@@ -164,14 +164,34 @@ const createOrganicBranchPath = (
 }
 
 /**
- * Create a simpler bezier for relationship edges
+ * Create smooth bezier curves for relationship edges that arc to avoid overlaps
+ * Uses asymmetric control points to create natural-looking curves
  */
 const createRelationshipPath = (
   source: { x: number; y: number },
   target: { x: number; y: number }
 ): string => {
-  const midY = (source.y + target.y) / 2
-  return `M ${source.x} ${source.y} C ${source.x} ${midY}, ${target.x} ${midY}, ${target.x} ${target.y}`
+  const dx = target.x - source.x
+  const dy = target.y - source.y
+  const distance = Math.sqrt(dx * dx + dy * dy)
+
+  // Arc the curve outward based on horizontal distance
+  // Longer horizontal distances get more pronounced arcs
+  const arcAmount = Math.min(Math.abs(dx) * 0.4, 100)
+
+  // Determine curve direction based on relative positions
+  // Curves bow upward/downward to avoid crossing through the tree
+  const curveDirection = dx > 0 ? 1 : -1
+
+  // First control point: arc outward from source
+  const cp1x = source.x + dx * 0.25
+  const cp1y = source.y + dy * 0.2 - arcAmount * curveDirection
+
+  // Second control point: arc toward target
+  const cp2x = target.x - dx * 0.25
+  const cp2y = target.y - dy * 0.2 - arcAmount * curveDirection
+
+  return `M ${source.x} ${source.y} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${target.x} ${target.y}`
 }
 
 /**
@@ -343,6 +363,37 @@ export function EpistemologicalTree() {
     descendants.forEach(node => {
       // Flip y: map from [0, treeHeight] to [treeHeight, 0]
       node.y = treeHeight - node.y
+    })
+
+    // ORGANIC SPREADING: Add vertical jitter to claim nodes to fan them out like leaves
+    // Group claims by their parent to create natural branch spreading
+    const claimsByParent = new Map<string, typeof descendants>()
+    descendants.forEach(node => {
+      if (node.data.type === 'claim' && node.parent) {
+        const parentId = node.parent.data.id
+        if (!claimsByParent.has(parentId)) {
+          claimsByParent.set(parentId, [])
+        }
+        claimsByParent.get(parentId)!.push(node)
+      }
+    })
+
+    // For each parent's claims, stagger them vertically in a natural arc
+    claimsByParent.forEach((claims, parentId) => {
+      if (claims.length <= 1) return // No need to stagger single claims
+
+      // Sort claims by x position to apply consistent vertical offsets
+      claims.sort((a, b) => a.x - b.x)
+
+      // Create an arc: claims in the middle go higher, edges stay lower
+      // This creates a natural fan/canopy effect
+      const spreadRange = 80 // Vertical range for the arc
+      claims.forEach((claim, index) => {
+        const ratio = claims.length > 1 ? index / (claims.length - 1) : 0.5
+        // Parabolic curve: peaks in middle (ratio=0.5), lower at edges (ratio=0 or 1)
+        const arcHeight = Math.sin(ratio * Math.PI) * spreadRange
+        claim.y -= arcHeight // Subtract to move upward (remember y is flipped)
+      })
     })
 
     // Store all positioned nodes (descendants includes root)

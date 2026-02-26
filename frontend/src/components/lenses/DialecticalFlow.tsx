@@ -566,6 +566,10 @@ export function DialecticalFlow() {
           onClose={() => setSelectedClaim(null)}
           wikiData={wikiData}
           onConceptClick={(conceptId) => setSelectedConcept(conceptId)}
+          onClaimClick={(claimId) => {
+            setSelectedConcept(null) // Close concept card
+            handleClaimClick(claimId)
+          }}
           isOpen={true}
         />
       )}
@@ -576,6 +580,10 @@ export function DialecticalFlow() {
           type="concept"
           entry={wikiData.concepts.find(c => c.id === selectedConcept)!}
           onClose={() => setSelectedConcept(null)}
+          onClaimClick={(claimId) => {
+            setSelectedConcept(null) // Close concept card
+            handleClaimClick(claimId)
+          }}
           isOpen={true}
         />
       )}
