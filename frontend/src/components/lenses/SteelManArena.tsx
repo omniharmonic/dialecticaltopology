@@ -100,6 +100,7 @@ function ExchangeBubble({
     // Fallback to creating a basic entry
     return {
       id: `warrant-${index}`,
+      title: warrantText,
       text: warrantText,
       type: 'logical',
       used_by: [],
@@ -128,6 +129,7 @@ function ExchangeBubble({
             {exchange.warrants.map((w, i) => {
               const warrantEntry = findWarrantEntry(w, i)
               const hasFullData = warrantEntry.id.startsWith('W')
+              const displayText = warrantEntry.title || warrantEntry.text || w
               return (
                 <button
                   key={i}
@@ -139,7 +141,7 @@ function ExchangeBubble({
                   }`}
                   title={hasFullData ? `${warrantEntry.id}: ${warrantEntry.type} (${warrantEntry.strength})` : warrantEntry.text}
                 >
-                  {hasFullData ? warrantEntry.id : w}
+                  {displayText}
                 </button>
               )
             })}
