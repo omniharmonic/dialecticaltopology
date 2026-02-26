@@ -230,20 +230,21 @@ function ClaimDetail({
             <div className="flex flex-wrap gap-1">
               {claim.related_concepts.map((c) => {
                 const concept = findConcept(c)
+                const label = concept?.label || c.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
                 return concept ? (
                   <button
                     key={c}
                     onClick={() => setSelectedWikiEntry({ type: 'concept', entry: concept })}
-                    className="text-xs bg-field-subtle px-2 py-0.5 rounded capitalize hover:bg-field-deep transition-colors cursor-pointer"
+                    className="text-xs bg-field-subtle px-2 py-0.5 rounded hover:bg-field-deep transition-colors cursor-pointer"
                   >
-                    {c.replace(/_/g, ' ')}
+                    {label}
                   </button>
                 ) : (
                   <span
                     key={c}
-                    className="text-xs bg-field-subtle px-2 py-0.5 rounded capitalize"
+                    className="text-xs bg-field-subtle px-2 py-0.5 rounded"
                   >
-                    {c.replace(/_/g, ' ')}
+                    {label}
                   </span>
                 )
               })}
