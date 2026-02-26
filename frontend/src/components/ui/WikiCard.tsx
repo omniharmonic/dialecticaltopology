@@ -338,7 +338,7 @@ export function WikiCard({
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="fixed inset-0 bg-ink/10 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-ink/10 backdrop-blur-sm z-[9998]"
             onClick={handleBackdropClick}
             aria-hidden="true"
           />
@@ -351,7 +351,7 @@ export function WikiCard({
             animate="visible"
             exit="exit"
             className={cn(
-              'fixed right-0 top-0 bottom-0 z-[110]',
+              'fixed right-0 top-0 bottom-0 z-[9999]',
               'w-[380px] max-w-[90vw]',
               'bg-field shadow-xl',
               'flex flex-col',
@@ -440,7 +440,7 @@ export function WikiCard({
             animate="visible"
             exit="exit"
             className={cn(
-              'fixed left-0 right-0 bottom-0 z-[110]',
+              'fixed left-0 right-0 bottom-0 z-[9999]',
               'max-h-[60vh]',
               'bg-field rounded-t-2xl shadow-xl',
               'flex flex-col',
