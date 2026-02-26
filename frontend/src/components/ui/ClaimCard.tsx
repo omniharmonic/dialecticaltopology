@@ -295,9 +295,9 @@ export function ClaimCard({
             animate="visible"
             exit="exit"
             className={cn(
-              'fixed right-0 top-0 bottom-0 z-[9999]',
+              'fixed right-0 top-16 bottom-0 z-[9999]',
               'w-[380px] max-w-[90vw]',
-              'bg-field shadow-xl',
+              'bg-field shadow-xl border-l border-border',
               'flex flex-col',
               'hidden md:flex' // Hide on mobile
             )}
