@@ -6,6 +6,7 @@ import type { HierarchyPointNode } from 'd3'
 import { useTree, useClaims, useWikiIndex } from '@/lib/useData'
 import { LensLayout, DetailPanel, SpeakerBadge, ClaimTypeBadge } from './LensLayout'
 import { TimecodeLink } from '@/components/ui/TimecodeLink'
+import { WikiCard } from '@/components/ui/WikiCard'
 import type { TreeNode, SynthesisNode, SemanticDrift, Claim, TreeEdge } from '@/lib/types'
 
 // Extended TreeNode type for D3 hierarchy (includes children array)
@@ -285,6 +286,7 @@ export function EpistemologicalTree() {
   const { data: claimsData } = useClaims()
   const { data: wikiData } = useWikiIndex()
   const [selectedNode, setSelectedNode] = useState<SelectedNode | null>(null)
+  const [selectedConcept, setSelectedConcept] = useState<string | null>(null)
   const [hoveredNode, setHoveredNode] = useState<string | null>(null)
   const [hoveredLineage, setHoveredLineage] = useState<Set<string>>(new Set())
   const svgRef = useRef<SVGSVGElement>(null)
@@ -756,14 +758,24 @@ export function EpistemologicalTree() {
                         Related Concepts
                       </span>
                       <div className="flex flex-wrap gap-1">
-                        {claim.related_concepts.map((concept) => (
-                          <span
-                            key={concept}
-                            className="text-xs bg-field-deep px-2 py-1 rounded"
-                          >
-                            {concept}
-                          </span>
-                        ))}
+                        {claim.related_concepts.map((conceptId) => {
+                          const concept = wikiData?.concepts.find(c => c.id === conceptId)
+                          const label = concept?.label || conceptId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+                          return (
+                            <button
+                              key={conceptId}
+                              onClick={() => setSelectedConcept(conceptId)}
+                              disabled={!concept}
+                              className={`text-xs px-2 py-1 rounded ${
+                                concept
+                                  ? 'bg-field-deep hover:bg-field-subtle cursor-pointer transition-colors border border-transparent hover:border-demartini'
+                                  : 'bg-field-subtle text-ink-tertiary cursor-not-allowed'
+                              }`}
+                            >
+                              {label}
+                            </button>
+                          )
+                        })}
                       </div>
                     </div>
                   )}
@@ -774,17 +786,30 @@ export function EpistemologicalTree() {
                       <span className="text-xs uppercase tracking-wider text-ink-tertiary block mb-2">
                         Relationships
                       </span>
-                      <div className="space-y-1">
+                      <div className="space-y-2">
                         {claimRelationships.map(rel => {
                           const otherNodeId = rel.source === node.id ? rel.target : rel.source
                           const otherNode = data?.nodes.find(n => n.id === otherNodeId)
                           return (
-                            <div key={rel.id} className="text-sm text-ink-secondary">
-                              <span className="capitalize font-medium text-xs">{rel.type}</span>
+                            <button
+                              key={rel.id}
+                              onClick={() => {
+                                const targetNode = data?.nodes.find(n => n.id === otherNodeId)
+                                if (targetNode) {
+                                  setSelectedNode({ type: 'node', data: targetNode })
+                                }
+                              }}
+                              className="w-full text-left text-sm text-ink-secondary bg-field-subtle hover:bg-field-deep px-3 py-2 rounded transition-colors"
+                            >
+                              <span className="capitalize font-medium text-xs text-convergence">{rel.type}</span>
                               {' with '}
-                              <span className="font-mono text-xs">{otherNodeId}</span>
-                              {otherNode && ` - ${otherNode.label.slice(0, 30)}...`}
-                            </div>
+                              <span className="font-mono text-xs font-semibold">{otherNodeId.replace(/^claim-/, '')}</span>
+                              {otherNode && (
+                                <div className="text-xs text-ink-tertiary mt-1">
+                                  {otherNode.label.slice(0, 50)}{otherNode.label.length > 50 ? '...' : ''}
+                                </div>
+                              )}
+                            </button>
                           )
                         })}
                       </div>
@@ -1027,6 +1052,7 @@ export function EpistemologicalTree() {
   }, [selectedNode, data, transform.k, claimsMap, relationshipEdges])
 
   return (
+    <>
     <LensLayout
       title="Epistemological Tree"
       subtitle="Map claims to their philosophical roots"
@@ -1281,5 +1307,25 @@ export function EpistemologicalTree() {
         </div>
       )}
     </LensLayout>
+
+    {/* WikiCard popup for concepts */}
+    {selectedConcept && wikiData && (
+      <WikiCard
+        type="concept"
+        entry={wikiData.concepts.find(c => c.id === selectedConcept)!}
+        onClose={() => setSelectedConcept(null)}
+        onClaimClick={(claimId) => {
+          // Navigate to the claim node
+          const claimNodeId = `claim-${claimId}`
+          const targetNode = data?.nodes.find(n => n.id === claimNodeId)
+          if (targetNode) {
+            setSelectedConcept(null) // Close concept card
+            setSelectedNode({ type: 'node', data: targetNode })
+          }
+        }}
+        isOpen={true}
+      />
+    )}
+    </>
   )
 }
