@@ -1,10 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Navigation } from '@/components/ui/Navigation'
+import { MetaAnalysisView } from '@/components/MetaAnalysisView'
 import { useAppStore, Lens } from '@/store/appStore'
 import { motion } from 'framer-motion'
+
+type ViewState = Lens | 'meta-analysis' | null
 
 // Dynamic imports for lens components (avoid SSR issues with Three.js)
 const SemanticLandscape = dynamic(
@@ -133,11 +136,21 @@ function LensPreviewCard({
   )
 }
 
-function LandingPage({ onSelectLens }: { onSelectLens: (lens: Lens) => void }) {
+function LandingPage({ onSelectLens, onOpenMetaAnalysis }: { onSelectLens: (lens: Lens) => void; onOpenMetaAnalysis: () => void }) {
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 80)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
     <div className="gradient-field-neutral min-h-screen">
       {/* Hero Section - 90vh */}
-      <section className="h-[90vh] flex flex-col items-center justify-center px-space-6">
+      <section className="h-[90vh] flex flex-col items-center justify-center px-space-6 relative">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -166,6 +179,33 @@ function LandingPage({ onSelectLens }: { onSelectLens: (lens: Lens) => void }) {
         >
           Aubrey Marcus Podcast #521
         </motion.p>
+
+        {/* Pulsing scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: scrolled ? 0 : 1, y: [0, 6, 0] }}
+          transition={{
+            opacity: { duration: 0.3 },
+            y: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
+          }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        >
+          <svg
+            width="20"
+            height="12"
+            viewBox="0 0 20 12"
+            fill="none"
+            className="text-ink-tertiary"
+          >
+            <path
+              d="M2 2L10 10L18 2"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </motion.div>
       </section>
 
       {/* Key Insights Summary */}
@@ -189,14 +229,14 @@ function LandingPage({ onSelectLens }: { onSelectLens: (lens: Lens) => void }) {
               <div className="card bg-demartini-faint/30 border-demartini/20">
                 <h3 className="text-sm font-semibold text-ink mb-space-2">Ontological Divide</h3>
                 <p className="text-xs text-ink-secondary leading-relaxed">
-                  Does evil exist objectively, or is it incomplete perception? Gap: 0.65/1.0
+                  Does evil exist objectively, or is it incomplete perception?
                 </p>
               </div>
 
               <div className="card bg-marcus-faint/30 border-marcus/20">
                 <h3 className="text-sm font-semibold text-ink mb-space-2">Value of Life</h3>
                 <p className="text-xs text-ink-secondary leading-relaxed">
-                  Is life inherently good, or neutral balance? Gap: 0.55/1.0
+                  Is life inherently good, or neutral balance?
                 </p>
               </div>
 
@@ -228,14 +268,12 @@ function LandingPage({ onSelectLens }: { onSelectLens: (lens: Lens) => void }) {
               Explore the Debate
             </button>
 
-            <a
-              href="/META_ANALYSIS.md"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={onOpenMetaAnalysis}
               className="btn-secondary border-convergence text-convergence hover:bg-convergence-soft inline-flex items-center justify-center"
             >
               Read Full Meta-Analysis
-            </a>
+            </button>
           </div>
         </motion.div>
       </section>
@@ -305,7 +343,7 @@ function LandingPage({ onSelectLens }: { onSelectLens: (lens: Lens) => void }) {
           </p>
           <p className="text-sm text-ink-tertiary">
             Built with AI-assisted analysis as part of the{' '}
-            <span className="text-ink-secondary">OpenCivics</span> sense-making toolkit.
+            <span className="text-ink-secondary">Omni_index</span> sense-making toolkit.
           </p>
         </div>
       </footer>
@@ -324,38 +362,59 @@ const lensComponents: Record<Lens, React.ComponentType> = {
 }
 
 export default function Home() {
-  const [activeLens, setActiveLens] = useState<Lens | null>(null)
+  const [activeView, setActiveView] = useState<ViewState>(null)
   const { setLens } = useAppStore()
 
   const handleSelectLens = (lens: Lens) => {
-    setActiveLens(lens)
+    setActiveView(lens)
     setLens(lens)
+    window.scrollTo(0, 0)
   }
 
   const handleGoHome = () => {
-    setActiveLens(null)
+    setActiveView(null)
+    window.scrollTo(0, 0)
   }
 
-  // Show landing page if no lens selected
-  if (!activeLens) {
+  const handleOpenMetaAnalysis = () => {
+    setActiveView('meta-analysis')
+    window.scrollTo(0, 0)
+  }
+
+  // Show landing page if no view selected
+  if (!activeView) {
     return (
       <main className="min-h-screen">
-        <LandingPage onSelectLens={handleSelectLens} />
+        <LandingPage onSelectLens={handleSelectLens} onOpenMetaAnalysis={handleOpenMetaAnalysis} />
+      </main>
+    )
+  }
+
+  // Show meta-analysis view
+  if (activeView === 'meta-analysis') {
+    return (
+      <main className="min-h-screen">
+        <Navigation
+          currentLens={null}
+          onSelectLens={handleSelectLens}
+          onGoHome={handleGoHome}
+        />
+        <MetaAnalysisView onClose={handleGoHome} onSelectLens={handleSelectLens} />
       </main>
     )
   }
 
   // Show the selected lens
-  const LensComponent = lensComponents[activeLens]
+  const LensComponent = lensComponents[activeView]
 
   return (
     <main className="min-h-screen">
       <Navigation
-        currentLens={activeLens}
+        currentLens={activeView}
         onSelectLens={handleSelectLens}
         onGoHome={handleGoHome}
       />
-      <LensComponent key={activeLens} />
+      <LensComponent key={activeView} />
     </main>
   )
 }

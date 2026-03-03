@@ -178,11 +178,11 @@ function EmotionalArc({
 
   // Calculate tooltip width based on text length (adjusted for wider viewBox)
   const getTooltipWidth = (text: string) => {
-    return Math.min(Math.max(text.length * 4, 80), 250)
+    return Math.min(Math.max(text.length * 5, 100), 400)
   }
 
   return (
-    <svg className="w-full h-24" viewBox="0 0 1000 100" preserveAspectRatio="none">
+    <svg className="w-full h-32 sm:h-24" viewBox="0 0 1000 100" preserveAspectRatio="none">
       {/* Grid lines */}
       <line x1="0" y1="50" x2="1000" y2="50" stroke={BORDER_COLOR} strokeWidth="0.2" />
       <line x1="0" y1="25" x2="1000" y2="25" stroke={BORDER_COLOR} strokeWidth="0.1" />
@@ -256,44 +256,53 @@ function EmotionalArc({
       })}
 
       {/* Tooltip for hovered point */}
-      {hoveredIndex !== null && trajectory[hoveredIndex] && (
-        <g
-          transform={`translate(${points[hoveredIndex].x}, ${Math.max(points[hoveredIndex].y - 18, 20)})`}
-          style={{ pointerEvents: 'none' }}
-        >
-          {/* Tooltip background */}
-          <rect
-            x={-getTooltipWidth(trajectory[hoveredIndex].note) / 2}
-            y="-14"
-            width={getTooltipWidth(trajectory[hoveredIndex].note)}
-            height="12"
-            rx="2"
-            fill="#2A2A28"
-            fillOpacity="0.9"
-          />
-          {/* Tooltip text */}
-          <text
-            x="0"
-            y="-6"
-            textAnchor="middle"
-            fill="#F5F5F3"
-            fontSize="11"
-            fontWeight="500"
-            fontFamily="system-ui, sans-serif"
+      {hoveredIndex !== null && trajectory[hoveredIndex] && (() => {
+        const note = trajectory[hoveredIndex].note
+        const tooltipW = getTooltipWidth(note)
+        const px = points[hoveredIndex].x
+        const py = points[hoveredIndex].y
+        // Position above the point by default; if too close to top, show below
+        const showBelow = py < 30
+        const ty = showBelow ? py + 14 : Math.max(py - 22, 8)
+        // Clamp horizontal position to stay within viewBox
+        const tx = Math.max(tooltipW / 2 + 4, Math.min(px, 1000 - tooltipW / 2 - 4))
+        return (
+          <g
+            transform={`translate(${tx}, ${ty})`}
+            style={{ pointerEvents: 'none' }}
           >
-            {trajectory[hoveredIndex].note.length > 45
-              ? trajectory[hoveredIndex].note.substring(0, 45) + '...'
-              : trajectory[hoveredIndex].note
-            }
-          </text>
-          {/* Tooltip arrow */}
-          <polygon
-            points="-1.5,-1 1.5,-1 0,1"
-            fill="#2A2A28"
-            fillOpacity="0.9"
-          />
-        </g>
-      )}
+            {/* Tooltip background */}
+            <rect
+              x={-tooltipW / 2}
+              y="-16"
+              width={tooltipW}
+              height="18"
+              rx="3"
+              fill="#2A2A28"
+              fillOpacity="0.92"
+            />
+            {/* Tooltip text */}
+            <text
+              x="0"
+              y="-4"
+              textAnchor="middle"
+              fill="#F5F5F3"
+              fontSize="10"
+              fontWeight="500"
+              fontFamily="system-ui, sans-serif"
+            >
+              {note}
+            </text>
+            {/* Tooltip arrow */}
+            <polygon
+              points="-3,2 3,2 0,5"
+              fill="#2A2A28"
+              fillOpacity="0.92"
+              transform={showBelow ? 'translate(0,-20) scale(1,-1)' : ''}
+            />
+          </g>
+        )
+      })()}
     </svg>
   )
 }
@@ -472,7 +481,20 @@ export function DialecticalFlow() {
           {/* Emotional Arc */}
           <div className="card">
             <h3 className="text-sm font-medium text-ink-secondary mb-2">Emotional Intensity</h3>
-            <EmotionalArc trajectory={data.emotional_arc.trajectory} maxTime={maxTime} />
+            <EmotionalArc
+              trajectory={data.emotional_arc.trajectory}
+              maxTime={maxTime}
+              onPointClick={(point) => {
+                // Find the phase that contains this timestamp
+                const phase = data.phases.find(
+                  (p) => point.time >= p.start_time && point.time <= p.end_time
+                )
+                if (phase) {
+                  setSelectedInflection(null)
+                  setSelectedPhase(phase)
+                }
+              }}
+            />
             <p className="text-xs text-ink-tertiary mt-2">{data.emotional_arc.description}</p>
           </div>
 
