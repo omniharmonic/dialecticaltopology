@@ -4,13 +4,13 @@ import { motion } from 'framer-motion'
 
 type Lens = 'landscape' | 'claims' | 'flow' | 'worldviews' | 'tree' | 'arena'
 
-const lenses: { id: Lens; label: string }[] = [
-  { id: 'landscape', label: 'Landscape' },
-  { id: 'claims', label: 'Claims' },
-  { id: 'flow', label: 'Flow' },
-  { id: 'worldviews', label: 'Worldviews' },
-  { id: 'tree', label: 'Tree' },
-  { id: 'arena', label: 'Arena' },
+const lenses: { id: Lens; label: string; shortLabel: string }[] = [
+  { id: 'landscape', label: 'Landscape', shortLabel: '3D' },
+  { id: 'claims', label: 'Claims', shortLabel: 'Claims' },
+  { id: 'flow', label: 'Flow', shortLabel: 'Flow' },
+  { id: 'worldviews', label: 'Worldviews', shortLabel: 'Views' },
+  { id: 'tree', label: 'Tree', shortLabel: 'Tree' },
+  { id: 'arena', label: 'Arena', shortLabel: 'Arena' },
 ]
 
 interface NavigationProps {
@@ -43,13 +43,13 @@ export function Navigation({
 
         {/* Lens Tabs - horizontally scrollable on mobile */}
         {currentLens && (
-          <div className="flex items-center gap-space-1 overflow-x-auto scrollbar-none -mx-1 px-1">
+          <div className="flex items-center gap-0 sm:gap-space-1 overflow-x-auto scrollbar-none min-w-0 -mx-1 px-1">
             {lenses.map((lens) => (
               <button
                 key={lens.id}
                 onClick={() => onSelectLens(lens.id)}
                 className={`
-                  relative px-3 sm:px-space-4 py-space-2 text-sm font-medium whitespace-nowrap
+                  relative px-2 sm:px-space-4 py-space-2 text-sm font-medium whitespace-nowrap
                   min-h-[44px] min-w-[44px]
                   transition-colors duration-quick
                   ${currentLens === lens.id
@@ -58,11 +58,12 @@ export function Navigation({
                   }
                 `}
               >
-                {lens.label}
+                <span className="hidden sm:inline">{lens.label}</span>
+                <span className="sm:hidden">{lens.shortLabel}</span>
                 {currentLens === lens.id && (
                   <motion.div
                     layoutId="nav-indicator"
-                    className="absolute bottom-0 left-3 right-3 sm:left-space-4 sm:right-space-4 h-[2px] bg-ink"
+                    className="absolute bottom-0 left-2 right-2 sm:left-space-4 sm:right-space-4 h-[2px] bg-ink"
                     transition={{
                       type: 'spring',
                       stiffness: 500,
