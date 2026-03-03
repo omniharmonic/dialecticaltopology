@@ -8,11 +8,7 @@ import { WikiCard } from '@/components/ui/WikiCard'
 import type { Claim, WikiIndex, WarrantEntry, EvidenceEntry } from '@/lib/types'
 import type { Lens } from '@/store/appStore'
 
-// Detect basePath for deployment
 function getPublicPath(filename: string): string {
-  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/dialecticaltopology')) {
-    return `/dialecticaltopology/${filename}`
-  }
   return `/${filename}`
 }
 

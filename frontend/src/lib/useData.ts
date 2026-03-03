@@ -12,11 +12,7 @@ import type {
   WikiIndex,
 } from './types'
 
-// Detect basePath for GitHub Pages deployment
 function getDataPath(filename: string): string {
-  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/dialecticaltopology')) {
-    return `/dialecticaltopology/data/${filename}`
-  }
   return `/data/${filename}`
 }
 
