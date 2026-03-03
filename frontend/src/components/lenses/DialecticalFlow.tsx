@@ -475,6 +475,8 @@ export function DialecticalFlow() {
       loading={loading}
       error={error}
       sidebar={sidebar}
+      sidebarOpen={!!selectedPhase || !!selectedInflection}
+      onSidebarClose={() => { setSelectedPhase(null); setSelectedInflection(null) }}
     >
       {data && (
         <div className="space-y-8">

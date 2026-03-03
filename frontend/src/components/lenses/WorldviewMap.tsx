@@ -383,6 +383,8 @@ export function WorldviewMap() {
       loading={loading}
       error={error}
       sidebar={sidebar}
+      sidebarOpen={!!selectedDimension}
+      onSidebarClose={() => setSelectedDimension(null)}
     >
       {data && (
         <div className="space-y-6">

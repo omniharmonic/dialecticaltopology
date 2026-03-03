@@ -853,6 +853,8 @@ export function SemanticLandscape() {
       loading={loading}
       error={error}
       sidebar={sidebar}
+      sidebarOpen={!!selectedPoint}
+      onSidebarClose={() => setSelectedPoint(null)}
     >
       {data && data.speaker_centroids && (
         <div className="relative">

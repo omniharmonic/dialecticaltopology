@@ -1115,6 +1115,8 @@ export function EpistemologicalTree() {
       loading={loading}
       error={error}
       sidebar={sidebar}
+      sidebarOpen={!!selectedNode}
+      onSidebarClose={() => setSelectedNode(null)}
     >
       {data && (
         <div className="card overflow-hidden">

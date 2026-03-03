@@ -444,6 +444,8 @@ export function ClaimAtlas() {
       loading={loading}
       error={error}
       sidebar={sidebar}
+      sidebarOpen={!!selectedClaim}
+      onSidebarClose={() => setSelectedClaim(null)}
     >
       {data && (
         <div className="space-y-6">
