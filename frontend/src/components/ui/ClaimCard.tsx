@@ -246,8 +246,11 @@ export function ClaimCard({
           </h3>
           <div className="flex flex-wrap gap-2">
             {claim.related_concepts.map((conceptId, index) => {
-              // Find concept in wiki index
+              // Search all entity categories in wiki index
               const concept = wikiData?.concepts.find(c => c.id === conceptId)
+                || wikiData?.thinkers?.find(c => c.id === conceptId)
+                || wikiData?.frameworks?.find(c => c.id === conceptId)
+                || wikiData?.traditions?.find(c => c.id === conceptId)
               const label = concept?.label || conceptId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
 
               return (

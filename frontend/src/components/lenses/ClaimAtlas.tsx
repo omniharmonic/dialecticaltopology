@@ -108,7 +108,7 @@ function ClusterView({
 
 // Wiki entry state type
 type WikiEntryState = {
-  type: 'warrant' | 'evidence' | 'concept'
+  type: 'warrant' | 'evidence' | 'concept' | 'thinker' | 'framework'
   entry: WarrantEntry | EvidenceEntry | { id: string; label: string; description: string }
 } | null
 
@@ -154,10 +154,18 @@ function ClaimDetail({
     ) || null
   }
 
-  // Find concept in wiki index by id
-  const findConcept = (conceptId: string): { id: string; label: string; description: string } | null => {
+  // Find concept in wiki index by id (searches all entity categories)
+  const findEntity = (conceptId: string): { type: 'concept' | 'thinker' | 'framework'; entry: { id: string; label: string; description: string } } | null => {
     if (!wikiIndex) return null
-    return wikiIndex.concepts.find(c => c.id === conceptId) || null
+    const concept = wikiIndex.concepts.find(c => c.id === conceptId)
+    if (concept) return { type: 'concept', entry: concept }
+    const thinker = wikiIndex.thinkers?.find(c => c.id === conceptId)
+    if (thinker) return { type: 'thinker', entry: thinker }
+    const framework = wikiIndex.frameworks?.find(c => c.id === conceptId)
+    if (framework) return { type: 'framework', entry: framework }
+    const tradition = wikiIndex.traditions?.find(c => c.id === conceptId)
+    if (tradition) return { type: 'concept', entry: tradition }
+    return null
   }
 
   return (
@@ -236,12 +244,12 @@ function ClaimDetail({
             </h4>
             <div className="flex flex-wrap gap-1">
               {claim.related_concepts.map((c) => {
-                const concept = findConcept(c)
-                const label = concept?.label || c.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
-                return concept ? (
+                const found = findEntity(c)
+                const label = found?.entry.label || c.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+                return found ? (
                   <button
                     key={c}
-                    onClick={() => setSelectedWikiEntry({ type: 'concept', entry: concept })}
+                    onClick={() => setSelectedWikiEntry({ type: found.type, entry: found.entry })}
                     className="text-xs bg-field-subtle px-2 py-0.5 rounded hover:bg-field-deep transition-colors cursor-pointer"
                   >
                     {label}

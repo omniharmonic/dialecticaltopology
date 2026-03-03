@@ -768,6 +768,15 @@
       "type": "empirical",
       "used_by": ["D14"],
       "strength": "strong"
+    },
+    {
+      "id": "W16",
+      "title": "Epistemic Humility",
+      "text": "Epistemic humility regarding moral certainty",
+      "description": "This warrant argues that the history of confident moral pronouncements later overturned should make us cautious about claiming moral absolutes. Demartini uses it to support situational ethics: if past cultures were sincerely wrong about practices we now condemn, our own moral certainties may be similarly limited. The warrant draws on fallibilism in epistemology — the recognition that any belief, however firmly held, could be mistaken. Critics respond that epistemic humility about specific judgments doesn't require abandoning all moral frameworks, just as scientific fallibilism doesn't require abandoning the scientific method. Humility about details is compatible with confidence in broad principles like 'unnecessary suffering is bad.'",
+      "type": "logical",
+      "used_by": ["D05"],
+      "strength": "moderate"
     }
   ],
   "evidence": [
@@ -898,7 +907,7 @@
     "frameworks": 5,
     "traditions": 8,
     "claims": 40,
-    "warrants": 15,
+    "warrants": 16,
     "evidence": 15
   }
 }

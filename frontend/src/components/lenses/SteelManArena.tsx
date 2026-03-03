@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useDialogue, useWikiIndex } from '@/lib/useData'
 import { LensLayout, DetailPanel } from './LensLayout'
 import { WikiCard } from '@/components/ui/WikiCard'
-import type { DialogueRound, DialogueExchange, WarrantEntry, WikiIndex } from '@/lib/types'
+import type { DialogueRound, DialogueExchange, WarrantEntry, EvidenceEntry, WikiIndex } from '@/lib/types'
 
 // Simple markdown formatter for basic formatting
 function formatMarkdown(text: string): JSX.Element {
@@ -71,6 +71,8 @@ function ExchangeBubble({
   wikiIndex: WikiIndex | null
 }) {
   const [selectedWarrant, setSelectedWarrant] = useState<WarrantEntry | null>(null)
+  const [selectedEvidence, setSelectedEvidence] = useState<EvidenceEntry | null>(null)
+  const [selectedConceptEntry, setSelectedConceptEntry] = useState<{ type: 'concept' | 'thinker' | 'framework'; entry: { id: string; label: string; description: string } } | null>(null)
 
   const bgColor =
     exchange.speaker === 'demartini_steelmanned'
@@ -79,33 +81,69 @@ function ExchangeBubble({
       ? 'bg-marcus-faint border-marcus/30'
       : 'bg-convergence-soft border-convergence/30'
 
-  // Look up a warrant in the wiki index by text (partial match)
-  // Falls back to creating a basic entry if not found
+  // Look up a warrant in the wiki index by text or title (partial match)
   const findWarrantEntry = useCallback((warrantText: string, index: number): WarrantEntry => {
     if (wikiIndex?.warrants) {
-      // Try to find a matching warrant by partial text match
       const normalizedSearch = warrantText.toLowerCase().trim()
       const found = wikiIndex.warrants.find(w => {
         const normalizedWarrant = w.text.toLowerCase().trim()
-        // Match if the warrant text contains the search text or vice versa
+        const normalizedTitle = (w.title || '').toLowerCase().trim()
         return normalizedWarrant.includes(normalizedSearch) ||
                normalizedSearch.includes(normalizedWarrant) ||
-               // Also try matching by removing common prefixes
+               normalizedTitle.includes(normalizedSearch) ||
+               normalizedSearch.includes(normalizedTitle) ||
                normalizedWarrant.replace(/^appeal to /i, '').includes(normalizedSearch.replace(/^appeal to /i, ''))
       })
-      if (found) {
-        return found
-      }
+      if (found) return found
     }
-    // Fallback to creating a basic entry
     return {
       id: `warrant-${index}`,
       title: warrantText,
       text: warrantText,
+      description: `This warrant is referenced in the steel-manned dialogue but does not have a detailed wiki entry yet.`,
       type: 'logical',
       used_by: [],
       strength: 'moderate'
     }
+  }, [wikiIndex])
+
+  // Look up evidence in the wiki index by text or title (partial match)
+  const findEvidenceEntry = useCallback((evidenceText: string, index: number): EvidenceEntry => {
+    if (wikiIndex?.evidence) {
+      const normalizedSearch = evidenceText.toLowerCase().trim()
+      const found = wikiIndex.evidence.find(e => {
+        const normalizedEvidence = e.text.toLowerCase().trim()
+        const normalizedTitle = (e.title || '').toLowerCase().trim()
+        return normalizedEvidence.includes(normalizedSearch) ||
+               normalizedSearch.includes(normalizedEvidence) ||
+               normalizedTitle.includes(normalizedSearch) ||
+               normalizedSearch.includes(normalizedTitle)
+      })
+      if (found) return found
+    }
+    return {
+      id: `evidence-${index}`,
+      title: evidenceText,
+      text: evidenceText,
+      description: `This evidence is referenced in the steel-manned dialogue but does not have a detailed wiki entry yet.`,
+      source_type: 'anecdote',
+      cited_by: [],
+      verifiable: false
+    }
+  }, [wikiIndex])
+
+  // Find concept across all entity categories
+  const findEntity = useCallback((conceptId: string): { type: 'concept' | 'thinker' | 'framework'; entry: { id: string; label: string; description: string } } | null => {
+    if (!wikiIndex) return null
+    const concept = wikiIndex.concepts.find(c => c.id === conceptId)
+    if (concept) return { type: 'concept', entry: concept }
+    const thinker = wikiIndex.thinkers?.find(c => c.id === conceptId)
+    if (thinker) return { type: 'thinker', entry: thinker }
+    const framework = wikiIndex.frameworks?.find(c => c.id === conceptId)
+    if (framework) return { type: 'framework', entry: framework }
+    const tradition = wikiIndex.traditions?.find(c => c.id === conceptId)
+    if (tradition) return { type: 'concept', entry: tradition }
+    return null
   }, [wikiIndex])
 
   return (
@@ -123,7 +161,7 @@ function ExchangeBubble({
       {exchange.warrants && exchange.warrants.length > 0 && (
         <div className="mt-3 pt-3 border-t border-border">
           <h5 className="text-xs uppercase tracking-wider text-ink-tertiary mb-1">
-            Warrants
+            Supporting Warrants
           </h5>
           <div className="flex flex-wrap gap-1">
             {exchange.warrants.map((w, i) => {
@@ -136,12 +174,70 @@ function ExchangeBubble({
                   onClick={() => setSelectedWarrant(warrantEntry)}
                   className={`text-xs px-2 py-0.5 rounded transition-colors cursor-pointer ${
                     hasFullData
-                      ? 'bg-convergence-soft text-convergence hover:bg-convergence/20'
-                      : 'bg-field-subtle text-ink-secondary hover:bg-field-deep'
+                      ? 'bg-field text-ink-secondary hover:bg-field-deep shadow-sm'
+                      : 'bg-field/70 text-ink-tertiary hover:bg-field shadow-sm'
                   }`}
                   title={hasFullData ? `${warrantEntry.id}: ${warrantEntry.type} (${warrantEntry.strength})` : warrantEntry.text}
                 >
+                  <span className="mr-1 opacity-60">◆</span>
                   {displayText}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {exchange.evidence && exchange.evidence.length > 0 && (
+        <div className="mt-3 pt-3 border-t border-border">
+          <h5 className="text-xs uppercase tracking-wider text-ink-tertiary mb-1">
+            Evidence Cited
+          </h5>
+          <div className="flex flex-wrap gap-1">
+            {exchange.evidence.map((e, i) => {
+              const evidenceEntry = findEvidenceEntry(e, i)
+              const hasFullData = evidenceEntry.id.startsWith('E')
+              return (
+                <button
+                  key={i}
+                  onClick={() => setSelectedEvidence(evidenceEntry)}
+                  className={`text-xs px-2 py-0.5 rounded transition-colors cursor-pointer ${
+                    hasFullData
+                      ? 'bg-field text-ink-secondary hover:bg-field-deep shadow-sm'
+                      : 'bg-field/70 text-ink-tertiary hover:bg-field shadow-sm'
+                  }`}
+                >
+                  <span className="mr-1 opacity-60">✓</span>
+                  {evidenceEntry.title || e}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {exchange.related_concepts && exchange.related_concepts.length > 0 && (
+        <div className="mt-3 pt-3 border-t border-border">
+          <h5 className="text-xs uppercase tracking-wider text-ink-tertiary mb-1">
+            Related Concepts
+          </h5>
+          <div className="flex flex-wrap gap-1">
+            {exchange.related_concepts.map((conceptId) => {
+              const found = findEntity(conceptId)
+              const label = found?.entry.label || conceptId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+              return (
+                <button
+                  key={conceptId}
+                  onClick={() => found && setSelectedConceptEntry(found)}
+                  disabled={!found}
+                  className={`text-xs px-2 py-0.5 rounded transition-colors ${
+                    found
+                      ? 'bg-field text-ink-secondary hover:bg-field-deep cursor-pointer shadow-sm'
+                      : 'bg-field/70 text-ink-tertiary cursor-not-allowed'
+                  }`}
+                >
+                  <span className="mr-1 opacity-60">○</span>
+                  {label}
                 </button>
               )
             })}
@@ -170,6 +266,22 @@ function ExchangeBubble({
           type="warrant"
           entry={selectedWarrant}
           onClose={() => setSelectedWarrant(null)}
+        />
+      )}
+
+      {selectedEvidence && (
+        <WikiCard
+          type="evidence"
+          entry={selectedEvidence}
+          onClose={() => setSelectedEvidence(null)}
+        />
+      )}
+
+      {selectedConceptEntry && (
+        <WikiCard
+          type={selectedConceptEntry.type}
+          entry={selectedConceptEntry.entry}
+          onClose={() => setSelectedConceptEntry(null)}
         />
       )}
     </motion.div>

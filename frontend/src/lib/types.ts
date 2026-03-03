@@ -243,6 +243,8 @@ export interface DialogueExchange {
   speaker: string
   content: string
   warrants?: string[]
+  evidence?: string[]
+  related_concepts?: string[]
   strength?: string
   insight?: string
 }

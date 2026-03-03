@@ -463,18 +463,27 @@ export function WorldviewMap() {
       )}
 
       {/* WikiCard popup for concepts */}
-      {selectedConcept && wikiData && (
-        <WikiCard
-          type="concept"
-          entry={wikiData.concepts.find(c => c.id === selectedConcept)!}
-          onClose={() => setSelectedConcept(null)}
-          onClaimClick={(claimId) => {
-            setSelectedConcept(null) // Close concept card
-            handleClaimClick(claimId)
-          }}
-          isOpen={true}
-        />
-      )}
+      {selectedConcept && wikiData && (() => {
+        const concept = wikiData.concepts.find(c => c.id === selectedConcept)
+        const thinker = !concept ? wikiData.thinkers?.find(c => c.id === selectedConcept) : null
+        const framework = !concept && !thinker ? wikiData.frameworks?.find(c => c.id === selectedConcept) : null
+        const tradition = !concept && !thinker && !framework ? wikiData.traditions?.find(c => c.id === selectedConcept) : null
+        const entry = concept || thinker || framework || tradition
+        const entryType = concept ? 'concept' as const : thinker ? 'thinker' as const : framework ? 'framework' as const : 'concept' as const
+        if (!entry) return null
+        return (
+          <WikiCard
+            type={entryType}
+            entry={entry}
+            onClose={() => setSelectedConcept(null)}
+            onClaimClick={(claimId) => {
+              setSelectedConcept(null)
+              handleClaimClick(claimId)
+            }}
+            isOpen={true}
+          />
+        )
+      })()}
     </LensLayout>
   )
 }

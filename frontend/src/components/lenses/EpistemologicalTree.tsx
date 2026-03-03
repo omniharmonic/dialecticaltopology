@@ -7,7 +7,7 @@ import { useTree, useClaims, useWikiIndex } from '@/lib/useData'
 import { LensLayout, DetailPanel, SpeakerBadge, ClaimTypeBadge } from './LensLayout'
 import { TimecodeLink } from '@/components/ui/TimecodeLink'
 import { WikiCard } from '@/components/ui/WikiCard'
-import type { TreeNode, SynthesisNode, SemanticDrift, Claim, TreeEdge } from '@/lib/types'
+import type { TreeNode, SynthesisNode, SemanticDrift, Claim, TreeEdge, WarrantEntry, EvidenceEntry } from '@/lib/types'
 
 // Extended TreeNode type for D3 hierarchy (includes children array)
 interface TreeNodeWithChildren extends TreeNode {
@@ -287,6 +287,8 @@ export function EpistemologicalTree() {
   const { data: wikiData } = useWikiIndex()
   const [selectedNode, setSelectedNode] = useState<SelectedNode | null>(null)
   const [selectedConcept, setSelectedConcept] = useState<string | null>(null)
+  const [selectedWarrant, setSelectedWarrant] = useState<WarrantEntry | null>(null)
+  const [selectedEvidence, setSelectedEvidence] = useState<EvidenceEntry | null>(null)
   const [hoveredNode, setHoveredNode] = useState<string | null>(null)
   const [hoveredLineage, setHoveredLineage] = useState<Set<string>>(new Set())
   const svgRef = useRef<SVGSVGElement>(null)
@@ -726,11 +728,36 @@ export function EpistemologicalTree() {
                         Supporting Warrants
                       </span>
                       <div className="space-y-2">
-                        {claim.warrants.map((warrant, i) => (
-                          <div key={i} className="text-sm text-ink-secondary bg-field-subtle px-3 py-2 rounded">
-                            {warrant}
-                          </div>
-                        ))}
+                        {claim.warrants.map((warrantText, i) => {
+                          const normalizedSearch = warrantText.toLowerCase().trim()
+                          const matched = wikiData?.warrants?.find(w => {
+                            const nt = (w.title || '').toLowerCase().trim()
+                            const nw = w.text.toLowerCase().trim()
+                            return nw.includes(normalizedSearch) ||
+                                   normalizedSearch.includes(nw) ||
+                                   nt.includes(normalizedSearch) ||
+                                   normalizedSearch.includes(nt)
+                          })
+                          const warrant: WarrantEntry = matched || {
+                            id: `warrant-${claim.id}-${i}`,
+                            title: warrantText,
+                            text: warrantText,
+                            description: `This warrant is referenced by claim ${claim.id} but does not have a detailed wiki entry yet.`,
+                            type: 'logical',
+                            used_by: [claim.id],
+                            strength: 'moderate',
+                          }
+                          return (
+                            <button
+                              key={i}
+                              onClick={() => setSelectedWarrant(warrant)}
+                              className="w-full text-left text-sm px-3 py-2 rounded transition-colors text-ink-secondary bg-field-subtle hover:bg-field-deep cursor-pointer"
+                            >
+                              <span className="text-ink-tertiary mr-1.5">◆</span>
+                              {warrantText}
+                            </button>
+                          )
+                        })}
                       </div>
                     </div>
                   )}
@@ -742,11 +769,36 @@ export function EpistemologicalTree() {
                         Evidence Cited
                       </span>
                       <div className="space-y-2">
-                        {claim.evidence.map((evidence, i) => (
-                          <div key={i} className="text-sm text-ink-secondary bg-field-subtle px-3 py-2 rounded">
-                            {evidence}
-                          </div>
-                        ))}
+                        {claim.evidence.map((evidenceText, i) => {
+                          const normalizedSearch = evidenceText.toLowerCase().trim()
+                          const matched = wikiData?.evidence?.find(e => {
+                            const nt = (e.title || '').toLowerCase().trim()
+                            const ne = e.text.toLowerCase().trim()
+                            return ne.includes(normalizedSearch) ||
+                                   normalizedSearch.includes(ne) ||
+                                   nt.includes(normalizedSearch) ||
+                                   normalizedSearch.includes(nt)
+                          })
+                          const evidence: EvidenceEntry = matched || {
+                            id: `evidence-${claim.id}-${i}`,
+                            title: evidenceText,
+                            text: evidenceText,
+                            description: `This evidence is referenced by claim ${claim.id} but does not have a detailed wiki entry yet.`,
+                            source_type: 'anecdote',
+                            cited_by: [claim.id],
+                            verifiable: false,
+                          }
+                          return (
+                            <button
+                              key={i}
+                              onClick={() => setSelectedEvidence(evidence)}
+                              className="w-full text-left text-sm px-3 py-2 rounded transition-colors text-ink-secondary bg-field-subtle hover:bg-field-deep cursor-pointer"
+                            >
+                              <span className="text-ink-tertiary mr-1.5">✓</span>
+                              {evidenceText}
+                            </button>
+                          )
+                        })}
                       </div>
                     </div>
                   )}
@@ -759,7 +811,11 @@ export function EpistemologicalTree() {
                       </span>
                       <div className="flex flex-wrap gap-1">
                         {claim.related_concepts.map((conceptId) => {
+                          // Search all entity categories for the concept
                           const concept = wikiData?.concepts.find(c => c.id === conceptId)
+                            || wikiData?.thinkers?.find(c => c.id === conceptId)
+                            || wikiData?.frameworks?.find(c => c.id === conceptId)
+                            || wikiData?.traditions?.find(c => c.id === conceptId)
                           const label = concept?.label || conceptId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
                           return (
                             <button
@@ -1049,7 +1105,7 @@ export function EpistemologicalTree() {
         )}
       </div>
     )
-  }, [selectedNode, data, transform.k, claimsMap, relationshipEdges])
+  }, [selectedNode, data, transform.k, claimsMap, relationshipEdges, wikiData])
 
   return (
     <>
@@ -1308,24 +1364,53 @@ export function EpistemologicalTree() {
       )}
     </LensLayout>
 
-    {/* WikiCard popup for concepts */}
-    {selectedConcept && wikiData && (
+    {/* WikiCard popup for warrants */}
+    {selectedWarrant && (
       <WikiCard
-        type="concept"
-        entry={wikiData.concepts.find(c => c.id === selectedConcept)!}
-        onClose={() => setSelectedConcept(null)}
-        onClaimClick={(claimId) => {
-          // Navigate to the claim node
-          const claimNodeId = `claim-${claimId}`
-          const targetNode = data?.nodes.find(n => n.id === claimNodeId)
-          if (targetNode) {
-            setSelectedConcept(null) // Close concept card
-            setSelectedNode({ type: 'node', data: targetNode })
-          }
-        }}
+        type="warrant"
+        entry={selectedWarrant}
+        onClose={() => setSelectedWarrant(null)}
         isOpen={true}
       />
     )}
+
+    {/* WikiCard popup for evidence */}
+    {selectedEvidence && (
+      <WikiCard
+        type="evidence"
+        entry={selectedEvidence}
+        onClose={() => setSelectedEvidence(null)}
+        isOpen={true}
+      />
+    )}
+
+    {/* WikiCard popup for concepts */}
+    {selectedConcept && wikiData && (() => {
+      // Search all entity categories
+      const concept = wikiData.concepts.find(c => c.id === selectedConcept)
+      const thinker = !concept ? wikiData.thinkers?.find(c => c.id === selectedConcept) : null
+      const framework = !concept && !thinker ? wikiData.frameworks?.find(c => c.id === selectedConcept) : null
+      const tradition = !concept && !thinker && !framework ? wikiData.traditions?.find(c => c.id === selectedConcept) : null
+      const entry = concept || thinker || framework || tradition
+      const entryType = concept ? 'concept' as const : thinker ? 'thinker' as const : framework ? 'framework' as const : 'concept' as const
+      if (!entry) return null
+      return (
+        <WikiCard
+          type={entryType}
+          entry={entry}
+          onClose={() => setSelectedConcept(null)}
+          onClaimClick={(claimId) => {
+            const claimNodeId = `claim-${claimId}`
+            const targetNode = data?.nodes.find(n => n.id === claimNodeId)
+            if (targetNode) {
+              setSelectedConcept(null)
+              setSelectedNode({ type: 'node', data: targetNode })
+            }
+          }}
+          isOpen={true}
+        />
+      )
+    })()}
     </>
   )
 }

@@ -168,6 +168,78 @@ function LandingPage({ onSelectLens }: { onSelectLens: (lens: Lens) => void }) {
         </motion.p>
       </section>
 
+      {/* Key Insights Summary */}
+      <section className="py-space-16 px-space-6 bg-gradient-to-b from-field-subtle/50 to-transparent">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          className="max-w-prose mx-auto"
+        >
+          <h2 className="font-display text-2xl md:text-3xl text-ink text-center mb-space-6">
+            The Spiritual War Over Whether Evil Is Real
+          </h2>
+
+          <div className="space-y-space-4 mb-space-8">
+            <p className="text-ink-secondary leading-relaxed">
+              This isn't just a philosophical disagreement—it's a <span className="text-ink font-medium">primordial conflict about the nature of reality itself</span>. After analyzing 42 claims, 8 dimensional spectrums, and mapping how surface arguments trace to foundational commitments, three irreconcilable tensions emerge:
+            </p>
+
+            <div className="grid md:grid-cols-3 gap-space-4">
+              <div className="card bg-demartini-faint/30 border-demartini/20">
+                <h3 className="text-sm font-semibold text-ink mb-space-2">Ontological Divide</h3>
+                <p className="text-xs text-ink-secondary leading-relaxed">
+                  Does evil exist objectively, or is it incomplete perception? Gap: 0.65/1.0
+                </p>
+              </div>
+
+              <div className="card bg-marcus-faint/30 border-marcus/20">
+                <h3 className="text-sm font-semibold text-ink mb-space-2">Value of Life</h3>
+                <p className="text-xs text-ink-secondary leading-relaxed">
+                  Is life inherently good, or neutral balance? Gap: 0.55/1.0
+                </p>
+              </div>
+
+              <div className="card bg-convergence-soft/30 border-convergence/20">
+                <h3 className="text-sm font-semibold text-ink mb-space-2">Temporal Trap</h3>
+                <p className="text-xs text-ink-secondary leading-relaxed">
+                  Therapy operates AFTER harm; ethics operates BEFORE. Hidden bridge.
+                </p>
+              </div>
+            </div>
+
+            <p className="text-ink-secondary leading-relaxed italic border-l-2 border-insight pl-space-4">
+              "The murdered child doesn't get a chance to be grateful. The family may find meaning, but the child's life was taken."
+            </p>
+
+            <p className="text-ink-secondary leading-relaxed">
+              What's at stake: <span className="text-ink">If evil is real, we must act to prevent it. If evil is illusory perception, we must expand awareness to dissolve it.</span> These cannot both be true simultaneously.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-space-4 justify-center">
+            <button
+              onClick={() => {
+                const lensesSection = document.getElementById('lenses-section')
+                lensesSection?.scrollIntoView({ behavior: 'smooth' })
+              }}
+              className="btn-primary bg-gradient-to-r from-marcus to-demartini text-field hover:opacity-90"
+            >
+              Explore the Debate
+            </button>
+
+            <a
+              href="/META_ANALYSIS.md"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-secondary border-convergence text-convergence hover:bg-convergence-soft inline-flex items-center justify-center"
+            >
+              Read Full Meta-Analysis
+            </a>
+          </div>
+        </motion.div>
+      </section>
+
       {/* Stats Row */}
       <section className="py-space-12 px-space-6">
         <div className="max-w-content mx-auto grid grid-cols-2 md:grid-cols-4 gap-space-8">
@@ -198,7 +270,7 @@ function LandingPage({ onSelectLens }: { onSelectLens: (lens: Lens) => void }) {
       </section>
 
       {/* Lens Preview Cards - Vertical Stack */}
-      <section className="py-space-16 px-space-6">
+      <section id="lenses-section" className="py-space-16 px-space-6">
         <div className="max-w-prose mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 12 }}
